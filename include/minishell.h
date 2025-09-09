@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/09 21:51:19 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:23:05 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,6 @@
 
 # define ERR_C "Error: Argument is not -c.\n"
 
-int	ft_strcmp(const char *s1, const char *s2);
+int	ft_strcmp_ns(const char *s1, const char *s2);
 
 #endif

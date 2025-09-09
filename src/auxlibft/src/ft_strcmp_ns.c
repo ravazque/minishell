@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   ft_strcmp_ns.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 17:55:59 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/09 21:34:55 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/09 23:17:31 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../include/libft.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+int	ft_strcmp_ns(const char *s1, const char *s2)
 {
 	int	i;
 	int	j;

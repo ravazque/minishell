@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/09 21:51:02 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/09 22:22:59 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(int argc, char *argv[])
 				break ;
 			if (*input)
 				add_history(input);
-			if (ft_strcmp(input, "exit") == 0)
+			if (ft_strcmp_ns(input, "exit") == 0)
 			{
 				free(input);
 				break ;
