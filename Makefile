@@ -1,3 +1,4 @@
+
 SHELL = /bin/bash
 
 MAKEFLAGS += --no-print-directory
@@ -12,7 +13,6 @@ OBJ_DIR = src/minishellObjects
 LIB_NAME = ft
 LIBFILE = $(LIB_DIR)/lib$(LIB_NAME).a
 
-# --- Fuentes y objetos (recursivo, excluyendo auxlibft) ---
 SRCS := $(shell find $(SRC_DIR) -type d -path $(LIB_DIR) -prune -o -type f -name '*.c' -print)
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 

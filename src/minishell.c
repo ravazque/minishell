@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/09 22:22:59 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/15 17:11:25 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,36 @@
 
 int	main(int argc, char *argv[])
 {
-	char	*input;
+	t_mini	mini;
 
+	mini.exit_sts = 0;
 	if (argc == 2 || (argc > 2 && ft_strncmp(argv[1], "-c", 3) != 0))
 		return (ft_putstr_fd(ERR_C, STDERR_FILENO), 127);
 	if (argc == 1)
 	{
 		while (1)
 		{
-			input = readline("minishell> ");
-			if (input == NULL)
+			mini.input = readline("minishell> ");
+			if (mini.input == NULL)
 				break ;
-			if (*input)
-				add_history(input);
-			if (ft_strcmp_ns(input, "exit") == 0)
+			if (*mini.input)
+				add_history(mini.input);
+			if (built_ins(mini) == true)
 			{
-				free(input);
-				break ;
+				if (ft_strcmp_ns(mini.input, "exit") == 0)
+				{
+					free(mini.input);
+					break ;
+				}
+				printf("built-in gestionado por ptrapero\n");
 			}
-			printf("Input: '%s'\n", input);
-			free(input);
+			else
+				printf("Input: [ %s ]\n", mini.input);
+			free(mini.input);
 		}
 	}
-	// else
-	// 	token_parsec_exec(argv[2], &data, false);
+	else
+		non_interactive();
 	rl_clear_history();
-	return (0);
+	return (mini.exit_sts);
 }
