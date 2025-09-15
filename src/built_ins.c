@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 17:10:07 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/15 17:10:55 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/15 20:45:16 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ bool	built_ins(t_mini mini)
 
 	built_in = ft_split(mini.input, ' ');
 	if (ft_strcmp_ns(built_in[0], "exit") == 0)
-		return (true);
-	else if (ft_strcmp_ns(built_in[0], "exit") == 0)
 		return (true);
 	else if (ft_strcmp_ns(built_in[0], "echo") == 0)
 		return (true);

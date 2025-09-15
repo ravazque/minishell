@@ -1,18 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   interactive.c                                      :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/15 17:10:09 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/15 17:19:50 by ravazque         ###   ########.fr       */
+/*   Created: 2025/09/15 19:28:04 by ravazque          #+#    #+#             */
+/*   Updated: 2025/09/15 19:29:06 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	non_interactive(void)
+void	init_mini(t_mini *mini)
 {
-	printf("Command to manage NON-INTERACTIVELY\n");
+	mini->cmds = NULL;
+	mini->input = NULL;
+	mini->i = 0;
+	mini->exit_sts = 0;
 }

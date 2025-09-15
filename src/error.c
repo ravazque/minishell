@@ -1,18 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   interactive.c                                      :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/15 17:10:09 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/15 17:19:50 by ravazque         ###   ########.fr       */
+/*   Created: 2025/09/15 19:45:49 by ravazque          #+#    #+#             */
+/*   Updated: 2025/09/15 19:51:10 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-void	non_interactive(void)
+void	malloc_error(void)
 {
-	printf("Command to manage NON-INTERACTIVELY\n");
+	ft_putstr_fd("malloc error\n", STDERR_FILENO);
+	exit(STDOUT_FILENO);
+}
+
+void	split_error(void)
+{
+	ft_putstr_fd("split error\n", STDERR_FILENO);
+	exit(STDOUT_FILENO);
 }
