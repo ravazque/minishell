@@ -16,6 +16,7 @@ LIBFT_A     := $(LIBFT_DIR)/libft.a
 
 # --- Compilación ---
 CC          := cc
+# CFLAGS      := -I$(INC_DIR) -I$(LIBFT_INC_D)
 CFLAGS      := -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIBFT_INC_D)
 LDFLAGS     := -lreadline   # quita esto si aún no usas readline
 

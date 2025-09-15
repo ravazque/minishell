@@ -19,14 +19,12 @@ OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIB_DIR)/include
 
-# Colores
 RESET       = \033[0m
 TURQUOISE   = \033[0;36m
 LIGHT_TURQUOISE   = \033[1;36m
 LIGHT_GREEN = \033[1;32m
 LIGHT_RED	= \033[1;91m
 
-# Progreso
 TOTAL_STEPS := $(words $(SRCS))
 
 define show_progress
@@ -51,8 +49,6 @@ define show_progress
 	'
 endef
 
-# --- Reglas ---
-
 all: $(LIBFILE) $(NAME)
 
 $(OBJ_DIR):
@@ -61,7 +57,6 @@ $(OBJ_DIR):
 $(LIBFILE):
 	@$(MAKE) -sC $(LIB_DIR) --no-print-directory
 
-# Regla genérica para objetos (con subdirectorios)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@ 2>/dev/null
@@ -69,20 +64,20 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 
 $(NAME): $(OBJS) $(LIBFILE)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFILE) -lreadline -o $(NAME) 2>/dev/null
-	@echo -e "$(LIGHT_TURQUOISE)¡Minishell lista!$(RESET)"
+	@echo -e "$(LIGHT_TURQUOISE)¡Minishell ready!$(RESET)"
 
 clean:
-	@echo -e "$(LIGHT_RED)Ejecutando limpieza de objetos...$(RESET)"
+	@echo -e "$(LIGHT_RED)Running object cleanup...$(RESET)"
 	@rm -rf $(OBJ_DIR)
 	@$(MAKE) -C $(LIB_DIR) clean -s
-	@echo -e "$(TURQUOISE)¡Limpieza de objetos finalizada!$(RESET)"
+	@echo -e "$(TURQUOISE)¡Cleaning of objects completed!$(RESET)"
 
 fclean:
-	@echo -e "$(LIGHT_RED)Ejecutando limpieza completa...$(RESET)"
+	@echo -e "$(LIGHT_RED)Running a full cleanup...$(RESET)"
 	@rm -rf $(OBJ_DIR)
 	@rm -f $(NAME)
 	@$(MAKE) -C $(LIB_DIR) fclean -s
-	@echo -e "$(TURQUOISE)¡Limpieza completa finalizada!$(RESET)"
+	@echo -e "$(TURQUOISE)¡Full cleaning finished!$(RESET)"
 
 re:
 	@$(MAKE) fclean
