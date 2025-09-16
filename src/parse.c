@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 17:15:38 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 01:58:59 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/16 16:42:09 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void	parse(t_mini *mini)
 		return ;
 	if (!quotes_balanced(mini->input))
 	{
-		ft_putstr_fd(MIN_QUOTES, STDERR_FILENO);
+		ft_putstr_fd(ERR_QUO, STDERR_FILENO);
 		mini->exit_sts = 2;
 		return ;
 	}

@@ -1,40 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp_ns.c                                     :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/09 17:55:59 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/09 23:17:31 by ravazque         ###   ########.fr       */
+/*   Created: 2024/09/17 11:59:02 by ravazque          #+#    #+#             */
+/*   Updated: 2025/09/16 17:38:56 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/libft.h"
 
-int	ft_strcmp_ns(const char *s1, const char *s2)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	int	i;
-	int	j;
+	size_t	i;
 
 	i = 0;
-	j = 0;
-	while (s1[i] && (s1[i] == ' ' || s1[i] == '\t'))
-		i++;
-	while (s2[j] && (s2[j] == ' ' || s2[j] == '\t'))
-		j++;
-	while (s1[i] && s2[j])
+	while (s1[i] && s2[i])
 	{
-		if (s1[i] != s2[j])
-			return (-1);
 		i++;
-		j++;
 	}
-	while (s1[i] && (s1[i] == ' ' || s1[i] == '\t'))
+	if (s1[i] != s2[i])
+	{
+		return (-1);
+	}
+	i = 0;
+	while (s1[i] && s2[i])
+	{
+		if (s1[i] != s2[i])
+		{
+			return (-1);
+		}
 		i++;
-	while (s2[j] && (s2[j] == ' ' || s2[j] == '\t'))
-		j++;
-	if (s1[i] == '\0' && s2[j] == '\0')
-		return (0);
-	return (-1);
+	}
+	return (0);
 }

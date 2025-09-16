@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 20:31:32 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 01:47:38 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:42:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int			ft_tolower(int c);
 int			ft_memcmp(const void *s1, const void *s2, size_t n);
 int			ft_atoi(const char *nptr);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
+int			ft_strcmp(const char *s1, const char *s2);
 void		ft_bzero(void *s, size_t n);
 void		*ft_memset(void *b, int c, size_t len);
 void		*ft_memcpy(void *dest, const void *src, size_t n);

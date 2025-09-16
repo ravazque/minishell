@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 02:21:35 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:35:36 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 # define QPAD '\x01'
 # define ERR_C "Error: Argument is not -c.\n"
-# define MIN_QUOTES "minishell: syntax error\n"
+# define ERR_QUO "Error: syntax error\n"
 
 typedef struct s_cmd
 {
@@ -36,7 +36,6 @@ typedef struct s_mini
 }					t_mini;
 
 bool				built_ins(t_mini mini, bool *ex);				// eliminar variable ex [ pruebas ]
-int					ft_strcmp_ns(const char *s1, const char *s2);
 void				non_interactive(void);
 void				parse(t_mini *mini);
 void				free_cmds(t_cmd *cmds);
