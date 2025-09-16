@@ -19,11 +19,11 @@ OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIB_DIR)/include
 
-RESET       = \033[0m
-TURQUOISE   = \033[0;36m
-LIGHT_TURQUOISE   = \033[1;36m
-LIGHT_GREEN = \033[1;32m
-LIGHT_RED	= \033[1;91m
+RESET				= \033[0m
+TURQUOISE			= \033[0;36m
+LIGHT_TURQUOISE		= \033[1;36m
+LIGHT_GREEN			= \033[1;32m
+LIGHT_RED			= \033[1;91m
 
 TOTAL_STEPS := $(words $(SRCS))
 

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 18:04:22 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/17 00:35:24 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ typedef struct s_mini
 }					t_mini;
 
 bool				built_ins(t_mini *mini, bool *ex);
-void				non_interactive(void);
 void				parse(t_mini *mini);
 void				free_cmds(t_cmd *cmds);
 void				free_split(char **split);

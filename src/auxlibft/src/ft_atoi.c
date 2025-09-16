@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 19:23:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 19:27:34 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/17 00:43:26 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int	parse_digits(const char *s, size_t *i, int sign, bool *bad)
 		if (!add_digit(&n, sign, s[*i]))
 		{
 			*bad = true;
-			return (255);
+			return (2);
 		}
 		mod = mod * 10 + (s[*i] - '0');
 		while (mod >= 256)
@@ -83,14 +83,14 @@ int	ft_atoi(const char *s, bool *max_ex)
 	if (s[i] < '0' || s[i] > '9')
 	{
 		*max_ex = true;
-		return (255);
+		return (2);
 	}
 	mod = parse_digits(s, &i, sign, max_ex);
 	i = skip_ws(s, i);
 	if (s[i] != '\0')
 	{
 		*max_ex = true;
-		return (255);
+		return (2);
 	}
 	return (mod);
 }

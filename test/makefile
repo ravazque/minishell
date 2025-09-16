@@ -1,6 +1,4 @@
-# =========================
-#   Makefile - minishell
-# =========================
+
 NAME        := minishell
 
 # --- Rutas del proyecto ---
@@ -11,7 +9,7 @@ INC_DIR     := include
 LIBFT_DIR   := $(SRC_DIR)/auxlibft
 LIBFT_SRC_D := $(LIBFT_DIR)/src
 LIBFT_INC_D := $(LIBFT_DIR)/include
-LIBFT_OBJ_D := $(LIBFT_DIR)/obj
+LIBFT_OBJ_D := $(LIBFT_DIR)/libftObjects
 LIBFT_A     := $(LIBFT_DIR)/libft.a
 
 # --- Compilación ---
@@ -20,7 +18,7 @@ CC          := cc
 CFLAGS      := -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIBFT_INC_D)
 LDFLAGS     := -lreadline   # quita esto si aún no usas readline
 
-BUILD_DIR   := build
+BUILD_DIR   := src/minishellObjects
 
 # Todos los .c del proyecto EXCEPTO libft
 SRCS        := $(shell find $(SRC_DIR) -type f -name '*.c' -not -path '$(LIBFT_DIR)/*')

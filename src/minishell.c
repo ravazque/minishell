@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 18:16:23 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/17 00:36:21 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,11 @@ int	main(int argc, char *argv[])
 	t_mini	mini;
 	bool	ex;
 
-	if (argc == 2 || (argc > 2 && ft_strncmp(argv[1], "-c", 3) != 0))
+	if (argc > 2 && ft_strncmp(argv[1], "-c", 3) != 0)
+		return (ft_putstr_fd(ERR_C, STDERR_FILENO), 127);
+	else if (argc == 2 && ft_strncmp(argv[1], "-c", 3) == 0)
+		return (ft_putstr_fd("Error: -c: option requires an argument\n", STDERR_FILENO), 127);
+	else if (argc == 2 && ft_strncmp(argv[1], "-c", 3) != 0)
 		return (ft_putstr_fd(ERR_C, STDERR_FILENO), 127);
 	init_mini(&mini);
 	if (argc == 1)
@@ -60,7 +64,14 @@ int	main(int argc, char *argv[])
 		}
 	}
 	else
-		non_interactive();
+	{
+		mini.input = ft_strjoin(mini.input, argv[2]);
+		parse(&mini);
+		if (built_ins(&mini, &ex) == true && ex == true)
+			ex = false;
+		if (mini.cmds && mini.cmds->args && ex == true)
+			print_args(mini.cmds->args);
+	}
 	cleanup_mini(&mini);
 	rl_clear_history();
 	return (mini.exit_sts);
