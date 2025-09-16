@@ -6,76 +6,162 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 17:15:38 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/15 21:40:47 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/16 01:58:59 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-// static int	count_args(char **line)
-// {
-// 	int	count;
-
-// 	count = 0;
-// 	while (line[count] != NULL)
-// 		count++;
-// 	return (count);
-// }
-
-static void double_mark(t_mini *mini, int *start_pos)
+static int	quotes_balanced(const char *s)
 {
-	char	*phase;
-	int		i;
-	
-	i = start_pos;
-	while(mini->input[i] != '"')
-		i++;
-	phase = malloc(sizeof(char) * i);
-	while(start_pos < i)
+	size_t	i;
+	int		in_sq;
+	int		in_dq;
+
+	i = 0;
+	in_sq = 0;
+	in_dq = 0;
+	while (s[i])
 	{
-		phase[*start_pos] = mini->input[*start_pos];
-		start_pos++;
+		if (s[i] == '\'' && in_dq == 0)
+			in_sq = !in_sq;
+		else if (s[i] == '\"' && in_sq == 0)
+			in_dq = !in_dq;
+		i++;
 	}
-	mini->cmds->args = ft_strjoin(mini->cmds->args, phase);
+	return (in_sq == 0 && in_dq == 0);
 }
 
-static void *simple_mark(t_mini *mini, int *start_pos)
+static void	simple_mark(char *s, size_t *i)
 {
-	char	*phase;
-	int		i;
-	
-	i = start_pos;
-	while(mini->input[i] != '\'')
-		i++;
-	phase = malloc(sizeof(char) * i);
-	while(start_pos < i)
+	size_t	k;
+
+	k = *i + 1;
+	while (s[k] && s[k] != '\'')
 	{
-		phase[*start_pos] = mini->input[*start_pos];
-		start_pos++;
+		if (s[k] == ' ' || s[k] == '\t')
+			s[k] = QPAD;
+		k++;
 	}
-	mini->cmds->args = ft_strjoin(mini->cmds->args, phase);
+	if (s[k] == '\'')
+		k++;
+	*i = k;
+}
+
+static void	double_mark(char *s, size_t *i)
+{
+	size_t	k;
+
+	k = *i + 1;
+	while (s[k] && s[k] != '\"')
+	{
+		if (s[k] == ' ' || s[k] == '\t')
+			s[k] = QPAD;
+		k++;
+	}
+	if (s[k] == '\"')
+		k++;
+	*i = k;
+}
+
+static char	*unquote_token(const char *s)
+{
+	size_t	i;
+	size_t	j;
+	int		in_sq;
+	int		in_dq;
+	char	*out;
+
+	out = (char *)malloc((ft_strlen(s) + 1) * sizeof(char));
+	if (!out)
+		return (NULL);
+	i = 0;
+	j = 0;
+	in_sq = 0;
+	in_dq = 0;
+	while (s[i])
+	{
+		if (s[i] == '\'' && in_dq == 0)
+		{
+			in_sq = !in_sq;
+			i++;
+			continue ;
+		}
+		if (s[i] == '\"' && in_sq == 0)
+		{
+			in_dq = !in_dq;
+			i++;
+			continue ;
+		}
+		if (s[i] == QPAD)
+			out[j++] = ' ';
+		else
+			out[j++] = s[i];
+		i++;
+	}
+	out[j] = '\0';
+	return (out);
 }
 
 void	parse(t_mini *mini)
 {
-	int		pos_check;
+	char	*buf;
+	char	**parts;
+	size_t	k;
+	size_t	i;
+	t_cmd	*cmd;
+	char	*clean;
 
-	if (!mini->cmds)
+	if (!mini || !mini->input)
+		return ;
+	if (!quotes_balanced(mini->input))
 	{
-		mini->cmds = malloc(sizeof(t_cmd));
-		if (!mini->cmds)
+		ft_putstr_fd(MIN_QUOTES, STDERR_FILENO);
+		mini->exit_sts = 2;
+		return ;
+	}
+	buf = ft_strdup(mini->input);
+	if (!buf)
+		return (malloc_error());
+	k = 0;
+	while (buf[k])
+	{
+		if (buf[k] == '\'')
+			simple_mark(buf, &k);
+		else if (buf[k] == '\"')
+			double_mark(buf, &k);
+		else
 		{
-			malloc_error();
-			return ;
+			if (buf[k] == '\t')
+				buf[k] = ' ';
+			k++;
 		}
 	}
-	pos_check = 0;
-	while(pos_check < ft_strlen(mini->input))
+	parts = ft_split(buf, ' ');
+	free(buf);
+	if (!parts)
+		return (split_error());
+	i = 0;
+	while (parts[i])
 	{
-		if(mini->input[pos_check] == '"')
-			simple_mark(mini, &pos_check + 1);
-		if(mini->input[pos_check] == '\'')
-			double_mark(mini, &pos_check + 1);
-		pos_check++;
+		clean = unquote_token(parts[i]);
+		if (!clean)
+		{
+			free_split(parts);
+			return (malloc_error());
+		}
+		free(parts[i]);
+		parts[i] = clean;
+		i++;
 	}
+	cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!cmd)
+	{
+		free_split(parts);
+		return (malloc_error());
+	}
+	ft_bzero(cmd, sizeof(t_cmd));
+	cmd->args = parts;
+	cmd->next = NULL;
+	mini->cmds = cmd;
 }
