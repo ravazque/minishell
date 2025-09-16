@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 17:39:51 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/16 18:16:23 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	print_args(char **mini_cmds)
 int	main(int argc, char *argv[])
 {
 	t_mini	mini;
-	bool	ex;		// variable de uso en exit para hacer pruebas [ borrar ]
+	bool	ex;
 
 	if (argc == 2 || (argc > 2 && ft_strncmp(argv[1], "-c", 3) != 0))
 		return (ft_putstr_fd(ERR_C, STDERR_FILENO), 127);
@@ -52,7 +52,7 @@ int	main(int argc, char *argv[])
 			if (*mini.input)
 				add_history(mini.input);
 			parse(&mini);
-			if (built_ins(mini, &ex) == true && ex == true)
+			if (built_ins(&mini, &ex) == true && ex == true)
 				break ;
 			if (mini.cmds && mini.cmds->args && ex == true)
 				print_args(mini.cmds->args);

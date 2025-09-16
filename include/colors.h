@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 01:35:17 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 01:43:04 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:52:30 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@
 # define RL_S "\001"
 # define RL_E "\002"
 
-# define RL_RST RL_S CLR_RESET RL_E
-# define RL_BLD RL_S CLR_BOLD RL_E
-# define RL_RED RL_S CLR_RED RL_E
-# define RL_GRN RL_S CLR_GRN RL_E
-# define RL_YEL RL_S CLR_YEL RL_E
-# define RL_BLU RL_S CLR_BLU RL_E
-# define RL_MAG RL_S CLR_MAG RL_E
-# define RL_CYN RL_S CLR_CYN RL_E
-# define RL_WHT RL_S CLR_WHT RL_E
+# define RL_RST "\001\033[0m\002"
+# define RL_BLD "\001\033[1m\002"
+# define RL_RED "\001\033[31m\002"
+# define RL_GRN "\001\033[32m\002"
+# define RL_YEL "\001\033[33m\002"
+# define RL_BLU "\001\033[34m\002"
+# define RL_MAG "\001\033[35m\002"
+# define RL_CYN "\001\033[36m\002"
+# define RL_WHT "\001\033[37m\002"
 
 #endif

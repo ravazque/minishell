@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 17:35:36 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/16 18:04:22 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct s_mini
 	int				exit_sts;
 }					t_mini;
 
-bool				built_ins(t_mini mini, bool *ex);				// eliminar variable ex [ pruebas ]
+bool				built_ins(t_mini *mini, bool *ex);
 void				non_interactive(void);
 void				parse(t_mini *mini);
 void				free_cmds(t_cmd *cmds);

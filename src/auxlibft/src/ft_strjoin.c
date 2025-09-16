@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 18:26:42 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 01:50:52 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:54:01 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,9 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	new_str = (char *)malloc(len1 + len2 + 1);
 	if (!new_str)
 		return (NULL);
-	i = 0;
-	while (i < len1)
-	{
+	i = -1;
+	while (++i < len1)
 		new_str[i] = s1[i];
-		i++;
-	}
 	while (i < len1 + len2)
 	{
 		new_str[i] = s2[i - len1];
@@ -42,4 +39,3 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	new_str[i] = '\0';
 	return (new_str);
 }
-
