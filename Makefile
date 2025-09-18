@@ -8,7 +8,7 @@ NAME = minishell
 SRC_DIR = src
 INC_DIR = include
 LIB_DIR = src/auxlibft
-OBJ_DIR = src/minishellObjects
+OBJ_DIR = minishellObjects
 
 LIB_NAME = ft
 LIBFILE = $(LIB_DIR)/lib$(LIB_NAME).a
@@ -60,7 +60,7 @@ $(LIBFILE):
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@ 2>/dev/null
-	$(call show_progress)
+#	$(call show_progress)
 
 $(NAME): $(OBJS) $(LIBFILE)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFILE) -lreadline -o $(NAME) 2>/dev/null

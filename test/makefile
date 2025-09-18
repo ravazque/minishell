@@ -6,10 +6,10 @@ SRC_DIR     := src
 INC_DIR     := include
 
 # libft dentro de src/
-LIBFT_DIR   := $(SRC_DIR)/auxlibft
+LIBFT_DIR   := src/auxlibft
 LIBFT_SRC_D := $(LIBFT_DIR)/src
 LIBFT_INC_D := $(LIBFT_DIR)/include
-LIBFT_OBJ_D := $(LIBFT_DIR)/libftObjects
+LIBFT_OBJ_D := minishellObjects
 LIBFT_A     := $(LIBFT_DIR)/libft.a
 
 # --- Compilación ---

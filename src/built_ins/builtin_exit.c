@@ -6,13 +6,13 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 11:50:27 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/17 11:52:44 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/18 16:44:41 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void builtin_exit(bool **ex, t_mini *mini)
+void builtin_exit(t_mini *mini)
 {
 	bool max_ex;
 	
@@ -22,8 +22,8 @@ void builtin_exit(bool **ex, t_mini *mini)
 	{
 		mini->exit_sts = 2;
 		write(STDERR_FILENO, "Error: exit: too many arguments\n", 32);
-		**ex = false;
-		return ;
+		cleanup_mini(mini);
+		exit(mini->exit_sts);
 	}
 	if (mini->cmds->args[1])
 	{
@@ -33,9 +33,10 @@ void builtin_exit(bool **ex, t_mini *mini)
 			write(STDERR_FILENO, "Error: exit: ", 13);
 			ft_putstr_fd(mini->cmds->args[1], STDERR_FILENO);
 			write(STDERR_FILENO, ": numeric argument required\n", 28);
-			**ex = false;
-			return ;
+			cleanup_mini(mini);
+			exit(mini->exit_sts);
 		}
 	}
-	**ex = true;
+	cleanup_mini(mini);
+	exit(mini->exit_sts);
 }

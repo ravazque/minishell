@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/17 00:36:21 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/18 16:41:34 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,20 +32,13 @@ static void	print_args(char **mini_cmds)
 int	main(int argc, char *argv[])
 {
 	t_mini	mini;
-	bool	ex;
 
-	if (argc > 2 && ft_strncmp(argv[1], "-c", 3) != 0)
-		return (ft_putstr_fd(ERR_C, STDERR_FILENO), 127);
-	else if (argc == 2 && ft_strncmp(argv[1], "-c", 3) == 0)
-		return (ft_putstr_fd("Error: -c: option requires an argument\n", STDERR_FILENO), 127);
-	else if (argc == 2 && ft_strncmp(argv[1], "-c", 3) != 0)
-		return (ft_putstr_fd(ERR_C, STDERR_FILENO), 127);
+	interactive_err(argc, argv);
 	init_mini(&mini);
 	if (argc == 1)
 	{
 		while (1)
 		{
-			ex = true;
 			mini.prompt = ms_make_prompt();
 			if (!mini.prompt)
 				mini.prompt = ft_strdup("$ ");
@@ -56,9 +49,9 @@ int	main(int argc, char *argv[])
 			if (*mini.input)
 				add_history(mini.input);
 			parse(&mini);
-			if (built_ins(&mini, &ex) == true && ex == true)
+			if (built_ins(&mini) == true)
 				break ;
-			if (mini.cmds && mini.cmds->args && ex == true)
+			if (mini.cmds && mini.cmds->args)
 				print_args(mini.cmds->args);
 			cleanup_mini(&mini);
 		}
@@ -67,9 +60,7 @@ int	main(int argc, char *argv[])
 	{
 		mini.input = ft_strjoin(mini.input, argv[2]);
 		parse(&mini);
-		if (built_ins(&mini, &ex) == true && ex == true)
-			ex = false;
-		if (mini.cmds && mini.cmds->args && ex == true)
+		if (mini.cmds && mini.cmds->args && built_ins(&mini) == false)
 			print_args(mini.cmds->args);
 	}
 	cleanup_mini(&mini);

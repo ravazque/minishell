@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/18 16:25:01 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/18 16:54:06 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,23 @@ typedef struct s_mini
 	int				exit_sts;
 }					t_mini;
 
-bool	built_ins(t_mini *mini, bool *ex);
 void	parse(t_mini *mini);
 void	free_cmds(t_cmd *cmds);
 void	free_split(char **split);
 void	cleanup_mini(t_mini *mini);
 void	init_mini(t_mini *mini);
-void	malloc_error(void);
-void	split_error(void);
 char	*ms_make_prompt(void);
 
 // ====================================================== //
 
-void	builtin_exit(bool **ex, t_mini *mini);
+void	interactive_err(int argc, char *argv[]);
+void	split_error(void);
+void	malloc_error(void);
+
+// ====================================================== //
+
+bool	built_ins(t_mini *mini);
+void	builtin_exit(t_mini *mini);
 void	builtin_echo(t_mini mini);
 
 // ====================================================== //

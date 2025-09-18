@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRC_DIR = src
 INC_DIR = include
-OBJ_DIR = libftObjects
+OBJ_DIR = ../../minishellObjects/auxlibft
 
 SRC = ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c \
 	ft_isprint.c ft_strlen.c ft_memset.c ft_bzero.c \
