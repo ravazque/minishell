@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 11:49:58 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/18 16:23:24 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/18 17:11:58 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	builtin_echo(t_mini mini)
 		flag = 1;
 		i++;
 	}
-	while (mini.cmds->args[i]) // && mini.cmds->args[i] != '|' [ hacer comprobacion de pipe no entrecomillada ]
+	while (mini.cmds->args[i])
 	{
 		ft_putstr_fd(mini.cmds->args[i], STDOUT_FILENO);
 		if (mini.cmds->args[i + 1])
