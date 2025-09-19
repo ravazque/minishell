@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 17:15:38 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 16:42:09 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/19 06:42:00 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 static int	quotes_balanced(const char *s)
 {
@@ -147,7 +147,7 @@ void	parse(t_mini *mini)
 		clean = unquote_token(parts[i]);
 		if (!clean)
 		{
-			free_split(parts);
+			free_dblptr(parts);
 			return (malloc_error());
 		}
 		free(parts[i]);
@@ -157,11 +157,11 @@ void	parse(t_mini *mini)
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
 	{
-		free_split(parts);
+		free_dblptr(parts);
 		return (malloc_error());
 	}
 	ft_bzero(cmd, sizeof(t_cmd));
-	cmd->args = parts;
+	cmd->tokens = parts;
 	cmd->next = NULL;
 	mini->cmds = cmd;
 }

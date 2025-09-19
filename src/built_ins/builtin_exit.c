@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 11:50:27 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/18 17:13:30 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/19 06:26:37 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,23 +18,23 @@ void	builtin_exit(t_mini *mini)
 
 	max_ex = false;
 	write(STDOUT_FILENO, "exit\n", 5);
-	if (mini->cmds->args[2])
+	if (mini->cmds->tokens[2])
 	{
 		mini->exit_sts = 2;
 		write(STDERR_FILENO, "Error: exit: too many arguments\n", 32);
 		cleanup_mini(mini);
-		exit(mini->exit_sts);
+		return ;
 	}
-	if (mini->cmds->args[1])
+	if (mini->cmds->tokens[1])
 	{
-		mini->exit_sts = ft_atoi_exit(mini->cmds->args[1], &max_ex);
+		mini->exit_sts = ft_atoi_exit(mini->cmds->tokens[1], &max_ex);
 		if (max_ex == true)
 		{
 			write(STDERR_FILENO, "Error: exit: ", 13);
-			ft_putstr_fd(mini->cmds->args[1], STDERR_FILENO);
+			ft_putstr_fd(mini->cmds->tokens[1], STDERR_FILENO);
 			write(STDERR_FILENO, ": numeric argument required\n", 28);
 			cleanup_mini(mini);
-			exit(mini->exit_sts);
+			return ;
 		}
 	}
 	cleanup_mini(mini);

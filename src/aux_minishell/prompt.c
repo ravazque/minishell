@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/16 01:37:51 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 01:42:33 by ravazque         ###   ########.fr       */
+/*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
+/*   Updated: 2025/09/19 06:27:25 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 static char	*ms_getcwd_or_pwd(void)
 {
@@ -26,19 +26,30 @@ static char	*ms_getcwd_or_pwd(void)
 	return (ft_strdup("?"));
 }
 
-static char	*ms_abbrev_home(char *cwd)
+static char	*ms_basename_dup(const char *path)
 {
-	char	*home;
-	char	*res;
+	size_t	len;
+	size_t	i;
+	size_t	start;
 
-	home = getenv("HOME");
-	if (!home)
-		return (cwd);
-	if (ft_strncmp(cwd, home, ft_strlen(home)) != 0)
-		return (cwd);
-	res = ft_strjoin("~", cwd + ft_strlen(home));
-	free(cwd);
-	return (res);
+	if (!path)
+		return (ft_strdup("?"));
+	len = 0;
+	while (path[len])
+		len++;
+	while (len > 1 && path[len - 1] == '/')
+		len--;
+	start = 0;
+	if (len > 0)
+	{
+		i = len;
+		while (i > 0 && path[i - 1] != '/')
+			i--;
+		start = i;
+	}
+	if (len == 1 && path[0] == '/')
+		return (ft_strdup("/"));
+	return (ms_substr(path, start, len - start));
 }
 
 static char	*ms_rl_color_wrap(const char *s, const char *color)
@@ -67,16 +78,22 @@ static char	*ms_build_prompt(const char *shown)
 	return (prompt);
 }
 
-char	*ms_make_prompt(void)
+char	*build_prompt(t_mini *mini)
 {
-	char	*cwd;
 	char	*shown;
 	char	*prompt;
 
-	cwd = ms_getcwd_or_pwd();
-	if (!cwd)
+	if (!mini)
 		return (NULL);
-	shown = ms_abbrev_home(cwd);
+	if (mini->pwd)
+	{
+		free(mini->pwd);
+		mini->pwd = NULL;
+	}
+	mini->pwd = ms_getcwd_or_pwd();
+	if (!mini->pwd)
+		return (NULL);
+	shown = ms_basename_dup(mini->pwd);
 	if (!shown)
 		return (NULL);
 	prompt = ms_build_prompt(shown);

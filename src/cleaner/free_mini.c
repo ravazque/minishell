@@ -1,43 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   free_mini.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/15 19:26:15 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/16 01:33:29 by ravazque         ###   ########.fr       */
+/*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
+/*   Updated: 2025/09/19 04:30:45 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
-void	free_split(char **split)
+void	free_dblptr(char **dblptr)
 {
-	int	i;
+	size_t	i;
 
-	if (!split)
+	if (!dblptr)
 		return ;
 	i = 0;
-	while (split[i])
+	while (dblptr[i])
 	{
-		free(split[i]);
+		free(dblptr[i]);
 		i++;
 	}
-	free(split);
+	free(dblptr);
 }
 
-void	free_cmds(t_cmd *cmds)
+static void	free_args(t_mini *mini)
 {
-	t_cmd	*next;
-
-	while (cmds)
+	if (mini->env)
 	{
-		next = cmds->next;
-		if (cmds->args)
-			free_split(cmds->args);
-		free(cmds);
-		cmds = next;
+		free_dblptr(mini->env);
+		mini->env = NULL;
+	}
+	if (mini->argv)
+	{
+		free_dblptr(mini->argv);
+		mini->argv = NULL;
 	}
 }
 
@@ -48,6 +48,17 @@ void	cleanup_mini(t_mini *mini)
 		free(mini->input);
 		mini->input = NULL;
 	}
+	if (mini->prompt)
+	{
+		free(mini->prompt);
+		mini->prompt = NULL;
+	}
+	if (mini->pwd)
+	{
+		free(mini->pwd);
+		mini->pwd = NULL;
+	}
+	free_args(mini);
 	if (mini->cmds)
 	{
 		free_cmds(mini->cmds);
