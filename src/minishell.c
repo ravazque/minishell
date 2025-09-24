@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 13:45:11 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:31:03 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(int argc, char *argv[], char *envp[])
 				mini.prompt = ft_strdup("~ $ ");
 			mini.input = readline(mini.prompt);
 			ft_signal(&mini);
-			if (*mini.input)
+			if (mini.input && *mini.input)
 				add_history(mini.input);
 			parse(&mini);
 			if (built_ins(&mini) == false)
@@ -36,11 +36,21 @@ int	main(int argc, char *argv[], char *envp[])
 					print_tokens(&mini);
 			}
 			free_args(&mini);
+			if (mini.cmds)
+			{
+				free_cmds(mini.cmds);
+				mini.cmds = NULL;
+			}
 		}
 	}
 	else
 	{
-		mini.input = ft_strjoin(mini.input, argv[2]);
+		mini.input = ft_strdup(argv[2]);
+		if (!mini.input)
+		{
+			cleanup_mini(&mini);
+			return (1);
+		}
 		parse(&mini);
 		if (mini.cmds && built_ins(&mini) == false)
 			print_tokens(&mini);

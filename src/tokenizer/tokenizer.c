@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:16:23 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:30:44 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/minishell.h"
+#include "../../include/minishell.h"
 
 static int	str_append_char(char **dst, char c)
 {
@@ -57,10 +57,52 @@ static int	str_append_slice(char **dst, const char *src, size_t start, size_t en
 	return (0);
 }
 
+static void	free_token_info(t_token_info *info)
+{
+	if (!info)
+		return ;
+	if (info->content)
+		free(info->content);
+	free(info);
+}
+
+static void	free_token_info_array(t_token_info **parts)
+{
+	int	i;
+
+	if (!parts)
+		return ;
+	i = 0;
+	while (parts[i])
+	{
+		free_token_info(parts[i]);
+		i++;
+	}
+	free(parts);
+}
+
+static t_token_info	*create_token_info(const char *content, int is_sq, int is_dq)
+{
+	t_token_info	*new_token;
+
+	new_token = (t_token_info *)malloc(sizeof(t_token_info));
+	if (!new_token)
+		return (NULL);
+	new_token->content = ft_strdup(content);
+	if (!new_token->content)
+	{
+		free(new_token);
+		return (NULL);
+	}
+	new_token->is_squote = is_sq;
+	new_token->is_dquote = is_dq;
+	return (new_token);
+}
+
 static t_token_info	**push_token_info(t_token_info ***dst, const char *content, int is_sq, int is_dq)
 {
-	size_t		n;
-	size_t		i;
+	size_t			n;
+	size_t			i;
 	t_token_info	**newp;
 	t_token_info	*new_token;
 
@@ -73,21 +115,12 @@ static t_token_info	**push_token_info(t_token_info ***dst, const char *content, 
 	newp = (t_token_info **)malloc(sizeof(t_token_info *) * (n + 2));
 	if (!newp)
 		return (NULL);
-	new_token = (t_token_info *)malloc(sizeof(t_token_info));
+	new_token = create_token_info(content, is_sq, is_dq);
 	if (!new_token)
 	{
 		free(newp);
 		return (NULL);
 	}
-	new_token->content = ft_strdup(content);
-	if (!new_token->content)
-	{
-		free(new_token);
-		free(newp);
-		return (NULL);
-	}
-	new_token->is_squote = is_sq;
-	new_token->is_dquote = is_dq;
 	i = 0;
 	while (i < n)
 	{
@@ -140,23 +173,6 @@ static int	read_quoted(const char *in, size_t *i, char quote, char **buff)
 	return (0);
 }
 
-static void	free_token_info_array(t_token_info **parts)
-{
-	int	i;
-
-	if (!parts)
-		return ;
-	i = 0;
-	while (parts[i])
-	{
-		if (parts[i]->content)
-			free(parts[i]->content);
-		free(parts[i]);
-		i++;
-	}
-	free(parts);
-}
-
 static char	**convert_to_string_array(t_token_info **parts)
 {
 	char	**result;
@@ -177,13 +193,54 @@ static char	**convert_to_string_array(t_token_info **parts)
 		result[i] = ft_strdup(parts[i]->content);
 		if (!result[i])
 		{
-			free_dblptr(result);
+			/* CORRECCIÓN: Liberar memoria parcialmente asignada */
+			while (i > 0)
+			{
+				i--;
+				free(result[i]);
+			}
+			free(result);
 			return (NULL);
 		}
 		i++;
 	}
 	result[count] = NULL;
 	return (result);
+}
+
+static t_token	*create_token_node(const char *content, int is_sq, int is_dq)
+{
+	t_token	*token_node;
+
+	token_node = (t_token *)malloc(sizeof(t_token));
+	if (!token_node)
+		return (NULL);
+	token_node->raw = ft_strdup(content);
+	if (!token_node->raw)
+	{
+		free(token_node);
+		return (NULL);
+	}
+	token_node->is_squote = is_sq;
+	token_node->is_dquote = is_dq;
+	token_node->next = NULL;
+	return (token_node);
+}
+
+static void	free_token_nodes(t_token *tokens)
+{
+	t_token	*current;
+	t_token	*next;
+
+	current = tokens;
+	while (current)
+	{
+		next = current->next;
+		if (current->raw)
+			free(current->raw);
+		free(current);
+		current = next;
+	}
 }
 
 static int	build_single_cmd_with_info(t_mini *mini, t_token_info **parts)
@@ -195,34 +252,33 @@ static int	build_single_cmd_with_info(t_mini *mini, t_token_info **parts)
 
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
-	{
-		free_token_info_array(parts);
-		malloc_error();
 		return (1);
-	}
 	ft_bzero(cmd, sizeof(t_cmd));
+	
+	/* Convertir a array de strings */
 	cmd->tokens = convert_to_string_array(parts);
-	if (!cmd->tokens && parts[0])
+	if (!cmd->tokens && parts && parts[0])
 	{
 		free(cmd);
-		free_token_info_array(parts);
 		return (1);
 	}
+	
+	/* Construir lista enlazada de tokens */
 	current_token = NULL;
 	i = 0;
-	while (parts[i])
+	while (parts && parts[i])
 	{
-		token_node = (t_token *)malloc(sizeof(t_token));
+		token_node = create_token_node(parts[i]->content, parts[i]->is_squote, parts[i]->is_dquote);
 		if (!token_node)
 		{
-			free_cmds(cmd);
-			free_token_info_array(parts);
+			/* CORRECCIÓN: Limpiar memoria parcialmente construida */
+			if (cmd->tokens)
+				free_dblptr(cmd->tokens);
+			if (cmd->tokn)
+				free_token_nodes(cmd->tokn);
+			free(cmd);
 			return (1);
 		}
-		token_node->raw = ft_strdup(parts[i]->content);
-		token_node->is_squote = parts[i]->is_squote;
-		token_node->is_dquote = parts[i]->is_dquote;
-		token_node->next = NULL;
 		if (!cmd->tokn)
 			cmd->tokn = token_node;
 		else
@@ -230,10 +286,21 @@ static int	build_single_cmd_with_info(t_mini *mini, t_token_info **parts)
 		current_token = token_node;
 		i++;
 	}
+	
 	cmd->next = NULL;
 	mini->cmds = cmd;
-	free_token_info_array(parts);
 	return (0);
+}
+
+static void	cleanup_tokenizer_data(char **buff, t_token_info **parts)
+{
+	if (buff && *buff)
+	{
+		free(*buff);
+		*buff = NULL;
+	}
+	if (parts)
+		free_token_info_array(parts);
 }
 
 int	tokenizer(t_mini **mini)
@@ -254,12 +321,16 @@ int	tokenizer(t_mini **mini)
 	tok_in_progress = 0;
 	token_is_squote = 0;
 	token_is_dquote = 0;
+	
 	while (in && in[i])
 	{
 		if (is_space(in[i]))
 		{
 			if (flush_word(&buff, tok_in_progress, token_is_squote, token_is_dquote, &parts))
-				return (free(buff), free_token_info_array(parts), 1);
+			{
+				cleanup_tokenizer_data(&buff, parts);
+				return (1);
+			}
 			tok_in_progress = 0;
 			token_is_squote = 0;
 			token_is_dquote = 0;
@@ -276,19 +347,38 @@ int	tokenizer(t_mini **mini)
 			else
 				token_is_dquote = 1;
 			if (read_quoted(in, &i, q, &buff))
-				return (free(buff), free_token_info_array(parts), 1);
+			{
+				cleanup_tokenizer_data(&buff, parts);
+				return (1);
+			}
 		}
 		else
 		{
 			tok_in_progress = 1;
 			if (str_append_char(&buff, in[i]))
-				return (free(buff), free_token_info_array(parts), 1);
+			{
+				cleanup_tokenizer_data(&buff, parts);
+				return (1);
+			}
 			i++;
 		}
 	}
+	
 	if (flush_word(&buff, tok_in_progress, token_is_squote, token_is_dquote, &parts))
-		return (free(buff), free_token_info_array(parts), 1);
+	{
+		cleanup_tokenizer_data(&buff, parts);
+		return (1);
+	}
+	
 	if (!parts)
 		return (0);
-	return (build_single_cmd_with_info(*mini, parts));
+		
+	if (build_single_cmd_with_info(*mini, parts))
+	{
+		free_token_info_array(parts);
+		return (1);
+	}
+	
+	free_token_info_array(parts);
+	return (0);
 }

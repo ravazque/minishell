@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 22:54:02 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:12:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:36:34 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	builtin_env(t_mini *mini)
 		ft_putstr_fd("minishell: env: '", STDERR_FILENO);
 		ft_putstr_fd(mini->cmds->tokens[1], STDERR_FILENO);
 		ft_putstr_fd("': No such file or directory\n", STDERR_FILENO);
+		mini->exit_sts = 127;
 		return ;
 	}
 	i = 0;
@@ -33,4 +34,5 @@ void	builtin_env(t_mini *mini)
 		}
 		i++;
 	}
+	mini->exit_sts = 0;
 }

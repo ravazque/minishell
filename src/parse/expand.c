@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:18:52 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:31:39 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,11 @@ static char	*str_append(char *dst, const char *src)
 		dst_len = ft_strlen(dst);
 	result = (char *)malloc(dst_len + src_len + 1);
 	if (!result)
-		return (dst);
+	{
+		if (dst)
+			free(dst);
+		return (NULL);
+	}
 	i = 0;
 	while (i < dst_len)
 	{
@@ -164,17 +168,23 @@ static char	*expand_string(const char *str, t_mini *mini, int should_expand)
 				result = str_append(result, var_value);
 				free(var_name);
 				free(var_value);
+				if (!result)
+					return (NULL);
 				i = var_end;
 			}
 			else
 			{
 				result = str_append_char(result, str[i]);
+				if (!result)
+					return (NULL);
 				i++;
 			}
 		}
 		else
 		{
 			result = str_append_char(result, str[i]);
+			if (!result)
+				return (NULL);
 			i++;
 		}
 	}
@@ -190,7 +200,11 @@ static char	*expand_token_with_quotes(t_token *token, t_mini *mini)
 
 	if (!token || !token->raw)
 		return (ft_strdup(""));
-	should_expand = !token->is_squote;
+	
+	should_expand = 0;
+	if (!token->is_squote)
+		should_expand = 1;
+	
 	expanded = expand_string(token->raw, mini, should_expand);
 	if (!expanded)
 		return (ft_strdup(""));
@@ -224,7 +238,12 @@ static int	expand_cmd_tokens(t_cmd *cmd, t_mini *mini)
 		expanded = expand_token_with_quotes(current_token, mini);
 		if (!expanded)
 		{
-			free_dblptr(new_tokens);
+			while (i > 0)
+			{
+				i--;
+				free(new_tokens[i]);
+			}
+			free(new_tokens);
 			return (1);
 		}
 		new_tokens[i] = expanded;
@@ -232,7 +251,8 @@ static int	expand_cmd_tokens(t_cmd *cmd, t_mini *mini)
 		i++;
 	}
 	new_tokens[count] = NULL;
-	free_dblptr(cmd->tokens);
+	if (cmd->tokens)
+		free_dblptr(cmd->tokens);
 	cmd->tokens = new_tokens;
 	return (0);
 }
@@ -240,7 +260,7 @@ static int	expand_cmd_tokens(t_cmd *cmd, t_mini *mini)
 static int	should_expand_redir_target(t_redir *redir)
 {
 	if (redir->i_redir == 2)
-		return (0);
+		return (redir->hd_expand);
 	return (1);
 }
 
