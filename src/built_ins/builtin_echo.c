@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 11:49:58 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/19 06:26:52 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:13:45 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,22 @@ static int	ft_n_flag(char **argv, int i)
 	return (0);
 }
 
-void	builtin_echo(t_mini mini)
+void	builtin_echo(t_mini *mini)
 {
 	int	i;
 	int	flag;
 
 	i = 1;
 	flag = 0;
-	while (mini.cmds->tokens[i] && ft_n_flag(mini.cmds->tokens, i))
+	while (mini->cmds->tokens[i] && ft_n_flag(mini->cmds->tokens, i))
 	{
 		flag = 1;
 		i++;
 	}
-	while (mini.cmds->tokens[i])
+	while (mini->cmds->tokens[i])
 	{
-		ft_putstr_fd(mini.cmds->tokens[i], STDOUT_FILENO);
-		if (mini.cmds->tokens[i + 1])
+		ft_putstr_fd(mini->cmds->tokens[i], STDOUT_FILENO);
+		if (mini->cmds->tokens[i + 1])
 			write(STDOUT_FILENO, " ", 1);
 		i++;
 	}

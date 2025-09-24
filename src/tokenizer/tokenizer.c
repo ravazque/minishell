@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 15:22:33 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:16:23 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,25 +244,25 @@ int	tokenizer(t_mini **mini)
 	t_token_info	**parts;
 	int			tok_in_progress;
 	char		q;
-	int			is_squote;
-	int			is_dquote;
+	int			token_is_squote;
+	int			token_is_dquote;
 
 	in = (*mini)->input;
 	i = 0;
 	buff = NULL;
 	parts = NULL;
 	tok_in_progress = 0;
-	is_squote = 0;
-	is_dquote = 0;
+	token_is_squote = 0;
+	token_is_dquote = 0;
 	while (in && in[i])
 	{
 		if (is_space(in[i]))
 		{
-			if (flush_word(&buff, tok_in_progress, is_squote, is_dquote, &parts))
+			if (flush_word(&buff, tok_in_progress, token_is_squote, token_is_dquote, &parts))
 				return (free(buff), free_token_info_array(parts), 1);
 			tok_in_progress = 0;
-			is_squote = 0;
-			is_dquote = 0;
+			token_is_squote = 0;
+			token_is_dquote = 0;
 			while (in[i] && is_space(in[i]))
 				i++;
 		}
@@ -272,9 +272,9 @@ int	tokenizer(t_mini **mini)
 			i++;
 			tok_in_progress = 1;
 			if (q == '\'')
-				is_squote = 1;
+				token_is_squote = 1;
 			else
-				is_dquote = 1;
+				token_is_dquote = 1;
 			if (read_quoted(in, &i, q, &buff))
 				return (free(buff), free_token_info_array(parts), 1);
 		}
@@ -286,7 +286,7 @@ int	tokenizer(t_mini **mini)
 			i++;
 		}
 	}
-	if (flush_word(&buff, tok_in_progress, is_squote, is_dquote, &parts))
+	if (flush_word(&buff, tok_in_progress, token_is_squote, token_is_dquote, &parts))
 		return (free(buff), free_token_info_array(parts), 1);
 	if (!parts)
 		return (0);
