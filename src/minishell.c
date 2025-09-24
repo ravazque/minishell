@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/19 06:42:38 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/19 18:55:30 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,11 @@ int	main(int argc, char *argv[], char *envp[])
 			if (*mini.input)
 				add_history(mini.input);
 			parse(&mini);
-			if (built_ins(&mini) == true)
-				break ;
-			if (mini.cmds && mini.cmds->tokens)
-				print_tokens(mini.cmds->tokens);
+			if (built_ins(&mini) == false)
+			{
+				if (mini.cmds && mini.cmds->tokens)		//cambiar a futuro por la parte dejecutora
+					print_tokens(mini.cmds->tokens);
+			}
 			cleanup_mini(&mini);
 		}
 	}
@@ -60,7 +61,7 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		mini.input = ft_strjoin(mini.input, argv[2]);
 		parse(&mini);
-		if (mini.cmds && mini.cmds->tokens && built_ins(&mini) == false)
+		if (mini.cmds && mini.cmds->tokens && built_ins(&mini) == false)	//cambiar a futuro por la parte dejecutora
 			print_tokens(mini.cmds->tokens);
 	}
 	cleanup_mini(&mini);

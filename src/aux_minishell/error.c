@@ -6,19 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/19 06:25:15 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/22 01:35:03 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-int	syntax_error(const char *near)
-{
-	ft_putstr_fd(ERR_TKN, STDERR_FILENO);
-	ft_putstr_fd((char *)near, STDERR_FILENO);
-	ft_putstr_fd("'\n", STDERR_FILENO);
-	return (2);
-}
 
 void	interactive_err(int argc, char *argv[])
 {

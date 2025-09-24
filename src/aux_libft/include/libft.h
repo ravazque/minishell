@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 20:31:32 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/18 17:02:02 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/19 07:05:00 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void		*ft_calloc(size_t nmemb, size_t size);
 
 // ====================== Part II =========================
 
-char		*ft_substr(char const *s, unsigned int start, size_t len);
+char		*ft_substr(const char *s, size_t start, size_t len);
 char		*ft_strjoin(const char *s1, const char *s2);
 char		*ft_strtrim(char const *s1, char const *set);
 char		**ft_split(char const *s, char c);

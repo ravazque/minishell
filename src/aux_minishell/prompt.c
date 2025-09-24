@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/19 06:27:25 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/19 07:05:35 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static char	*ms_basename_dup(const char *path)
 	}
 	if (len == 1 && path[0] == '/')
 		return (ft_strdup("/"));
-	return (ms_substr(path, start, len - start));
+	return (ft_substr(path, start, len - start));
 }
 
 static char	*ms_rl_color_wrap(const char *s, const char *color)
