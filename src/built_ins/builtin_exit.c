@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 11:50:27 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/19 06:26:37 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 13:53:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	builtin_exit(t_mini *mini)
 	if (mini->cmds->tokens[2])
 	{
 		mini->exit_sts = 2;
-		write(STDERR_FILENO, "Error: exit: too many arguments\n", 32);
+		write(STDERR_FILENO, "minishell: exit: too many arguments\n", 36);
 		cleanup_mini(mini);
 		return ;
 	}
@@ -30,7 +30,7 @@ void	builtin_exit(t_mini *mini)
 		mini->exit_sts = ft_atoi_exit(mini->cmds->tokens[1], &max_ex);
 		if (max_ex == true)
 		{
-			write(STDERR_FILENO, "Error: exit: ", 13);
+			write(STDERR_FILENO, "minishell: exit: ", 17);
 			ft_putstr_fd(mini->cmds->tokens[1], STDERR_FILENO);
 			write(STDERR_FILENO, ": numeric argument required\n", 28);
 			cleanup_mini(mini);

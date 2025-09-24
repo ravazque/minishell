@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 18:35:48 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 01:36:25 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 13:43:52 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,16 @@ void	parse(t_mini *mini)
 		mini->exit_sts = 2;
 		return ;
 	}
-	// lexer con redirecciones [ abrir cada archivo con redirrecion y seleccionar los últimos ]
+	if (lexer(mini) == 1)
+	{
+		ft_putstr_fd(ERR_QUO, STDERR_FILENO);
+		mini->exit_sts = 2;
+		return ;
+	}
+	if (expander(mini) == 1)
+	{
+		ft_putstr_fd(ERR_VAR, STDERR_FILENO);
+		mini->exit_sts = 1;
+		return ;
+	}
 }

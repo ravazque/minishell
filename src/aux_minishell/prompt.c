@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 07:49:21 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 13:08:09 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,38 @@ static char	*ms_getcwd_or_pwd(void)
 	return (ft_strdup("?"));
 }
 
+// static char	*ms_basename_dup(const char *path)
+// {
+// 	if (!path)
+// 		return (ft_strdup("?"));
+// 	else
+// 		return (ft_strdup(path));
+// }
+
 static char	*ms_basename_dup(const char *path)
 {
+	size_t	len;
+	size_t	i;
+	size_t	start;
+
 	if (!path)
 		return (ft_strdup("?"));
-	else
-		return (ft_strdup(path));
+	len = 0;
+	while (path[len])
+		len++;
+	while (len > 1 && path[len - 1] == '/')
+		len--;
+	start = 0;
+	if (len > 0)
+	{
+		i = len;
+		while (i > 0 && path[i - 1] != '/')
+			i--;
+		start = i;
+	}
+	if (len == 1 && path[0] == '/')
+		return (ft_strdup("/"));
+	return (ft_substr(path, start, len - start));
 }
 
 static char	*ms_rl_color_wrap(const char *s, const char *color)
@@ -52,7 +78,7 @@ static char	*ms_build_prompt(const char *shown)
 	char	*colored;
 	char	*prompt;
 
-	colored = ms_rl_color_wrap(shown, RL_GRN);
+	colored = ms_rl_color_wrap(shown, RL_CYN);
 	if (!colored)
 		return (NULL);
 	prompt = ft_strjoin(colored, " $ ");
@@ -82,29 +108,3 @@ char	*build_prompt(t_mini *mini)
 	free(shown);
 	return (prompt);
 }
-
-// static char	*ms_basename_dup(const char *path)
-// {
-// 	size_t	len;
-// 	size_t	i;
-// 	size_t	start;
-
-// 	if (!path)
-// 		return (ft_strdup("?"));
-// 	len = 0;
-// 	while (path[len])
-// 		len++;
-// 	while (len > 1 && path[len - 1] == '/')
-// 		len--;
-// 	start = 0;
-// 	if (len > 0)
-// 	{
-// 		i = len;
-// 		while (i > 0 && path[i - 1] != '/')
-// 			i--;
-// 		start = i;
-// 	}
-// 	if (len == 1 && path[0] == '/')
-// 		return (ft_strdup("/"));
-// 	return (ft_substr(path, start, len - start));
-// }

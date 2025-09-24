@@ -6,28 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 07:51:44 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 13:45:11 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
-
-static void	print_tokens(char **mini_cmds)
-{
-	int	i;
-
-	i = 0;
-	if (!mini_cmds)
-	{
-		printf("ERROR!\n");
-		return ;
-	}
-	while (mini_cmds[i] != NULL)
-	{
-		printf("args[%d] = ( %s )\n", i, mini_cmds[i]);
-		i++;
-	}
-}
 
 int	main(int argc, char *argv[], char *envp[])
 {
@@ -41,7 +24,7 @@ int	main(int argc, char *argv[], char *envp[])
 		{
 			mini.prompt = build_prompt(&mini);
 			if (!mini.prompt)
-				mini.prompt = ft_strdup("$ ");
+				mini.prompt = ft_strdup("~ $ ");
 			mini.input = readline(mini.prompt);
 			ft_signal(&mini);
 			if (*mini.input)
@@ -49,18 +32,18 @@ int	main(int argc, char *argv[], char *envp[])
 			parse(&mini);
 			if (built_ins(&mini) == false)
 			{
-				if (mini.cmds && mini.cmds->tokens)
-					print_tokens(mini.cmds->tokens);
+				if (mini.cmds)
+					print_tokens(&mini);
 			}
-			cleanup_mini(&mini);
+			free_args(&mini);
 		}
 	}
 	else
 	{
 		mini.input = ft_strjoin(mini.input, argv[2]);
 		parse(&mini);
-		if (mini.cmds && mini.cmds->tokens && built_ins(&mini) == false)
-			print_tokens(mini.cmds->tokens);
+		if (mini.cmds && built_ins(&mini) == false)
+			print_tokens(&mini);
 	}
 	cleanup_mini(&mini);
 	rl_clear_history();
