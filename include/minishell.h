@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 03:23:51 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 04:44:59 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,11 @@ void	cleanup_mini(t_mini *mini);
 // =[ Built Ins ]==================================================== //
 
 void	builtin_exit(t_mini *mini);
+void	builtin_env(t_mini mini);
 void	builtin_pwd(t_mini *mini);
+void	builtin_cd(t_mini mini);
 void	builtin_echo(t_mini mini);
 bool	built_ins(t_mini *mini);
-void	builtin_env(t_mini mini);
 
 // =[ Parse ]======================================================== //
 

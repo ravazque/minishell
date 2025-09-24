@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 17:10:07 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 03:27:39 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 04:53:35 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool	built_ins(t_mini *mini)
 	else if (ft_strcmp(mini->cmds->tokens[0], "echo") == 0)
 		return (builtin_echo(*mini), true);
 	else if (ft_strcmp(mini->cmds->tokens[0], "cd") == 0)
-		return (printf("Paula's built-in\n"), true);
+		return (builtin_cd(*mini), true);
 	else if (ft_strcmp(mini->cmds->tokens[0], "pwd") == 0)
 		return (builtin_pwd(mini), true);
 	else if (ft_strcmp(mini->cmds->tokens[0], "export") == 0)

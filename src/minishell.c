@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/19 18:55:30 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 07:51:44 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ static void	print_tokens(char **mini_cmds)
 		printf("args[%d] = ( %s )\n", i, mini_cmds[i]);
 		i++;
 	}
-	// (void)mini_cmds;
-	// ft_putstr_fd("Error: command not found", STDERR_FILENO);
 }
 
 int	main(int argc, char *argv[], char *envp[])
@@ -51,7 +49,7 @@ int	main(int argc, char *argv[], char *envp[])
 			parse(&mini);
 			if (built_ins(&mini) == false)
 			{
-				if (mini.cmds && mini.cmds->tokens)		//cambiar a futuro por la parte dejecutora
+				if (mini.cmds && mini.cmds->tokens)
 					print_tokens(mini.cmds->tokens);
 			}
 			cleanup_mini(&mini);
@@ -61,7 +59,7 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		mini.input = ft_strjoin(mini.input, argv[2]);
 		parse(&mini);
-		if (mini.cmds && mini.cmds->tokens && built_ins(&mini) == false)	//cambiar a futuro por la parte dejecutora
+		if (mini.cmds && mini.cmds->tokens && built_ins(&mini) == false)
 			print_tokens(mini.cmds->tokens);
 	}
 	cleanup_mini(&mini);
