@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:46:14 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:57:28 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # define ERR_QUO "minishell: Error: syntax error\n"
 # define ERR_C_ARG "minishell: Error: -c: option requires an argument\n"
 # define ERR_VAR "minishell: expansion error\n"
+
+extern volatile sig_atomic_t	g_signal_received;
 
 typedef struct s_token	t_token;
 typedef struct s_redir	t_redir;
@@ -129,6 +131,9 @@ char	*build_prompt(t_mini *mini);
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 char	**ft_copy_dblptr(char **envp);
 void	ft_signal(t_mini *mini);
+void	setup_interactive_signals(void);
+void	restore_default_signals(void);
+void	setup_execution_signals(void);
 
 void	print_tokens(t_mini *mini);
 

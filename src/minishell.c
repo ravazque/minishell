@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:31:03 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 17:01:04 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@ int	main(int argc, char *argv[], char *envp[])
 
 	interactive_err(argc, argv);
 	init_mini(&mini, argc, argv, envp);
+	
 	if (argc == 1)
 	{
+		setup_interactive_signals();
 		while (1)
 		{
 			mini.prompt = build_prompt(&mini);
@@ -55,6 +57,7 @@ int	main(int argc, char *argv[], char *envp[])
 		if (mini.cmds && built_ins(&mini) == false)
 			print_tokens(&mini);
 	}
+	
 	cleanup_mini(&mini);
 	rl_clear_history();
 	return (mini.exit_sts);

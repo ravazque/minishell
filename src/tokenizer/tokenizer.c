@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:30:44 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/24 16:56:22 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ static t_token_info	**push_token_info(t_token_info ***dst, const char *content, 
 	return (*dst);
 }
 
+/* CORRECIÓN CRÍTICA: Esta función debe preservar el tipo de comillas */
 static int	flush_word(char **buff, int tok_in_progress, int is_sq, int is_dq, t_token_info ***parts)
 {
 	if (tok_in_progress)
@@ -193,7 +194,6 @@ static char	**convert_to_string_array(t_token_info **parts)
 		result[i] = ft_strdup(parts[i]->content);
 		if (!result[i])
 		{
-			/* CORRECCIÓN: Liberar memoria parcialmente asignada */
 			while (i > 0)
 			{
 				i--;
@@ -255,7 +255,6 @@ static int	build_single_cmd_with_info(t_mini *mini, t_token_info **parts)
 		return (1);
 	ft_bzero(cmd, sizeof(t_cmd));
 	
-	/* Convertir a array de strings */
 	cmd->tokens = convert_to_string_array(parts);
 	if (!cmd->tokens && parts && parts[0])
 	{
@@ -263,7 +262,7 @@ static int	build_single_cmd_with_info(t_mini *mini, t_token_info **parts)
 		return (1);
 	}
 	
-	/* Construir lista enlazada de tokens */
+	/* CORRECCIÓN CRÍTICA: Preservar información de comillas en tokens */
 	current_token = NULL;
 	i = 0;
 	while (parts && parts[i])
@@ -271,7 +270,6 @@ static int	build_single_cmd_with_info(t_mini *mini, t_token_info **parts)
 		token_node = create_token_node(parts[i]->content, parts[i]->is_squote, parts[i]->is_dquote);
 		if (!token_node)
 		{
-			/* CORRECCIÓN: Limpiar memoria parcialmente construida */
 			if (cmd->tokens)
 				free_dblptr(cmd->tokens);
 			if (cmd->tokn)
@@ -342,9 +340,10 @@ int	tokenizer(t_mini **mini)
 			q = in[i];
 			i++;
 			tok_in_progress = 1;
-			if (q == '\'')
+			/* CORRECCIÓN CRÍTICA: Solo marcar el tipo de comilla una vez por token */
+			if (q == '\'' && !token_is_dquote)
 				token_is_squote = 1;
-			else
+			else if (q == '\"' && !token_is_squote)
 				token_is_dquote = 1;
 			if (read_quoted(in, &i, q, &buff))
 			{
