@@ -6,15 +6,33 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 18:35:48 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 13:43:52 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/26 12:48:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
+static int	is_empty_or_whitespace(const char *str)
+{
+	int	i;
+
+	if (!str)
+		return (1);
+	i = 0;
+	while (str[i])
+	{
+		if (!is_space(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	parse(t_mini *mini)
 {
 	if (!mini || !mini->input)
+		return ;
+	if (is_empty_or_whitespace(mini->input))
 		return ;
 	if (!quotes_balanced(mini->input))
 	{

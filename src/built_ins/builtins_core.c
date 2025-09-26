@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 17:10:07 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:10:21 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/26 12:47:27 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	built_ins(t_mini *mini)
 {
-	if (!mini->cmds || !mini->cmds->tokens || !mini->cmds->tokens[0])
+	if (!mini || !mini->cmds || !mini->cmds->tokens || !mini->cmds->tokens[0])
 		return (false);
 	if (ft_strcmp(mini->cmds->tokens[0], "exit") == 0)
 		return (builtin_exit(mini), true);
