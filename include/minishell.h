@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:57:28 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/26 12:19:17 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,11 @@
 
 extern volatile sig_atomic_t	g_signal_received;
 
-typedef struct s_token	t_token;
-typedef struct s_redir	t_redir;
-typedef struct s_cmd	t_cmd;
-typedef struct s_mini	t_mini;
+typedef struct s_token_part	t_token_part;
+typedef struct s_token		t_token;
+typedef struct s_redir		t_redir;
+typedef struct s_cmd		t_cmd;
+typedef struct s_mini		t_mini;
 
 typedef enum e_token_type
 {
@@ -38,18 +39,20 @@ typedef enum e_token_type
 	TOKEN_REDIR_HEREDOC
 }	t_token_type;
 
-typedef struct s_token_info
+struct					s_token_part
 {
-	char	*content;
-	int		is_squote;
-	int		is_dquote;
-}	t_token_info;
+	char				*content;
+	int					is_squote;
+	int					is_dquote;
+	struct s_token_part	*next;
+};
 
 struct					s_token
 {
 	char				*raw;
 	int					is_squote;
 	int					is_dquote;
+	t_token_part		*parts;
 	struct s_token		*next;
 };
 

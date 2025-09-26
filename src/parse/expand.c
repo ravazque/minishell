@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:31:39 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/26 12:21:20 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ static char	*expand_variable(const char *var_name, t_mini *mini)
 	return (value);
 }
 
-static char	*expand_string(const char *str, t_mini *mini, int should_expand)
+static char	*expand_string_part(const char *str, t_mini *mini, int should_expand)
 {
 	char	*result;
 	char	*var_name;
@@ -193,22 +193,51 @@ static char	*expand_string(const char *str, t_mini *mini, int should_expand)
 	return (result);
 }
 
-static char	*expand_token_with_quotes(t_token *token, t_mini *mini)
+static char	*expand_token_with_parts(t_token *token, t_mini *mini)
 {
-	char	*expanded;
-	int		should_expand;
+	char			*result;
+	char			*expanded_part;
+	t_token_part	*current_part;
+	int				should_expand;
 
-	if (!token || !token->raw)
+	if (!token)
 		return (ft_strdup(""));
 	
-	should_expand = 0;
-	if (!token->is_squote)
-		should_expand = 1;
+	if (!token->parts)
+	{
+		should_expand = 0;
+		if (!token->is_squote)
+			should_expand = 1;
+		return (expand_string_part(token->raw, mini, should_expand));
+	}
 	
-	expanded = expand_string(token->raw, mini, should_expand);
-	if (!expanded)
+	result = NULL;
+	current_part = token->parts;
+	while (current_part)
+	{
+		should_expand = 0;
+		if (!current_part->is_squote)
+			should_expand = 1;
+		
+		expanded_part = expand_string_part(current_part->content, mini, should_expand);
+		if (!expanded_part)
+		{
+			if (result)
+				free(result);
+			return (NULL);
+		}
+		
+		result = str_append(result, expanded_part);
+		free(expanded_part);
+		if (!result)
+			return (NULL);
+		
+		current_part = current_part->next;
+	}
+	
+	if (!result)
 		return (ft_strdup(""));
-	return (expanded);
+	return (result);
 }
 
 static int	expand_cmd_tokens(t_cmd *cmd, t_mini *mini)
@@ -235,7 +264,7 @@ static int	expand_cmd_tokens(t_cmd *cmd, t_mini *mini)
 	i = 0;
 	while (current_token)
 	{
-		expanded = expand_token_with_quotes(current_token, mini);
+		expanded = expand_token_with_parts(current_token, mini);
 		if (!expanded)
 		{
 			while (i > 0)
@@ -274,7 +303,7 @@ static int	expand_redirections(t_cmd *cmd, t_mini *mini)
 	{
 		if (should_expand_redir_target(current))
 		{
-			expanded = expand_string(current->target, mini, 1);
+			expanded = expand_string_part(current->target, mini, 1);
 			if (!expanded)
 				return (1);
 			free(current->target);
@@ -283,6 +312,22 @@ static int	expand_redirections(t_cmd *cmd, t_mini *mini)
 		current = current->next;
 	}
 	return (0);
+}
+
+static void	free_token_parts(t_token_part *parts)
+{
+	t_token_part	*current;
+	t_token_part	*next;
+
+	current = parts;
+	while (current)
+	{
+		next = current->next;
+		if (current->content)
+			free(current->content);
+		free(current);
+		current = next;
+	}
 }
 
 static void	free_token_list(t_token *tokens)
@@ -296,6 +341,8 @@ static void	free_token_list(t_token *tokens)
 		next = current->next;
 		if (current->raw)
 			free(current->raw);
+		if (current->parts)
+			free_token_parts(current->parts);
 		free(current);
 		current = next;
 	}

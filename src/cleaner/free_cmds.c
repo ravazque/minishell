@@ -6,11 +6,27 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 04:26:47 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:05:24 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/26 12:21:49 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+static void	free_token_parts(t_token_part *parts)
+{
+	t_token_part	*current;
+	t_token_part	*next;
+
+	current = parts;
+	while (current)
+	{
+		next = current->next;
+		if (current->content)
+			free(current->content);
+		free(current);
+		current = next;
+	}
+}
 
 static void	free_token_list(t_token *tokens)
 {
@@ -23,6 +39,8 @@ static void	free_token_list(t_token *tokens)
 		next = current->next;
 		if (current->raw)
 			free(current->raw);
+		if (current->parts)
+			free_token_parts(current->parts);
 		free(current);
 		current = next;
 	}
