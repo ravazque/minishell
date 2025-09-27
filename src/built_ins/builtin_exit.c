@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 11:50:27 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:45:15 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/27 13:18:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	builtin_exit(t_mini *mini)
 		write(STDERR_FILENO, "minishell: exit: too many arguments\n", 36);
 		return ;
 	}
-	
 	if (mini->cmds->tokens[1])
 	{
 		mini->exit_sts = ft_atoi_exit(mini->cmds->tokens[1], &max_ex);

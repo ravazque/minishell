@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins_aux.c                                     :+:      :+:    :+:   */
+/*   ft_copy_dblptr.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:04:34 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/19 04:32:05 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/27 13:44:16 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 char	**ft_copy_dblptr(char **envp)
 {

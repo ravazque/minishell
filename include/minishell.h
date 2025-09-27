@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/26 12:19:17 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/27 13:40:09 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,7 @@
 # define ERR_QUO "minishell: Error: syntax error\n"
 # define ERR_C_ARG "minishell: Error: -c: option requires an argument\n"
 # define ERR_VAR "minishell: expansion error\n"
-
-extern volatile sig_atomic_t	g_signal_received;
-
-typedef struct s_token_part	t_token_part;
-typedef struct s_token		t_token;
-typedef struct s_redir		t_redir;
-typedef struct s_cmd		t_cmd;
-typedef struct s_mini		t_mini;
+# define ERR_RDI "minishell: syntax error near unexpected token `newline'\n"
 
 typedef enum e_token_type
 {
@@ -37,53 +30,53 @@ typedef enum e_token_type
 	TOKEN_REDIR_OUT,
 	TOKEN_REDIR_APPEND,
 	TOKEN_REDIR_HEREDOC
-}	t_token_type;
+}								t_token_type;
 
-struct					s_token_part
+typedef struct s_token_part
 {
-	char				*content;
-	int					is_squote;
-	int					is_dquote;
-	struct s_token_part	*next;
-};
+	char						*content;
+	int							is_squote;
+	int							is_dquote;
+	struct s_token_part			*next;
+}								t_token_part;
 
-struct					s_token
+typedef struct s_token
 {
-	char				*raw;
-	int					is_squote;
-	int					is_dquote;
-	t_token_part		*parts;
-	struct s_token		*next;
-};
+	char						*raw;
+	int							is_squote;
+	int							is_dquote;
+	t_token_part				*parts;
+	struct s_token				*next;
+}								t_token;
 
-struct					s_redir
+typedef struct s_redir
 {
-	char				*target;
-	int					hd_expand;
-	int					i_redir;
-	int					o_redir;
-	struct s_redir		*next;
-};
+	char						*target;
+	int							hd_expand;
+	int							i_redir;
+	int							o_redir;
+	struct s_redir				*next;
+}								t_redir;
 
-struct					s_cmd
+typedef struct s_cmd
 {
-	t_redir				*redirs;
-	t_token				*tokn;
-	char				**tokens;
-	struct s_cmd		*next;
-};
+	t_redir						*redirs;
+	t_token						*tokn;
+	char						**tokens;
+	struct s_cmd				*next;
+}								t_cmd;
 
-struct					s_mini
+typedef struct s_mini
 {
-	char				*prompt;
-	char				*input;
-	char				*pwd;
-	int					argc;
-	char				**argv;
-	char				**env;
-	int					exit_sts;
-	t_cmd				*cmds;
-};
+	char						*prompt;
+	char						*input;
+	char						*pwd;
+	int							argc;
+	char						**argv;
+	char						**env;
+	int							exit_sts;
+	t_cmd						*cmds;
+}								t_mini;
 
 // =[ Cleaner ]====================================================== //
 

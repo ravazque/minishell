@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 18:35:48 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/26 12:48:12 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/27 13:17:29 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ static int	is_empty_or_whitespace(const char *str)
 
 void	parse(t_mini *mini)
 {
-	if (!mini || !mini->input)
-		return ;
-	if (is_empty_or_whitespace(mini->input))
+	if (!mini || !mini->input || is_empty_or_whitespace(mini->input))
 		return ;
 	if (!quotes_balanced(mini->input))
 	{

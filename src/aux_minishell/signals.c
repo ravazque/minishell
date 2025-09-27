@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 01:53:41 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/26 12:45:20 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/27 13:33:08 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	setup_interactive_signals(void)
 	sa_int.sa_handler = handle_sigint;
 	sa_int.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa_int, NULL);
-
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_handler = handle_sigquit;
 	sa_quit.sa_flags = SA_RESTART;
