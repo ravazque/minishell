@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 01:53:41 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/27 13:33:08 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/29 19:40:55 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,4 @@ void	ft_signal(t_mini *mini)
 		mini->exit_sts = 130;
 		g_signal_received = 0;
 	}
-}
-
-void	restore_default_signals(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-}
-
-void	setup_execution_signals(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
 }

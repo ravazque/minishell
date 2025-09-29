@@ -33,22 +33,22 @@ static char	*ms_basename_dup(const char *path)
 	size_t	start;
 
 	if (!path)
-	return (ft_strdup("?"));
+		return (ft_strdup("?"));
 	len = 0;
 	while (path[len])
-	len++;
+		len++;
 	while (len > 1 && path[len - 1] == '/')
-	len--;
+		len--;
 	start = 0;
 	if (len > 0)
 	{
 		i = len;
 		while (i > 0 && path[i - 1] != '/')
-		i--;
+			i--;
 		start = i;
 	}
 	if (len == 1 && path[0] == '/')
-	return (ft_strdup("/"));
+		return (ft_strdup("/"));
 	return (ft_substr(path, start, len - start));
 }
 
@@ -63,16 +63,16 @@ static char	*ms_rl_color_wrap(const char *s, const char *color)
 	tmp2 = ft_strjoin(tmp1, RL_RST);
 	free(tmp1);
 	return (tmp2);
-}	
+}
 
 static char	*ms_build_prompt(const char *shown)
 {
 	char	*colored;
 	char	*prompt;
-	
+
 	colored = ms_rl_color_wrap(shown, RL_CYN);
 	if (!colored)
-	return (NULL);
+		return (NULL);
 	prompt = ft_strjoin(colored, " $ ");
 	free(colored);
 	return (prompt);
@@ -82,9 +82,9 @@ char	*build_prompt(t_mini *mini)
 {
 	char	*shown;
 	char	*prompt;
-	
+
 	if (!mini)
-	return (NULL);
+		return (NULL);
 	if (mini->pwd)
 	{
 		free(mini->pwd);
@@ -92,7 +92,7 @@ char	*build_prompt(t_mini *mini)
 	}
 	mini->pwd = ms_getcwd_or_pwd();
 	if (!mini->pwd)
-	return (NULL);
+		return (NULL);
 	shown = ms_basename_dup(mini->pwd);
 	if (!shown)
 		return (NULL);
