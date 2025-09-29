@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:04:34 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/27 13:44:16 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/29 17:21:55 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,31 @@ char	**ft_copy_dblptr(char **envp)
 	}
 	env[i] = NULL;
 	return (env);
+}
+
+void	unset_oldpwd(char **env)
+{
+	size_t	klen;
+	int		i;
+	int		j;
+
+	if (!env)
+		return ;
+	klen = ft_strlen("OLDPWD");
+	i = 0;
+	while (env[i])
+	{
+		if (!ft_strncmp(env[i], "OLDPWD", klen) && env[i][klen] == '=')
+		{
+			free(env[i]);
+			j = i;
+			while (env[j])
+			{
+				env[j] = env[j + 1];
+				j++;
+			}
+			return ;
+		}
+		i++;
+	}
 }

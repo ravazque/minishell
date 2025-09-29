@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/27 13:40:09 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/29 17:22:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,7 @@ void	interactive_err(int argc, char *argv[]);
 char	*build_prompt(t_mini *mini);
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 char	**ft_copy_dblptr(char **envp);
+void	unset_oldpwd(char **env);
 void	ft_signal(t_mini *mini);
 void	setup_interactive_signals(void);
 void	restore_default_signals(void);
