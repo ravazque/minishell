@@ -6,45 +6,41 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/26 12:21:20 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 16:13:49 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char	*get_env_value(const char *key, char **env)
+static char	*get_env_val(const char *key, char **env)
 {
 	int		i;
-	int		key_len;
-	char	*env_var;
+	int		klen;
 
 	if (!key || !env)
 		return (NULL);
-	key_len = ft_strlen(key);
+	klen = ft_strlen(key);
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(env[i], key, key_len) == 0 && env[i][key_len] == '=')
-		{
-			env_var = ft_strdup(env[i] + key_len + 1);
-			return (env_var);
-		}
+		if (ft_strncmp(env[i], key, klen) == 0 && env[i][klen] == '=')
+			return (ft_strdup(env[i] + klen + 1));
 		i++;
 	}
-	return (ft_strdup(""));
+	return (NULL);
 }
 
-static char	*get_exit_status(int exit_status)
+static char	*get_exit_sts(int exit_status)
 {
-	char	*status_str;
+	char	*sts_str;
 
-	status_str = ft_itoa(exit_status);
-	if (!status_str)
+	sts_str = ft_itoa(exit_status);
+	if (!sts_str)
 		return (ft_strdup(""));
-	return (status_str);
+	return (sts_str);
 }
 
-static int	is_valid_var_char(char c)
+static int	is_valid_var_chr(char c)
 {
 	if (ft_isalnum(c))
 		return (1);
@@ -53,9 +49,9 @@ static int	is_valid_var_char(char c)
 	return (0);
 }
 
-static char	*extract_var_name(const char *str, int start, int *end)
+static char	*extract_var(const char *str, int start, int *end)
 {
-	char	*var_name;
+	char	*var;
 	int		i;
 	int		len;
 
@@ -65,308 +61,332 @@ static char	*extract_var_name(const char *str, int start, int *end)
 		return (ft_strdup("?"));
 	}
 	i = start;
-	while (str[i] && is_valid_var_char(str[i]))
+	while (str[i] && is_valid_var_chr(str[i]))
 		i++;
 	*end = i;
 	len = i - start;
 	if (len == 0)
 		return (NULL);
-	var_name = (char *)malloc(len + 1);
-	if (!var_name)
+	var = (char *)malloc(len + 1);
+	if (!var)
 		return (NULL);
 	i = 0;
 	while (i < len)
 	{
-		var_name[i] = str[start + i];
+		var[i] = str[start + i];
 		i++;
 	}
-	var_name[len] = '\0';
-	return (var_name);
+	var[len] = '\0';
+	return (var);
 }
 
-static char	*str_append(char *dst, const char *src)
+static char	*str_cat(char *dst, const char *src)
 {
-	char	*result;
-	int		dst_len;
-	int		src_len;
+	char	*res;
+	int		dlen;
+	int		slen;
 	int		i;
 	int		j;
 
 	if (!src)
 		return (dst);
-	dst_len = 0;
-	src_len = ft_strlen(src);
+	dlen = 0;
+	slen = ft_strlen(src);
 	if (dst)
-		dst_len = ft_strlen(dst);
-	result = (char *)malloc(dst_len + src_len + 1);
-	if (!result)
+		dlen = ft_strlen(dst);
+	res = (char *)malloc(dlen + slen + 1);
+	if (!res)
 	{
 		if (dst)
 			free(dst);
 		return (NULL);
 	}
 	i = 0;
-	while (i < dst_len)
+	while (i < dlen)
 	{
-		result[i] = dst[i];
+		res[i] = dst[i];
 		i++;
 	}
 	j = 0;
-	while (j < src_len)
+	while (j < slen)
 	{
-		result[i + j] = src[j];
+		res[i + j] = src[j];
 		j++;
 	}
-	result[dst_len + src_len] = '\0';
+	res[dlen + slen] = '\0';
 	if (dst)
 		free(dst);
-	return (result);
+	return (res);
 }
 
-static char	*str_append_char(char *dst, char c)
+static char	*str_cat_chr(char *dst, char c)
 {
-	char	temp[2];
+	char	tmp[2];
 
-	temp[0] = c;
-	temp[1] = '\0';
-	return (str_append(dst, temp));
+	tmp[0] = c;
+	tmp[1] = '\0';
+	return (str_cat(dst, tmp));
 }
 
-static char	*expand_variable(const char *var_name, t_mini *mini)
+static char	*expand_var(const char *var, t_mini *mini)
 {
-	char	*value;
+	char	*val;
 
-	if (!var_name)
-		return (ft_strdup(""));
-	if (ft_strcmp(var_name, "?") == 0)
-		return (get_exit_status(mini->exit_sts));
-	value = get_env_value(var_name, mini->env);
-	if (!value)
-		return (ft_strdup(""));
-	return (value);
+	if (!var)
+		return (NULL);
+	if (ft_strcmp(var, "?") == 0)
+		return (get_exit_sts(mini->exit_sts));
+	val = get_env_val(var, mini->env);
+	return (val);
 }
 
-static char	*expand_string_part(const char *str, t_mini *mini, int should_expand)
+static int	is_empty_str(const char *s)
 {
-	char	*result;
-	char	*var_name;
-	char	*var_value;
+	if (!s)
+		return (1);
+	if (s[0] == '\0')
+		return (1);
+	return (0);
+}
+
+static char	*exp_str_part(const char *s, t_mini *mini, int exp)
+{
+	char	*res;
+	char	*var;
+	char	*val;
 	int		i;
-	int		var_end;
+	int		vend;
 
-	result = NULL;
+	res = NULL;
 	i = 0;
-	while (str[i])
+	while (s[i])
 	{
-		if (str[i] == '$' && should_expand && str[i + 1] 
-			&& (is_valid_var_char(str[i + 1]) || str[i + 1] == '?'))
+		if (s[i] == '$' && exp && s[i + 1] 
+			&& (is_valid_var_chr(s[i + 1]) || s[i + 1] == '?'))
 		{
-			var_name = extract_var_name(str, i + 1, &var_end);
-			if (var_name)
+			var = extract_var(s, i + 1, &vend);
+			if (var)
 			{
-				var_value = expand_variable(var_name, mini);
-				result = str_append(result, var_value);
-				free(var_name);
-				free(var_value);
-				if (!result)
+				val = expand_var(var, mini);
+				free(var);
+				if (val)
+				{
+					res = str_cat(res, val);
+					free(val);
+				}
+				if (!res)
 					return (NULL);
-				i = var_end;
+				i = vend;
 			}
 			else
 			{
-				result = str_append_char(result, str[i]);
-				if (!result)
+				res = str_cat_chr(res, s[i]);
+				if (!res)
 					return (NULL);
 				i++;
 			}
 		}
 		else
 		{
-			result = str_append_char(result, str[i]);
-			if (!result)
+			res = str_cat_chr(res, s[i]);
+			if (!res)
 				return (NULL);
 			i++;
 		}
 	}
-	if (!result)
+	if (!res)
 		return (ft_strdup(""));
-	return (result);
+	return (res);
 }
 
-static char	*expand_token_with_parts(t_token *token, t_mini *mini)
+static char	*exp_tok_parts(t_token *tok, t_mini *mini)
 {
-	char			*result;
-	char			*expanded_part;
-	t_token_part	*current_part;
-	int				should_expand;
+	char			*res;
+	char			*exp_part;
+	t_token_part	*curr;
+	int				exp;
 
-	if (!token)
+	if (!tok)
 		return (ft_strdup(""));
-	
-	if (!token->parts)
+	if (!tok->parts)
 	{
-		should_expand = 0;
-		if (!token->is_squote)
-			should_expand = 1;
-		return (expand_string_part(token->raw, mini, should_expand));
+		exp = 0;
+		if (!tok->is_squote)
+			exp = 1;
+		return (exp_str_part(tok->raw, mini, exp));
 	}
-	
-	result = NULL;
-	current_part = token->parts;
-	while (current_part)
+	res = NULL;
+	curr = tok->parts;
+	while (curr)
 	{
-		should_expand = 0;
-		if (!current_part->is_squote)
-			should_expand = 1;
-		
-		expanded_part = expand_string_part(current_part->content, mini, should_expand);
-		if (!expanded_part)
+		exp = 0;
+		if (!curr->is_squote)
+			exp = 1;
+		exp_part = exp_str_part(curr->content, mini, exp);
+		if (!exp_part)
 		{
-			if (result)
-				free(result);
+			if (res)
+				free(res);
 			return (NULL);
 		}
-		
-		result = str_append(result, expanded_part);
-		free(expanded_part);
-		if (!result)
+		res = str_cat(res, exp_part);
+		free(exp_part);
+		if (!res)
 			return (NULL);
-		
-		current_part = current_part->next;
+		curr = curr->next;
 	}
-	
-	if (!result)
+	if (!res)
 		return (ft_strdup(""));
-	return (result);
+	return (res);
 }
 
-static int	expand_cmd_tokens(t_cmd *cmd, t_mini *mini)
+static int	count_toks(t_token *tok)
 {
-	t_token	*current_token;
-	char	**new_tokens;
-	char	*expanded;
-	int		count;
+	int	cnt;
+
+	cnt = 0;
+	while (tok)
+	{
+		cnt++;
+		tok = tok->next;
+	}
+	return (cnt);
+}
+
+static void	free_new_toks(char **new, int i)
+{
+	while (i > 0)
+	{
+		i--;
+		free(new[i]);
+	}
+	free(new);
+}
+
+static int	exp_cmd_toks(t_cmd *cmd, t_mini *mini)
+{
+	t_token	*curr;
+	char	**new;
+	char	*exp;
+	int		cnt;
 	int		i;
+	int		j;
 
 	if (!cmd->tokn)
 		return (0);
-	count = 0;
-	current_token = cmd->tokn;
-	while (current_token)
-	{
-		count++;
-		current_token = current_token->next;
-	}
-	new_tokens = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!new_tokens)
+	cnt = count_toks(cmd->tokn);
+	new = (char **)malloc(sizeof(char *) * (cnt + 1));
+	if (!new)
 		return (1);
-	current_token = cmd->tokn;
+	curr = cmd->tokn;
 	i = 0;
-	while (current_token)
+	j = 0;
+	while (curr)
 	{
-		expanded = expand_token_with_parts(current_token, mini);
-		if (!expanded)
+		exp = exp_tok_parts(curr, mini);
+		if (!exp)
 		{
-			while (i > 0)
-			{
-				i--;
-				free(new_tokens[i]);
-			}
-			free(new_tokens);
+			free_new_toks(new, i);
 			return (1);
 		}
-		new_tokens[i] = expanded;
-		current_token = current_token->next;
+		if (!is_empty_str(exp))
+		{
+			new[j] = exp;
+			j++;
+		}
+		else
+			free(exp);
+		curr = curr->next;
 		i++;
 	}
-	new_tokens[count] = NULL;
+	new[j] = NULL;
 	if (cmd->tokens)
 		free_dblptr(cmd->tokens);
-	cmd->tokens = new_tokens;
+	cmd->tokens = new;
 	return (0);
 }
 
-static int	should_expand_redir_target(t_redir *redir)
+static int	should_exp_redir(t_redir *redir)
 {
 	if (redir->i_redir == 2)
 		return (redir->hd_expand);
 	return (1);
 }
 
-static int	expand_redirections(t_cmd *cmd, t_mini *mini)
+static int	exp_redirs(t_cmd *cmd, t_mini *mini)
 {
-	t_redir	*current;
-	char	*expanded;
+	t_redir	*curr;
+	char	*exp;
 
-	current = cmd->redirs;
-	while (current)
+	curr = cmd->redirs;
+	while (curr)
 	{
-		if (should_expand_redir_target(current))
+		if (should_exp_redir(curr))
 		{
-			expanded = expand_string_part(current->target, mini, 1);
-			if (!expanded)
+			exp = exp_str_part(curr->target, mini, 1);
+			if (!exp)
 				return (1);
-			free(current->target);
-			current->target = expanded;
+			free(curr->target);
+			curr->target = exp;
 		}
-		current = current->next;
+		curr = curr->next;
 	}
 	return (0);
 }
 
-static void	free_token_parts(t_token_part *parts)
+static void	free_tok_parts(t_token_part *parts)
 {
-	t_token_part	*current;
+	t_token_part	*curr;
 	t_token_part	*next;
 
-	current = parts;
-	while (current)
+	curr = parts;
+	while (curr)
 	{
-		next = current->next;
-		if (current->content)
-			free(current->content);
-		free(current);
-		current = next;
+		next = curr->next;
+		if (curr->content)
+			free(curr->content);
+		free(curr);
+		curr = next;
 	}
 }
 
-static void	free_token_list(t_token *tokens)
+static void	free_tok_list(t_token *toks)
 {
-	t_token	*current;
+	t_token	*curr;
 	t_token	*next;
 
-	current = tokens;
-	while (current)
+	curr = toks;
+	while (curr)
 	{
-		next = current->next;
-		if (current->raw)
-			free(current->raw);
-		if (current->parts)
-			free_token_parts(current->parts);
-		free(current);
-		current = next;
+		next = curr->next;
+		if (curr->raw)
+			free(curr->raw);
+		if (curr->parts)
+			free_tok_parts(curr->parts);
+		free(curr);
+		curr = next;
 	}
 }
 
 int	expander(t_mini *mini)
 {
-	t_cmd	*current;
+	t_cmd	*curr;
 
 	if (!mini || !mini->cmds)
 		return (0);
-	current = mini->cmds;
-	while (current)
+	curr = mini->cmds;
+	while (curr)
 	{
-		if (expand_cmd_tokens(current, mini))
+		if (exp_cmd_toks(curr, mini))
 			return (1);
-		if (expand_redirections(current, mini))
+		if (exp_redirs(curr, mini))
 			return (1);
-		if (current->tokn)
+		if (curr->tokn)
 		{
-			free_token_list(current->tokn);
-			current->tokn = NULL;
+			free_tok_list(curr->tokn);
+			curr->tokn = NULL;
 		}
-		current = current->next;
+		curr = curr->next;
 	}
 	return (0);
 }

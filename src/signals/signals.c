@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 01:53:41 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/29 19:40:55 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 16:13:17 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,15 @@ static void	handle_sigint(int sig)
 	rl_redisplay();
 }
 
-static void	handle_sigquit(int sig)
-{
-	(void)sig;
-}
-
 void	setup_interactive_signals(void)
 {
 	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
 
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_handler = handle_sigint;
 	sa_int.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa_int, NULL);
-	sigemptyset(&sa_quit.sa_mask);
-	sa_quit.sa_handler = handle_sigquit;
-	sa_quit.sa_flags = SA_RESTART;
-	sigaction(SIGQUIT, &sa_quit, NULL);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	ft_signal(t_mini *mini)

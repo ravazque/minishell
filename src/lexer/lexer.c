@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/27 13:39:54 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 16:16:52 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,327 +21,318 @@ static int	is_pipe(const char *str)
 	return (0);
 }
 
-static int	is_redir_in(const char *str)
+static int	is_redir(const char *str)
 {
 	if (!str)
 		return (0);
 	if (ft_strcmp(str, "<") == 0)
 		return (1);
-	return (0);
-}
-
-static int	is_redir_out(const char *str)
-{
-	if (!str)
-		return (0);
 	if (ft_strcmp(str, ">") == 0)
 		return (1);
-	return (0);
-}
-
-static int	is_redir_append(const char *str)
-{
-	if (!str)
-		return (0);
 	if (ft_strcmp(str, ">>") == 0)
 		return (1);
-	return (0);
-}
-
-static int	is_redir_heredoc(const char *str)
-{
-	if (!str)
-		return (0);
 	if (ft_strcmp(str, "<<") == 0)
 		return (1);
 	return (0);
 }
 
-static int	is_redirection(const char *str)
+static t_redir	*mk_redir(const char *tgt, const char *op)
 {
-	if (is_redir_in(str))
-		return (1);
-	if (is_redir_out(str))
-		return (1);
-	if (is_redir_append(str))
-		return (1);
-	if (is_redir_heredoc(str))
-		return (1);
-	return (0);
-}
+	t_redir	*r;
 
-static t_redir	*create_redir(const char *target, const char *redir_op)
-{
-	t_redir	*redir;
-
-	redir = (t_redir *)malloc(sizeof(t_redir));
-	if (!redir)
+	r = (t_redir *)malloc(sizeof(t_redir));
+	if (!r)
 		return (NULL);
-	ft_bzero(redir, sizeof(t_redir));
-	redir->target = ft_strdup(target);
-	if (!redir->target)
+	ft_bzero(r, sizeof(t_redir));
+	r->target = ft_strdup(tgt);
+	if (!r->target)
 	{
-		free(redir);
+		free(r);
 		return (NULL);
 	}
-	if (is_redir_in(redir_op))
-		redir->i_redir = 1;
-	else if (is_redir_heredoc(redir_op))
+	if (ft_strcmp(op, "<") == 0)
+		r->i_redir = 1;
+	else if (ft_strcmp(op, "<<") == 0)
 	{
-		redir->i_redir = 2;
-		redir->hd_expand = 1;
+		r->i_redir = 2;
+		r->hd_expand = 1;
 	}
-	else if (is_redir_out(redir_op))
-		redir->o_redir = 1;
-	else if (is_redir_append(redir_op))
-		redir->o_redir = 2;
-	redir->next = NULL;
-	return (redir);
+	else if (ft_strcmp(op, ">") == 0)
+		r->o_redir = 1;
+	else if (ft_strcmp(op, ">>") == 0)
+		r->o_redir = 2;
+	r->next = NULL;
+	return (r);
 }
 
-static void	add_redir_to_cmd(t_cmd *cmd, t_redir *new_redir)
+static void	add_redir(t_cmd *cmd, t_redir *new)
 {
-	t_redir	*current;
+	t_redir	*curr;
 
 	if (!cmd->redirs)
 	{
-		cmd->redirs = new_redir;
+		cmd->redirs = new;
 		return ;
 	}
-	current = cmd->redirs;
-	while (current->next)
-		current = current->next;
-	current->next = new_redir;
+	curr = cmd->redirs;
+	while (curr->next)
+		curr = curr->next;
+	curr->next = new;
 }
 
-static t_token	*create_token_node(const char *raw, int is_squote, int is_dquote)
+static t_token	*mk_tok_node(const char *raw, int sq, int dq)
 {
-	t_token	*token;
+	t_token	*tok;
 
-	token = (t_token *)malloc(sizeof(t_token));
-	if (!token)
+	tok = (t_token *)malloc(sizeof(t_token));
+	if (!tok)
 		return (NULL);
-	token->raw = ft_strdup(raw);
-	if (!token->raw)
+	tok->raw = ft_strdup(raw);
+	if (!tok->raw)
 	{
-		free(token);
+		free(tok);
 		return (NULL);
 	}
-	token->is_squote = is_squote;
-	token->is_dquote = is_dquote;
-	token->next = NULL;
-	return (token);
+	tok->is_squote = sq;
+	tok->is_dquote = dq;
+	tok->next = NULL;
+	return (tok);
 }
 
-static void	add_token_to_cmd(t_cmd *cmd, t_token *new_token)
+static void	add_tok(t_cmd *cmd, t_token *new)
 {
-	t_token	*current;
+	t_token	*curr;
 
 	if (!cmd->tokn)
 	{
-		cmd->tokn = new_token;
+		cmd->tokn = new;
 		return ;
 	}
-	current = cmd->tokn;
-	while (current->next)
-		current = current->next;
-	current->next = new_token;
+	curr = cmd->tokn;
+	while (curr->next)
+		curr = curr->next;
+	curr->next = new;
 }
 
-static char	**tokens_to_array(t_token *tokens)
+static char	**toks_to_arr(t_token *toks)
 {
-	char	**array;
-	t_token	*current;
-	int		count;
+	char	**arr;
+	t_token	*curr;
+	int		cnt;
 	int		i;
 
-	count = 0;
-	current = tokens;
-	while (current)
+	cnt = 0;
+	curr = toks;
+	while (curr)
 	{
-		count++;
-		current = current->next;
+		cnt++;
+		curr = curr->next;
 	}
-	array = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!array)
+	arr = (char **)malloc(sizeof(char *) * (cnt + 1));
+	if (!arr)
 		return (NULL);
-	current = tokens;
+	curr = toks;
 	i = 0;
-	while (current)
+	while (curr)
 	{
-		array[i] = ft_strdup(current->raw);
-		if (!array[i])
+		arr[i] = ft_strdup(curr->raw);
+		if (!arr[i])
 		{
-			free_dblptr(array);
+			free_dblptr(arr);
 			return (NULL);
 		}
-		current = current->next;
+		curr = curr->next;
 		i++;
 	}
-	array[count] = NULL;
-	return (array);
+	arr[cnt] = NULL;
+	return (arr);
 }
 
-static int	process_redirections(t_cmd *cmd)
+static int	rm_redir_toks(t_token **head, t_token *curr, t_token *prev)
 {
-	t_token	*current;
+	t_token	*next;
+
+	if (!curr || !curr->next)
+		return (1);
+	next = curr->next;
+	if (prev)
+		prev->next = next->next;
+	else
+		*head = next->next;
+	free(curr->raw);
+	free(curr);
+	free(next->raw);
+	free(next);
+	return (0);
+}
+
+static int	proc_redirs(t_cmd *cmd)
+{
+	t_token	*curr;
 	t_token	*next;
 	t_token	*prev;
-	t_redir	*redir;
+	t_redir	*r;
 
 	if (!cmd || !cmd->tokn)
 		return (0);
-	current = cmd->tokn;
+	curr = cmd->tokn;
 	prev = NULL;
-	while (current)
+	while (curr)
 	{
-		next = current->next;
-		if (is_redirection(current->raw))
+		next = curr->next;
+		if (is_redir(curr->raw))
 		{
 			if (!next)
 			{
 				ft_putstr_fd(ERR_RDI, STDERR_FILENO);
 				return (1);
 			}
-			redir = create_redir(next->raw, current->raw);
-			if (!redir)
+			r = mk_redir(next->raw, curr->raw);
+			if (!r)
 			{
 				malloc_error();
 				return (1);
 			}
-			add_redir_to_cmd(cmd, redir);
-			if (prev)
-				prev->next = next->next;
+			add_redir(cmd, r);
+			rm_redir_toks(&cmd->tokn, curr, prev);
+			curr = prev;
+			if (curr)
+				curr = curr->next;
 			else
-				cmd->tokn = next->next;
-			free(current->raw);
-			free(current);
-			free(next->raw);
-			free(next);
-			current = prev;
-			if (current)
-				current = current->next;
-			else
-				current = cmd->tokn;
+				curr = cmd->tokn;
 			continue ;
 		}
-		prev = current;
-		current = next;
+		prev = curr;
+		curr = next;
 	}
 	return (0);
 }
 
-static int	create_cmd_from_token_range(char **tokens, int start, int end, t_cmd **cmd_list)
+static int	add_cmd_to_lst(t_cmd **lst, t_cmd *new)
 {
-	t_cmd	*new_cmd;
-	t_token	*token_node;
+	t_cmd	*curr;
+
+	if (!*lst)
+		*lst = new;
+	else
+	{
+		curr = *lst;
+		while (curr->next)
+			curr = curr->next;
+		curr->next = new;
+	}
+	return (0);
+}
+
+static int	mk_cmd_range(char **toks, int start, int end, t_cmd **lst)
+{
+	t_cmd	*new;
+	t_token	*tok_node;
 	int		i;
 
 	if (end <= start)
 		return (0);
-	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
-	if (!new_cmd)
+	new = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!new)
 		return (1);
-	ft_bzero(new_cmd, sizeof(t_cmd));
+	ft_bzero(new, sizeof(t_cmd));
 	i = start;
 	while (i < end)
 	{
-		token_node = create_token_node(tokens[i], 0, 0);
-		if (!token_node)
+		tok_node = mk_tok_node(toks[i], 0, 0);
+		if (!tok_node)
 		{
-			free_cmds(new_cmd);
+			free_cmds(new);
 			return (1);
 		}
-		add_token_to_cmd(new_cmd, token_node);
+		add_tok(new, tok_node);
 		i++;
 	}
-	if (!*cmd_list)
-		*cmd_list = new_cmd;
-	else
-	{
-		t_cmd *current = *cmd_list;
-		while (current->next)
-			current = current->next;
-		current->next = new_cmd;
-	}
+	return (add_cmd_to_lst(lst, new));
+}
+
+static int	proc_pipe(char **toks, int *i, int *start, t_cmd **lst)
+{
+	if (mk_cmd_range(toks, *start, *i, lst))
+		return (1);
+	*start = *i + 1;
 	return (0);
 }
 
 static int	split_pipes(t_mini *mini)
 {
-	char	**tokens;
-	t_cmd	*cmd_list;
+	char	**toks;
+	t_cmd	*lst;
 	int		i;
 	int		start;
 
 	if (!mini->cmds || !mini->cmds->tokens)
 		return (0);
-	tokens = mini->cmds->tokens;
+	toks = mini->cmds->tokens;
 	mini->cmds->tokens = NULL;
 	free_cmds(mini->cmds);
 	mini->cmds = NULL;
-	cmd_list = NULL;
+	lst = NULL;
 	start = 0;
 	i = 0;
-	while (tokens[i])
+	while (toks[i])
 	{
-		if (is_pipe(tokens[i]))
+		if (is_pipe(toks[i]))
 		{
-			if (create_cmd_from_token_range(tokens, start, i, &cmd_list))
+			if (proc_pipe(toks, &i, &start, &lst))
 			{
-				free_dblptr(tokens);
-				free_cmds(cmd_list);
+				free_dblptr(toks);
+				free_cmds(lst);
 				return (1);
 			}
-			start = i + 1;
 		}
 		i++;
 	}
-	if (create_cmd_from_token_range(tokens, start, i, &cmd_list))
+	if (mk_cmd_range(toks, start, i, &lst))
 	{
-		free_dblptr(tokens);
-		free_cmds(cmd_list);
+		free_dblptr(toks);
+		free_cmds(lst);
 		return (1);
 	}
-	mini->cmds = cmd_list;
-	free_dblptr(tokens);
+	mini->cmds = lst;
+	free_dblptr(toks);
 	return (0);
 }
 
-static int	finalize_commands(t_mini *mini)
+static int	finalize_cmds(t_mini *mini)
 {
-	t_cmd	*current;
+	t_cmd	*curr;
 
-	current = mini->cmds;
-	while (current)
+	curr = mini->cmds;
+	while (curr)
 	{
-		if (current->tokn)
+		if (curr->tokn)
 		{
-			current->tokens = tokens_to_array(current->tokn);
-			if (!current->tokens)
+			curr->tokens = toks_to_arr(curr->tokn);
+			if (!curr->tokens)
 				return (1);
 		}
-		current = current->next;
+		curr = curr->next;
 	}
 	return (0);
 }
 
 int	lexer(t_mini *mini)
 {
-	t_cmd	*current;
+	t_cmd	*curr;
 
 	if (!mini || !mini->cmds)
 		return (0);
 	if (split_pipes(mini))
 		return (1);
-	current = mini->cmds;
-	while (current)
+	curr = mini->cmds;
+	while (curr)
 	{
-		if (process_redirections(current))
+		if (proc_redirs(curr))
 			return (1);
-		current = current->next;
+		curr = curr->next;
 	}
-	if (finalize_commands(mini))
+	if (finalize_cmds(mini))
 		return (1);
 	return (0);
 }

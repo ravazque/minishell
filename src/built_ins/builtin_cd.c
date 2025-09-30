@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/29 19:47:35 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 16:18:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,34 +30,54 @@ static char	*cd_getenv(char **env, const char *key)
 	return (NULL);
 }
 
-void	builtin_cd(t_mini *mini)
+static int	check_args(t_mini *mini, char **tgt)
 {
-	char	*target;
-	char	*oldpwd;
-	char	*pwd;
-
 	if (!mini->cmds->tokens[1])
 	{
-		target = cd_getenv(mini->env, "HOME");
-		if (!target || !*target)
+		*tgt = cd_getenv(mini->env, "HOME");
+		if (!*tgt || !**tgt)
 		{
 			ft_putstr_fd("minishell: cd: path not provided\n", 2);
-			return ;
+			mini->exit_sts = 1;
+			return (1);
 		}
 	}
 	else if (mini->cmds->tokens[2])
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 		mini->exit_sts = 2;
-		return ;
+		return (1);
 	}
-	oldpwd = getcwd(NULL, 0);
-	if (chdir(mini->cmds->tokens[1]) < 0)
+	else
+		*tgt = mini->cmds->tokens[1];
+	return (0);
+}
+
+static int	do_chdir(t_mini *mini, char *tgt)
+{
+	if (chdir(tgt) < 0)
 	{
 		ft_putstr_fd("minishell: cd: ", 2);
-		ft_putstr_fd(mini->cmds->tokens[1], 2);
+		ft_putstr_fd(tgt, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
 		mini->exit_sts = 1;
+		return (1);
+	}
+	return (0);
+}
+
+void	builtin_cd(t_mini *mini)
+{
+	char	*tgt;
+	char	*oldpwd;
+	char	*pwd;
+
+	if (check_args(mini, &tgt))
+		return ;
+	oldpwd = getcwd(NULL, 0);
+	if (do_chdir(mini, tgt))
+	{
+		free(oldpwd);
 		return ;
 	}
 	pwd = getcwd(NULL, 0);
