@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 17:10:07 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 17:59:28 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 19:57:27 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ bool	built_ins(t_mini *mini)
 		return (builtin_exit(mini), true);
 	else if (ft_strcmp(mini->cmds->tokens[0], "echo") == 0)
 		return (builtin_echo(mini), true);
-	else if (ft_strcmp(mini->cmds->tokens[0], "cd") == 0) // faltan cosas por hacer "cd -"
+	else if (ft_strcmp(mini->cmds->tokens[0], "cd") == 0) // faltan crear $OLDPWD, actualizarlo y actualizar $PWD
 		return (builtin_cd(mini), true);
 	else if (ft_strcmp(mini->cmds->tokens[0], "pwd") == 0)
 		return (builtin_pwd(mini), true);

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 17:08:01 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 19:51:57 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,16 @@
 static char	*get_env_val(const char *key, char **env)
 {
 	int		i;
-	int		klen;
+	int		j;
 
 	if (!key || !env)
 		return (NULL);
-	klen = ft_strlen(key);
+	j = ft_strlen(key);
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(env[i], key, klen) == 0 && env[i][klen] == '=')
-			return (ft_strdup(env[i] + klen + 1));
+		if (ft_strncmp(env[i], key, j) == 0 && env[i][j] == '=')
+			return (ft_strdup(env[i] + j + 1));
 		i++;
 	}
 	return (NULL);

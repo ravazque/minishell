@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 17:42:18 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 20:05:36 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 static char	*cd_getenv(char **env, const char *key)
 {
-	size_t	klen;
+	size_t	j;
 	int		i;
 
 	if (!env || !key)
 		return (NULL);
-	klen = ft_strlen(key);
+	j = ft_strlen(key);
 	i = 0;
 	while (env[i])
 	{
-		if (!ft_strncmp(env[i], key, klen) && env[i][klen] == '=')
-			return (env[i] + klen + 1);
+		if (!ft_strncmp(env[i], key, j) && env[i][j] == '=')
+			return (env[i] + j + 1);
 		i++;
 	}
 	return (NULL);
@@ -53,19 +53,6 @@ static int	check_args(t_mini *mini, char **tgt)
 	return (0);
 }
 
-static int	do_chdir(t_mini *mini, char *tgt)
-{
-	if (chdir(tgt) < 0)
-	{
-		ft_putstr_fd("minishell: cd: ", 2);
-		ft_putstr_fd(tgt, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
-		mini->exit_sts = 1;
-		return (1);
-	}
-	return (0);
-}
-
 void	builtin_cd(t_mini *mini)
 {
 	char	*tgt;
@@ -75,8 +62,12 @@ void	builtin_cd(t_mini *mini)
 	if (check_args(mini, &tgt))
 		return ;
 	oldpwd = getcwd(NULL, 0);
-	if (do_chdir(mini, tgt))
+	if (chdir(tgt) < 0)
 	{
+		ft_putstr_fd("minishell: cd: ", 2);
+		ft_putstr_fd(tgt, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		mini->exit_sts = 1;
 		free(oldpwd);
 		return ;
 	}
