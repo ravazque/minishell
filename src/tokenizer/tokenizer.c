@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 17:56:13 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 23:00:02 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,8 +230,7 @@ static int	finalize_tok(char **bf, t_token_part **tp, t_cmd *cmd)
 	return (0);
 }
 
-static int	handle_space(const char *in, size_t *i, int *in_tok,
-				char **bf, t_token_part **tp, t_cmd *cmd)
+static int	handle_space(const char *in, size_t *i, int *in_tok, char **bf, t_token_part **tp, t_cmd *cmd)
 {
 	if (*in_tok)
 	{
