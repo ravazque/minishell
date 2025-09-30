@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 11:50:27 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/27 13:18:38 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 21:32:27 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ void	builtin_exit(t_mini *mini)
 			ft_putstr_fd(mini->cmds->tokens[1], STDERR_FILENO);
 			write(STDERR_FILENO, ": numeric argument required\n", 28);
 			mini->exit_sts = 2;
-			cleanup_mini(mini);
-			exit(mini->exit_sts);
+			return ;
 		}
 	}
 	cleanup_mini(mini);

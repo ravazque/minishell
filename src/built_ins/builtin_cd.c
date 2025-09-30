@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 20:05:36 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 22:03:21 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,3 +76,5 @@ void	builtin_cd(t_mini *mini)
 	free(pwd);
 	mini->exit_sts = 0;
 }
+
+// actualizar builtin de ptrapero
