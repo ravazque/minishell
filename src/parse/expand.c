@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 16:13:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 17:08:01 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,22 +161,31 @@ static char	*exp_str_part(const char *s, t_mini *mini, int exp)
 	i = 0;
 	while (s[i])
 	{
-		if (s[i] == '$' && exp && s[i + 1] 
-			&& (is_valid_var_chr(s[i + 1]) || s[i + 1] == '?'))
+		if (s[i] == '$' && exp && s[i + 1])
 		{
-			var = extract_var(s, i + 1, &vend);
-			if (var)
+			if (is_valid_var_chr(s[i + 1]) || s[i + 1] == '?')
 			{
-				val = expand_var(var, mini);
-				free(var);
-				if (val)
+				var = extract_var(s, i + 1, &vend);
+				if (var)
 				{
-					res = str_cat(res, val);
-					free(val);
+					val = expand_var(var, mini);
+					free(var);
+					if (val)
+					{
+						res = str_cat(res, val);
+						free(val);
+					}
+					if (!res)
+						res = ft_strdup("");
+					i = vend;
 				}
-				if (!res)
-					return (NULL);
-				i = vend;
+				else
+				{
+					res = str_cat_chr(res, s[i]);
+					if (!res)
+						return (NULL);
+					i++;
+				}
 			}
 			else
 			{
@@ -197,6 +206,24 @@ static char	*exp_str_part(const char *s, t_mini *mini, int exp)
 	if (!res)
 		return (ft_strdup(""));
 	return (res);
+}
+
+static int	tok_has_quotes(t_token *tok)
+{
+	t_token_part	*curr;
+
+	if (!tok)
+		return (0);
+	if (!tok->parts)
+		return (0);
+	curr = tok->parts;
+	while (curr)
+	{
+		if (curr->is_squote || curr->is_dquote)
+			return (1);
+		curr = curr->next;
+	}
+	return (0);
 }
 
 static char	*exp_tok_parts(t_token *tok, t_mini *mini)
@@ -269,7 +296,6 @@ static int	exp_cmd_toks(t_cmd *cmd, t_mini *mini)
 	char	**new;
 	char	*exp;
 	int		cnt;
-	int		i;
 	int		j;
 
 	if (!cmd->tokn)
@@ -279,17 +305,16 @@ static int	exp_cmd_toks(t_cmd *cmd, t_mini *mini)
 	if (!new)
 		return (1);
 	curr = cmd->tokn;
-	i = 0;
 	j = 0;
 	while (curr)
 	{
 		exp = exp_tok_parts(curr, mini);
 		if (!exp)
 		{
-			free_new_toks(new, i);
+			free_new_toks(new, j);
 			return (1);
 		}
-		if (!is_empty_str(exp))
+		if (!is_empty_str(exp) || tok_has_quotes(curr))
 		{
 			new[j] = exp;
 			j++;
@@ -297,7 +322,6 @@ static int	exp_cmd_toks(t_cmd *cmd, t_mini *mini)
 		else
 			free(exp);
 		curr = curr->next;
-		i++;
 	}
 	new[j] = NULL;
 	if (cmd->tokens)

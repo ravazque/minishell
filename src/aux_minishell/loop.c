@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/29 19:37:24 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 17:14:27 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	loop(t_mini *mini)
 {
 	while (1)
 	{
-		mini->prompt = build_prompt(mini);
+		mini->prompt = prompt(mini);
 		if (!mini->prompt)
 			mini->prompt = ft_strdup("~ $ ");
 		mini->input = readline(mini->prompt);

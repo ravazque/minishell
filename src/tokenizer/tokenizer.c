@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/26 12:31:01 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 16:22:30 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,41 +28,43 @@ static void	free_token_parts(t_token_part *parts)
 	}
 }
 
-static t_token_part	*create_token_part(const char *content, int is_sq, int is_dq)
+static t_token_part	*mk_tok_part(const char *c, int sq, int dq)
 {
 	t_token_part	*part;
 
 	part = (t_token_part *)malloc(sizeof(t_token_part));
 	if (!part)
 		return (NULL);
-	part->content = ft_strdup(content);
+	if (!c)
+		c = "";
+	part->content = ft_strdup(c);
 	if (!part->content)
 	{
 		free(part);
 		return (NULL);
 	}
-	part->is_squote = is_sq;
-	part->is_dquote = is_dq;
+	part->is_squote = sq;
+	part->is_dquote = dq;
 	part->next = NULL;
 	return (part);
 }
 
-static void	add_token_part(t_token_part **list, t_token_part *new_part)
+static void	add_tok_part(t_token_part **list, t_token_part *new)
 {
-	t_token_part	*current;
+	t_token_part	*curr;
 
 	if (!*list)
 	{
-		*list = new_part;
+		*list = new;
 		return ;
 	}
-	current = *list;
-	while (current->next)
-		current = current->next;
-	current->next = new_part;
+	curr = *list;
+	while (curr->next)
+		curr = curr->next;
+	curr->next = new;
 }
 
-static int	str_append_char(char **dst, char c)
+static int	append_char(char **dst, char c)
 {
 	char	*old;
 	size_t	len;
@@ -72,10 +74,7 @@ static int	str_append_char(char **dst, char c)
 	old = *dst;
 	len = 0;
 	if (old)
-	{
-		while (old[len])
-			len++;
-	}
+		len = ft_strlen(old);
 	newp = (char *)malloc(len + 2);
 	if (!newp)
 		return (1);
@@ -93,33 +92,34 @@ static int	str_append_char(char **dst, char c)
 	return (0);
 }
 
-static int	flush_current_part(char **buff, int is_sq, int is_dq, t_token_part **parts)
+static int	flush_part(char **bf, int sq, int dq, t_token_part **parts)
 {
-	t_token_part	*new_part;
+	t_token_part	*new;
 
-	if (!*buff)
-		return (0);
-	new_part = create_token_part(*buff, is_sq, is_dq);
-	if (!new_part)
+	new = mk_tok_part(*bf ? *bf : "", sq, dq);
+	if (!new)
 		return (1);
-	add_token_part(parts, new_part);
-	free(*buff);
-	*buff = NULL;
+	add_tok_part(parts, new);
+	if (*bf)
+	{
+		free(*bf);
+		*bf = NULL;
+	}
 	return (0);
 }
 
-static int	read_quoted_content(const char *in, size_t *i, char quote, char **buff)
+static int	read_quoted(const char *in, size_t *i, char q, char **bf)
 {
 	size_t	start;
 
 	start = *i;
-	while (in[*i] && in[*i] != quote)
+	while (in[*i] && in[*i] != q)
 		(*i)++;
 	if (!in[*i])
 		return (1);
 	while (start < *i)
 	{
-		if (str_append_char(buff, in[start]))
+		if (append_char(bf, in[start]))
 			return (1);
 		start++;
 	}
@@ -127,60 +127,64 @@ static int	read_quoted_content(const char *in, size_t *i, char quote, char **buf
 	return (0);
 }
 
-static char	*join_token_parts(t_token_part *parts)
+static char	*join_parts(t_token_part *parts)
 {
-	char			*result;
-	t_token_part	*current;
+	char			*res;
+	char			*tmp;
+	t_token_part	*curr;
 
-	result = NULL;
-	current = parts;
-	while (current)
+	res = NULL;
+	curr = parts;
+	while (curr)
 	{
-		result = ft_strjoin(result, current->content);
-		if (!result)
+		tmp = res;
+		res = ft_strjoin(res, curr->content);
+		if (tmp)
+			free(tmp);
+		if (!res)
 			return (NULL);
-		current = current->next;
+		curr = curr->next;
 	}
-	if (!result)
-		result = ft_strdup("");
-	return (result);
+	if (!res)
+		res = ft_strdup("");
+	return (res);
 }
 
-static t_token	*create_token_from_parts(t_token_part *parts)
+static t_token	*mk_tok_from_parts(t_token_part *parts)
 {
-	t_token	*token;
-	char	*joined_content;
+	t_token	*tok;
+	char	*joined;
 
 	if (!parts)
 		return (NULL);
-	token = (t_token *)malloc(sizeof(t_token));
-	if (!token)
+	tok = (t_token *)malloc(sizeof(t_token));
+	if (!tok)
 		return (NULL);
-	joined_content = join_token_parts(parts);
-	if (!joined_content)
+	joined = join_parts(parts);
+	if (!joined)
 	{
-		free(token);
+		free(tok);
 		return (NULL);
 	}
-	token->raw = joined_content;
-	token->is_squote = 0;
-	token->is_dquote = 0;
-	token->parts = parts;
-	token->next = NULL;
-	return (token);
+	tok->raw = joined;
+	tok->is_squote = 0;
+	tok->is_dquote = 0;
+	tok->parts = parts;
+	tok->next = NULL;
+	return (tok);
 }
 
-static void	cleanup_tokenizer_data(char **buff, t_token_part **parts, t_cmd **cmd)
+static void	cleanup_tok_data(char **bf, t_token_part **p, t_cmd **cmd)
 {
-	if (buff && *buff)
+	if (bf && *bf)
 	{
-		free(*buff);
-		*buff = NULL;
+		free(*bf);
+		*bf = NULL;
 	}
-	if (parts && *parts)
+	if (p && *p)
 	{
-		free_token_parts(*parts);
-		*parts = NULL;
+		free_token_parts(*p);
+		*p = NULL;
 	}
 	if (cmd && *cmd)
 	{
@@ -189,32 +193,91 @@ static void	cleanup_tokenizer_data(char **buff, t_token_part **parts, t_cmd **cm
 	}
 }
 
-static int	finalize_token(char **buff, t_token_part **current_token_parts, t_cmd *cmd)
+static int	add_tok_to_cmd(t_token *new, t_cmd *cmd)
 {
-	t_token	*new_token;
-	t_token	*current;
+	t_token	*curr;
 
-	if (*buff)
+	if (!cmd->tokn)
+		cmd->tokn = new;
+	else
 	{
-		if (flush_current_part(buff, 0, 0, current_token_parts))
+		curr = cmd->tokn;
+		while (curr->next)
+			curr = curr->next;
+		curr->next = new;
+	}
+	return (0);
+}
+
+static int	finalize_tok(char **bf, t_token_part **tp, t_cmd *cmd)
+{
+	t_token	*new;
+
+	if (*bf)
+	{
+		if (flush_part(bf, 0, 0, tp))
 			return (1);
 	}
-	if (*current_token_parts)
+	if (*tp)
 	{
-		new_token = create_token_from_parts(*current_token_parts);
-		if (!new_token)
+		new = mk_tok_from_parts(*tp);
+		if (!new)
 			return (1);
-		if (!cmd->tokn)
-			cmd->tokn = new_token;
-		else
-		{
-			current = cmd->tokn;
-			while (current->next)
-				current = current->next;
-			current->next = new_token;
-		}
-		*current_token_parts = NULL;
+		if (add_tok_to_cmd(new, cmd))
+			return (1);
+		*tp = NULL;
 	}
+	return (0);
+}
+
+static int	handle_space(const char *in, size_t *i, int *in_tok,
+				char **bf, t_token_part **tp, t_cmd *cmd)
+{
+	if (*in_tok)
+	{
+		if (finalize_tok(bf, tp, cmd))
+			return (1);
+		*in_tok = 0;
+	}
+	while (in[*i] && is_space(in[*i]))
+		(*i)++;
+	return (0);
+}
+
+static int	handle_quote(const char *in, size_t *i, int *in_tok,
+				char **bf, t_token_part **tp)
+{
+	char	q;
+	int		sq;
+	int		dq;
+
+	q = in[*i];
+	sq = 0;
+	dq = 0;
+	if (q == '\'')
+		sq = 1;
+	else
+		dq = 1;
+	(*i)++;
+	*in_tok = 1;
+	if (*bf)
+	{
+		if (flush_part(bf, 0, 0, tp))
+			return (1);
+	}
+	if (read_quoted(in, i, q, bf))
+		return (1);
+	if (flush_part(bf, sq, dq, tp))
+		return (1);
+	return (0);
+}
+
+static int	handle_regular(const char *in, size_t *i, int *in_tok, char **bf)
+{
+	*in_tok = 1;
+	if (append_char(bf, in[*i]))
+		return (1);
+	(*i)++;
 	return (0);
 }
 
@@ -222,92 +285,55 @@ int	tokenizer(t_mini **mini)
 {
 	char			*in;
 	size_t			i;
-	char			*buff;
-	t_token_part	*current_token_parts;
+	char			*bf;
+	t_token_part	*tp;
 	t_cmd			*cmd;
-	int				in_token;
+	int				in_tok;
 
 	in = (*mini)->input;
 	i = 0;
-	buff = NULL;
-	current_token_parts = NULL;
-	in_token = 0;
-	
+	bf = NULL;
+	tp = NULL;
+	in_tok = 0;
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
 		return (1);
 	ft_bzero(cmd, sizeof(t_cmd));
-	
 	while (in && in[i])
 	{
 		if (is_space(in[i]))
 		{
-			if (in_token)
+			if (handle_space(in, &i, &in_tok, &bf, &tp, cmd))
 			{
-				if (finalize_token(&buff, &current_token_parts, cmd))
-				{
-					cleanup_tokenizer_data(&buff, &current_token_parts, &cmd);
-					return (1);
-				}
-				in_token = 0;
+				cleanup_tok_data(&bf, &tp, &cmd);
+				return (1);
 			}
-			while (in[i] && is_space(in[i]))
-				i++;
 		}
 		else if (in[i] == '\'' || in[i] == '\"')
 		{
-			char	quote;
-			int		is_sq;
-			int		is_dq;
-
-			quote = in[i];
-			is_sq = (quote == '\'');
-			is_dq = (quote == '\"');
-			i++;
-			in_token = 1;
-			
-			if (buff)
+			if (handle_quote(in, &i, &in_tok, &bf, &tp))
 			{
-				if (flush_current_part(&buff, 0, 0, &current_token_parts))
-				{
-					cleanup_tokenizer_data(&buff, &current_token_parts, &cmd);
-					return (1);
-				}
-			}
-			
-			if (read_quoted_content(in, &i, quote, &buff))
-			{
-				cleanup_tokenizer_data(&buff, &current_token_parts, &cmd);
-				return (1);
-			}
-			
-			if (flush_current_part(&buff, is_sq, is_dq, &current_token_parts))
-			{
-				cleanup_tokenizer_data(&buff, &current_token_parts, &cmd);
+				cleanup_tok_data(&bf, &tp, &cmd);
 				return (1);
 			}
 		}
 		else
 		{
-			in_token = 1;
-			if (str_append_char(&buff, in[i]))
+			if (handle_regular(in, &i, &in_tok, &bf))
 			{
-				cleanup_tokenizer_data(&buff, &current_token_parts, &cmd);
+				cleanup_tok_data(&bf, &tp, &cmd);
 				return (1);
 			}
-			i++;
 		}
 	}
-	
-	if (in_token)
+	if (in_tok)
 	{
-		if (finalize_token(&buff, &current_token_parts, cmd))
+		if (finalize_tok(&bf, &tp, cmd))
 		{
-			cleanup_tokenizer_data(&buff, &current_token_parts, &cmd);
+			cleanup_tok_data(&bf, &tp, &cmd);
 			return (1);
 		}
 	}
-	
 	(*mini)->cmds = cmd;
 	return (0);
 }

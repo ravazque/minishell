@@ -6,27 +6,13 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/27 13:47:08 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 17:14:14 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char	*ms_getcwd_or_pwd(void)
-{
-	char	*cwd;
-	char	*pwd;
-
-	cwd = getcwd(NULL, 0);
-	if (cwd)
-		return (cwd);
-	pwd = getenv("PWD");
-	if (pwd)
-		return (ft_strdup(pwd));
-	return (ft_strdup("?"));
-}
-
-static char	*ms_basename_dup(const char *path)
+static char	*basename_dup(const char *path)
 {
 	size_t	len;
 	size_t	i;
@@ -52,7 +38,28 @@ static char	*ms_basename_dup(const char *path)
 	return (ft_substr(path, start, len - start));
 }
 
-static char	*ms_rl_color_wrap(const char *s, const char *color)
+static char	*add_git_indicator(char *base)
+{
+	char	*with_git;
+	char	*tmp;
+	char	*tmp2;
+
+	tmp = ft_strjoin(RL_YEL, " [git]");
+	if (!tmp)
+		return (base);
+	tmp2 = ft_strjoin(tmp, RL_RST);
+	free(tmp);
+	if (!tmp2)
+		return (base);
+	with_git = ft_strjoin(base, tmp2);
+	free(tmp2);
+	if (!with_git)
+		return (base);
+	free(base);
+	return (with_git);
+}
+
+static char	*rl_color_wrap(const char *s, const char *color)
 {
 	char	*tmp1;
 	char	*tmp2;
@@ -65,23 +72,33 @@ static char	*ms_rl_color_wrap(const char *s, const char *color)
 	return (tmp2);
 }
 
-static char	*ms_build_prompt(const char *shown)
+static char	*build_prompt(const char *shown, int has_git)
 {
 	char	*colored;
+	char	*with_git;
 	char	*prompt;
 
-	colored = ms_rl_color_wrap(shown, RL_CYN);
+	colored = rl_color_wrap(shown, RL_CYN);
 	if (!colored)
 		return (NULL);
-	prompt = ft_strjoin(colored, " $ ");
-	free(colored);
+	if (has_git)
+	{
+		with_git = add_git_indicator(colored);
+		prompt = ft_strjoin(with_git, " $ ");
+		free(with_git);
+	}
+	else
+		prompt = ft_strjoin(colored, " $ ");
+	if (colored && !has_git)
+		free(colored);
 	return (prompt);
 }
 
-char	*build_prompt(t_mini *mini)
+char	*prompt(t_mini *mini)
 {
 	char	*shown;
 	char	*prompt;
+	int		has_git;
 
 	if (!mini)
 		return (NULL);
@@ -90,18 +107,19 @@ char	*build_prompt(t_mini *mini)
 		free(mini->pwd);
 		mini->pwd = NULL;
 	}
-	mini->pwd = ms_getcwd_or_pwd();
+	mini->pwd = getcwd_or_pwd();
 	if (!mini->pwd)
 		return (NULL);
-	shown = ms_basename_dup(mini->pwd);
+	shown = basename_dup(mini->pwd);
 	if (!shown)
 		return (NULL);
-	prompt = ms_build_prompt(shown);
+	has_git = is_git_repo(mini->pwd);
+	prompt = build_prompt(shown, has_git);
 	free(shown);
 	return (prompt);
 }
 
-// static char	*ms_basename_dup(const char *path)
+// static char	*basename_dup(const char *path)
 // {
 // 	if (!path)
 // 		return (ft_strdup("?"));
