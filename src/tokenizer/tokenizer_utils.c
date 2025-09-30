@@ -28,7 +28,8 @@ void	free_token_parts_global(t_token_part *parts)
 	}
 }
 
-t_token_part	*create_token_part_global(const char *content, int is_sq, int is_dq)
+t_token_part	*create_token_part_global(const char *content, int is_sq,
+		int is_dq)
 {
 	t_token_part	*part;
 

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 13:45:02 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/27 13:12:45 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 15:59:30 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	print_tokens(t_mini *mini)
 
 	if (!mini || !mini->cmds || !mini->cmds->tokens)
 	{
-		ft_putstr_fd("Error: command not found\n", STDERR_FILENO);
+		ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
 		return ;
 	}
 	i = 0;
