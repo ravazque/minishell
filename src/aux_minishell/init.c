@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 19:28:04 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/29 19:49:01 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 17:42:54 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,3 @@ void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[])
 	mini->argc = argc;
 	mini->argv = ft_copy_dblptr(argv);
 }
-
-// unset_oldpwd(mini->env);

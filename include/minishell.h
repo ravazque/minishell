@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 17:14:17 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/09/30 17:55:49 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,9 +139,8 @@ int		is_git_repo(const char *path);
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
 
-// ================================================================== //
-
 void	print_tokens(t_mini *mini);
-// void	unset_oldpwd(char **env);
+
+// ================================================================== //
 
 #endif
