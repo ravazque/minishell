@@ -13,5 +13,5 @@ It's like a bash shell but without some features (you'll still go crazy while wo
 
 <br>
 
-![Flowchar](/docs/flowchart.png)
+![Flowchar](/docs/info/flowchart.png)
 
