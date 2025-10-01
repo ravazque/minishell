@@ -6,75 +6,101 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 22:51:53 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/01 17:15:06 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char	*cd_getenv(char **env, const char *key)
+static int	ft_envlen(char **env)
 {
-	size_t	j;
-	int		i;
+	int	i;
 
-	if (!env || !key)
-		return (NULL);
-	j = ft_strlen(key);
 	i = 0;
 	while (env[i])
-	{
-		if (!ft_strncmp(env[i], key, j) && env[i][j] == '=')
-			return (env[i] + j + 1);
 		i++;
-	}
-	return (NULL);
+	return (i);
 }
 
-static int	check_args(t_mini *mini, char **tgt)
+static void	ft_setenv(char *name, char *value, char ***env)
 {
-	if (!mini->cmds->tokens[1])
+	char	*var;
+	int		i;
+	char	**new_env;
+
+	var = ft_strjoin3(name, "=", value);
+	i = 0;
+	while ((*env)[i] && !ft_strncmp((*env)[i], var, ft_strlen(name) + 1))
+		i++;
+	if (!ft_strncmp((*env)[i], var, ft_strlen(name) + 1))
 	{
-		*tgt = cd_getenv(mini->env, "HOME");
-		if (!*tgt || !**tgt)
-		{
-			ft_putstr_fd("minishell: cd: path not provided\n", 2);
-			mini->exit_sts = 1;
-			return (1);
-		}
+		free((*env)[i]);
+		(*env)[i] = var;
+		return ;
 	}
-	else if (mini->cmds->tokens[2])
+	new_env = malloc(sizeof(char *) * (ft_envlen(*env) + 2));
+	if (!new_env)
 	{
-		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
-		mini->exit_sts = 2;
-		return (1);
+		free(var);
+		return ;
+	}
+	i = 0;
+	while ((*env)[i])
+	{
+		new_env[i] = (*env)[i];
+		i++;
+	}
+	new_env[i] = var;
+	new_env[i + 1] = NULL;
+	free(*env);
+	*env = new_env;
+}
+
+static char	*ft_cd_path(t_mini mini)
+{
+	char	*path;
+
+	if (mini.cmds->tokens[2])
+		return (ft_putstr_fd("minishell: cd: too many arguments\n", 2), NULL);
+	else if (!mini.cmds->tokens[1])
+	{
+		path = getenv("HOME");
+		if (!path)
+			return (ft_putstr_fd("minishell: cd: HOME not set\n", 2), NULL);
+	}
+	else if (mini.cmds->tokens[1] && !ft_strcmp(mini.cmds->tokens[1], "-"))
+	{
+		path = getenv("OLDPWD");
+		if (!path)
+			return (ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2), NULL);
+		printf("%s\n", path);
 	}
 	else
-		*tgt = mini->cmds->tokens[1];
-	return (0);
+		path = mini.cmds->tokens[1];
+	return (path);
 }
 
 void	builtin_cd(t_mini *mini)
 {
-	char	*tgt;
 	char	*oldpwd;
 	char	*pwd;
+	char	*path;
 
-	if (check_args(mini, &tgt))
+	path = ft_cd_path(*mini);
+	if (!path)
 		return ;
 	oldpwd = getcwd(NULL, 0);
-	if (chdir(tgt) < 0)
+	if (chdir(path) < 0)
 	{
 		ft_putstr_fd("minishell: cd: ", 2);
-		ft_putstr_fd(tgt, 2);
+		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
-		mini->exit_sts = 1;
 		free(oldpwd);
 		return ;
 	}
 	pwd = getcwd(NULL, 0);
+	ft_setenv("OLDPWD", oldpwd, &(mini->env));
+	ft_setenv("PWD", pwd, &(mini->env));
 	free(oldpwd);
 	free(pwd);
-	mini->exit_sts = 0;
 }
-
-// actualizar builtin de ptrapero
