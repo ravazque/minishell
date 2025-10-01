@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 20:31:32 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/01 16:20:19 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/01 17:27:47 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_list
 	struct s_list	*next;
 }					t_list;
 
-// ====================== Part I =========================
+// =[ Part I ]============================================================= //
 
 size_t		ft_strlen(const char *s);
 size_t		ft_strlcpy(char *dst, const char *src, size_t size);
@@ -62,7 +62,7 @@ void		*ft_memmove(void *dst, const void *src, size_t len);
 void		*ft_memchr(const void *s, int c, size_t n);
 void		*ft_calloc(size_t nmemb, size_t size);
 
-// ====================== Part II =========================
+// =[ Part II ]============================================================= //
 
 char		*ft_substr(const char *s, size_t start, size_t len);
 char		*ft_strjoin(const char *s1, const char *s2);
@@ -76,7 +76,7 @@ void		ft_putstr_fd(char *s, int fd);
 void		ft_putendl_fd(char *s, int fd);
 void		ft_putnbr_fd(int n, int fd);
 
-// ====================== List Part =========================
+// =[ Bonus ]=============================================================== //
 
 t_list		*ft_lstnew(void *content);
 t_list		*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
@@ -88,11 +88,13 @@ void		ft_lstclear(t_list **lst, void (*del)(void *));
 void		ft_lstiter(t_list *lst, void (*f)(void *));
 void		ft_lstadd_front(t_list **lst, t_list *new);
 
-// ====================== Aux =========================
+// =[ Aux ]================================================================= //
 
 int			ft_strcmp(const char *s1, const char *s2);
 int			ft_atoi_exit(const char *nptr, bool *max_ex);
 char		**ft_copy_dblptr(char **envp);
 char		*ft_strjoin3(char const *s1, char const *s2, char const *s3);
+
+// ========================================================================= //
 
 #endif

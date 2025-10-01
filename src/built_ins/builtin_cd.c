@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/01 17:15:06 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/01 17:39:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,20 @@ static void	ft_setenv(char *name, char *value, char ***env)
 	char	*var;
 	int		i;
 	char	**new_env;
+	int		n_len;
 
 	var = ft_strjoin3(name, "=", value);
+	n_len = ft_strlen(name);
 	i = 0;
-	while ((*env)[i] && !ft_strncmp((*env)[i], var, ft_strlen(name) + 1))
-		i++;
-	if (!ft_strncmp((*env)[i], var, ft_strlen(name) + 1))
+	while ((*env)[i])
 	{
-		free((*env)[i]);
-		(*env)[i] = var;
-		return ;
+		if (!ft_strncmp((*env)[i], name, n_len) && (*env)[i][n_len] == '=')
+		{
+			free((*env)[i]);
+			(*env)[i] = var;
+			return ;
+		}
+		i++;
 	}
 	new_env = malloc(sizeof(char *) * (ft_envlen(*env) + 2));
 	if (!new_env)
@@ -99,8 +103,10 @@ void	builtin_cd(t_mini *mini)
 		return ;
 	}
 	pwd = getcwd(NULL, 0);
-	ft_setenv("OLDPWD", oldpwd, &(mini->env));
-	ft_setenv("PWD", pwd, &(mini->env));
+	if (oldpwd)
+		ft_setenv("OLDPWD", oldpwd, &(mini->env));
+	if (pwd)
+		ft_setenv("PWD", pwd, &(mini->env));
 	free(oldpwd);
 	free(pwd);
 }

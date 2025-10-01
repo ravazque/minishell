@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 17:55:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/01 17:26:41 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # define ERR_C_ARG "minishell: Error: -c: option requires an argument\n"
 # define ERR_VAR "minishell: expansion error\n"
 # define ERR_RDI "minishell: syntax error near unexpected token `newline'\n"
+# define ERR_OLDPWD "minishell: cd: OLDPWD not set\n"
+# define ERR_HOME "minishell: cd: HOME not set\n"
 
 typedef enum e_token_type
 {
@@ -121,14 +123,14 @@ int		expander(t_mini *mini);
 void	malloc_error(void);
 void	interactive_err(int argc, char *argv[]);
 
-// =[ Signals ]========================================================== //
+// =[ Signals ]====================================================== //
 
 void	ft_signal(t_mini *mini);
 void	setup_interactive_signals(void);
 void	restore_default_signals(void);
 void	setup_execution_signals(void);
 
-// =[ Propmt ]========================================================== //
+// =[ Propmt ]======================================================= //
 
 char	*prompt(t_mini *mini);
 char	*getcwd_or_pwd(void);
