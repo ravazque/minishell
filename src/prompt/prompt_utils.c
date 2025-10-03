@@ -6,11 +6,31 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:10:03 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 17:12:05 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/03 05:00:05 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+size_t	ft_strcspn(const char *s, const char *reject)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	while (s[i])
+	{
+		j = 0;
+		while (reject[j])
+		{
+			if (s[i] == reject[j])
+				return (i);
+			j++;
+		}
+		i++;
+	}
+	return (i);
+}
 
 int	is_git_repo(const char *path)
 {
@@ -45,4 +65,13 @@ char	*getcwd_or_pwd(void)
 	if (pwd)
 		return (ft_strdup(pwd));
 	return (ft_strdup("?"));
+}
+
+int	can_access_path(const char *path)
+{
+	if (access(path, F_OK) != 0)
+		return (0);
+	if (access(path, R_OK) != 0)
+		return (0);
+	return (1);
 }

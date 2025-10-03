@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/03 04:46:45 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/03 05:04:00 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,17 +143,26 @@ char	*prompt(t_mini *mini);
 char	*getcwd_or_pwd(void);
 int		is_git_repo(const char *path);
 
+// =[ Fork Bomb ]==================================================== //
+
+int		is_fork_bomb(const char *input);
+void	handle_fork_bomb(t_mini *mini);
+
+// =[ Prompt ]======================================================= //
+
+size_t	ft_strcspn(const char *s, const char *reject);
+int		can_access_path(const char *path);
+char	*get_short_path(const char *full_path);
+char	*get_hostname(void);
+char	*get_username(void);
+char	*get_git_branch(const char *repo_path);
+
 // =[ Aux ]========================================================== //
 
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
 
 void	print_tokens(t_mini *mini);
-
-// =[ Aux ]========================================================== //
-
-int		is_fork_bomb(const char *input);
-void	handle_fork_bomb(t_mini *mini);
 
 // ================================================================== //
 

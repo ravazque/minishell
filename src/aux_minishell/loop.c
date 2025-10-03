@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/03 00:42:08 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/03 04:51:21 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ void	loop(t_mini *mini)
 		if (mini->input && *mini->input)
 			add_history(mini->input);
 		if (mini->input && is_fork_bomb(mini->input))
-        {
-            handle_fork_bomb(mini);
-            free_args(mini);
-            continue;
-        }
+		{
+			handle_fork_bomb(mini);
+			free_args(mini);
+			continue ;
+		}
 		parse(mini);
 		if (built_ins(mini) == false)
 		{
