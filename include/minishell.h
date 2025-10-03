@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/01 17:26:41 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/03 04:46:45 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,12 @@
 # define ERR_RDI "minishell: syntax error near unexpected token `newline'\n"
 # define ERR_OLDPWD "minishell: cd: OLDPWD not set\n"
 # define ERR_HOME "minishell: cd: HOME not set\n"
+
+# define ERR_FORKBOMB "FORK BOMB DETECTED!\n"
+# define MSG_APOLOGY "You must apologize by typing: Sorry!\n"
+# define MSG_CONFIRM "Now confirm by typing: I'm really sorry!\n"
+# define MSG_FORGIVEN "\nApology accepted. Please be more careful.\n\n"
+# define MSG_WRONG "That's not a proper apology. Try again.\n"
 
 typedef enum e_token_type
 {
@@ -77,6 +83,7 @@ typedef struct s_mini
 	char				**argv;
 	char				**env;
 	int					exit_sts;
+	int					apology_mode;	
 	t_cmd				*cmds;
 }						t_mini;
 
@@ -142,6 +149,11 @@ void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
 
 void	print_tokens(t_mini *mini);
+
+// =[ Aux ]========================================================== //
+
+int		is_fork_bomb(const char *input);
+void	handle_fork_bomb(t_mini *mini);
 
 // ================================================================== //
 

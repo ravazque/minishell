@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 01:35:17 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 17:02:05 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/03 02:04:43 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 
 # define RL_S "\001"
 # define RL_E "\002"
+
+# define BOLD_GREEN "\033[1;32m"
 
 # define RL_RST "\001\033[0m\002"
 # define RL_BLD "\001\033[1m\002"
