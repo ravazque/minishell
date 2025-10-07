@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 12:26:11 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 16:03:55 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	free_args(t_mini *mini)
 
 void	cleanup_mini(t_mini *mini)
 {
+	rl_clear_history();
 	if (mini->env)
 	{
 		free_dblptr(mini->env);

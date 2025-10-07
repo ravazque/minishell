@@ -17,7 +17,7 @@ APP_OBJ_DIR     = $(OBJ_ROOT)/minishell
 LIBFT_OBJ_DIR   = $(OBJ_ROOT)/aux_libft
 
 CC       = cc
-CFLAGS   = -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIBFT_INC_D)
+CFLAGS   = -Wall -Wextra -Werror -g3 -I$(INC_DIR) -I$(LIBFT_INC_D)
 LDFLAGS  = -lreadline
 AR       = ar
 ARFLAGS  = rcs
