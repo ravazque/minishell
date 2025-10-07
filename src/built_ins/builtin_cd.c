@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 16:36:24 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 18:37:24 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,11 @@ static void	ft_setenv(char *name, char *value, char ***env)
 	int		i;
 	char	**new_env;
 	int		n_len;
+	int		env_len;
 
 	var = ft_strjoin3(name, "=", value);
 	if (!var)
-		return ;
+		return (malloc_error());
 	n_len = ft_strlen(name);
 	i = 0;
 	while ((*env)[i])
@@ -62,14 +63,15 @@ static void	ft_setenv(char *name, char *value, char ***env)
 		}
 		i++;
 	}
-	new_env = malloc(sizeof(char *) * (ft_envlen(*env) + 2));
+	env_len = ft_envlen(*env);
+	new_env = malloc(sizeof(char *) * (env_len + 2));
 	if (!new_env)
 	{
 		free(var);
-		return ;
+		return (malloc_error());
 	}
 	i = 0;
-	while ((*env)[i])
+	while (i < env_len)
 	{
 		new_env[i] = (*env)[i];
 		i++;
@@ -122,18 +124,23 @@ void	builtin_cd(t_mini *mini)
 		ft_putstr_fd("minishell: cd: ", 2);
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
-		free(oldpwd);
+		if (oldpwd)
+			free(oldpwd);
 		mini->exit_sts = 1;
 		return ;
 	}
 	pwd = getcwd(NULL, 0);
 	if (oldpwd)
+	{
 		ft_setenv("OLDPWD", oldpwd, &(mini->env));
+		free(oldpwd);
+	}
 	if (pwd)
+	{
 		ft_setenv("PWD", pwd, &(mini->env));
-	free(oldpwd);
-	free(pwd);
+		free(pwd);
+	}
 	mini->exit_sts = 0;
 }
 
-// varibale de entorno a modificar si hay comabio de char *env[] a listas
+// revisar cuando paula cambie char *env[] a t_list *list

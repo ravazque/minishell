@@ -6,27 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 15:06:58 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 18:40:47 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
-
-static void	free_token_parts(t_token_part *parts)
-{
-	t_token_part	*current;
-	t_token_part	*next;
-
-	current = parts;
-	while (current)
-	{
-		next = current->next;
-		if (current->content)
-			free(current->content);
-		free(current);
-		current = next;
-	}
-}
 
 static t_token_part	*mk_tok_part(const char *c, int sq, int dq)
 {

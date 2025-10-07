@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 15:06:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 18:34:45 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,13 @@ static t_redir	*mk_redir(const char *tgt, const char *op)
 
 	r = (t_redir *)malloc(sizeof(t_redir));
 	if (!r)
-		return (NULL);
+		return (malloc_error(), NULL);
 	ft_bzero(r, sizeof(t_redir));
 	r->target = ft_strdup(tgt);
 	if (!r->target)
 	{
 		free(r);
-		return (NULL);
+		return (malloc_error(), NULL);
 	}
 	if (ft_strcmp(op, "<") == 0)
 		r->i_redir = 1;
@@ -86,15 +86,16 @@ static t_token	*mk_tok_node(const char *raw, int sq, int dq)
 
 	tok = (t_token *)malloc(sizeof(t_token));
 	if (!tok)
-		return (NULL);
+		return (malloc_error(), NULL);
 	tok->raw = ft_strdup(raw);
 	if (!tok->raw)
 	{
 		free(tok);
-		return (NULL);
+		return (malloc_error(), NULL);
 	}
 	tok->is_squote = sq;
 	tok->is_dquote = dq;
+	tok->parts = NULL;
 	tok->next = NULL;
 	return (tok);
 }
@@ -130,7 +131,7 @@ static char	**toks_to_arr(t_token *toks)
 	}
 	arr = (char **)malloc(sizeof(char *) * (cnt + 1));
 	if (!arr)
-		return (NULL);
+		return (malloc_error(), NULL);
 	curr = toks;
 	i = 0;
 	while (curr)
@@ -138,8 +139,13 @@ static char	**toks_to_arr(t_token *toks)
 		arr[i] = ft_strdup(curr->raw);
 		if (!arr[i])
 		{
-			free_dblptr(arr);
-			return (NULL);
+			while (i > 0)
+			{
+				i--;
+				free(arr[i]);
+			}
+			free(arr);
+			return (malloc_error(), NULL);
 		}
 		curr = curr->next;
 		i++;
@@ -159,9 +165,15 @@ static int	rm_redir_toks(t_token **head, t_token *curr, t_token *prev)
 		prev->next = next->next;
 	else
 		*head = next->next;
-	free(curr->raw);
+	if (curr->raw)
+		free(curr->raw);
+	if (curr->parts)
+		free_token_parts(curr->parts);
 	free(curr);
-	free(next->raw);
+	if (next->raw)
+		free(next->raw);
+	if (next->parts)
+		free_token_parts(next->parts);
 	free(next);
 	return (0);
 }
@@ -189,10 +201,7 @@ static int	proc_redirs(t_cmd *cmd)
 			}
 			r = mk_redir(next->raw, curr->raw);
 			if (!r)
-			{
-				malloc_error();
 				return (1);
-			}
 			add_redir(cmd, r);
 			rm_redir_toks(&cmd->tokn, curr, prev);
 			curr = prev;
@@ -234,7 +243,7 @@ static int	mk_cmd_range(char **toks, int start, int end, t_cmd **lst)
 		return (0);
 	new = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!new)
-		return (1);
+		return (malloc_error(), 1);
 	ft_bzero(new, sizeof(t_cmd));
 	i = start;
 	while (i < end)

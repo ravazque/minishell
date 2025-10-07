@@ -6,13 +6,13 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 04:26:47 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/26 12:21:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 18:39:26 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	free_token_parts(t_token_part *parts)
+void	free_token_parts(t_token_part *parts)
 {
 	t_token_part	*current;
 	t_token_part	*next;

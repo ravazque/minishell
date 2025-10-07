@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 18:25:52 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 18:34:35 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ static char	*str_cat(char *dst, const char *src)
 		return (NULL);
 	}
 	i = 0;
-	while (i < dlen)
+	while (i < dlen && dst)
 	{
 		res[i] = dst[i];
 		i++;
@@ -174,9 +174,15 @@ static char	*exp_str_part(const char *s, t_mini *mini, int exp)
 					{
 						res = str_cat(res, val);
 						free(val);
+						if (!res)
+							return (NULL);
 					}
-					if (!res)
-						res = ft_strdup("");
+					else
+					{
+						res = str_cat(res, "");
+						if (!res)
+							return (NULL);
+					}
 					i = vend;
 				}
 				else
@@ -285,7 +291,8 @@ static void	free_new_toks(char **new, int i)
 	while (i > 0)
 	{
 		i--;
-		free(new[i]);
+		if (new[i])
+			free(new[i]);
 	}
 	free(new);
 }
@@ -303,7 +310,7 @@ static int	exp_cmd_toks(t_cmd *cmd, t_mini *mini)
 	cnt = count_toks(cmd->tokn);
 	new = (char **)malloc(sizeof(char *) * (cnt + 1));
 	if (!new)
-		return (1);
+		return (malloc_error(), 1);
 	curr = cmd->tokn;
 	j = 0;
 	while (curr)

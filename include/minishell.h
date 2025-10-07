@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/03 05:04:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 18:40:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void	free_redirs(t_redir *r);
 void	free_cmds(t_cmd *cmd);
 void	cleanup_mini(t_mini *mini);
 void	free_args(t_mini *mini);
+void	free_token_parts(t_token_part *parts);
 
 // =[ Built Ins ]==================================================== //
 
