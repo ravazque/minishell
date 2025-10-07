@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 18:26:42 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/08 00:54:31 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 23:54:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,9 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	new_str = (char *)malloc(len1 + len2 + 1);
 	if (!new_str)
 		return (NULL);
-	i = 0;
-	while (i < len1 && s1)
-	{
+	i = -1;
+	while (++i < len1)
 		new_str[i] = s1[i];
-		i++;
-	}
 	while (i < len1 + len2)
 	{
 		new_str[i] = s2[i - len1];
@@ -48,22 +45,13 @@ char	*ft_strjoin3(char const *s1, char const *s2, char const *s3)
 	char	*temp;
 	char	*conc;
 
-	if (!s1 && !s2 && !s3)
-		return (ft_strdup(""));
 	if (!s3)
+		conc = ft_strdup(s1);
+	else
 	{
-		if (!s1)
-			return (ft_strdup(""));
-		return (ft_strdup(s1));
+		temp = ft_strjoin(s1, s2);
+		conc = ft_strjoin(temp, s3);
+		free (temp);
 	}
-	if (!s1)
-		s1 = "";
-	if (!s2)
-		s2 = "";
-	temp = ft_strjoin(s1, s2);
-	if (!temp)
-		return (NULL);
-	conc = ft_strjoin(temp, s3);
-	free(temp);
 	return (conc);
 }

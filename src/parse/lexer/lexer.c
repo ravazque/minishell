@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/08 00:57:45 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 18:34:45 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,8 +177,6 @@ static int	rm_redir_toks(t_token **head, t_token *curr, t_token *prev)
 	free(next);
 	return (0);
 }
-
-/* Continuación de lexer.c */
 
 static int	proc_redirs(t_cmd *cmd)
 {

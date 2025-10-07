@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/08 00:57:22 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 18:34:35 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,12 +101,18 @@ static char	*str_cat(char *dst, const char *src)
 			free(dst);
 		return (NULL);
 	}
-	i = -1;
-	while (++i < dlen && dst)
+	i = 0;
+	while (i < dlen && dst)
+	{
 		res[i] = dst[i];
+		i++;
+	}
 	j = 0;
 	while (j < slen)
-		res[i++] = src[j++];
+	{
+		res[i + j] = src[j];
+		j++;
+	}
 	res[dlen + slen] = '\0';
 	if (dst)
 		free(dst);
@@ -359,6 +365,22 @@ static int	exp_redirs(t_cmd *cmd, t_mini *mini)
 	return (0);
 }
 
+static void	free_tok_parts(t_token_part *parts)
+{
+	t_token_part	*curr;
+	t_token_part	*next;
+
+	curr = parts;
+	while (curr)
+	{
+		next = curr->next;
+		if (curr->content)
+			free(curr->content);
+		free(curr);
+		curr = next;
+	}
+}
+
 static void	free_tok_list(t_token *toks)
 {
 	t_token	*curr;
@@ -371,7 +393,7 @@ static void	free_tok_list(t_token *toks)
 		if (curr->raw)
 			free(curr->raw);
 		if (curr->parts)
-			free_token_parts(curr->parts);
+			free_tok_parts(curr->parts);
 		free(curr);
 		curr = next;
 	}

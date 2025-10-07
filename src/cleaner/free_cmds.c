@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 04:26:47 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/08 00:53:31 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 18:39:26 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,7 @@ void	free_token_parts(t_token_part *parts)
 	{
 		next = current->next;
 		if (current->content)
-		{
 			free(current->content);
-			current->content = NULL;
-		}
 		free(current);
 		current = next;
 	}
@@ -41,15 +38,9 @@ static void	free_token_list(t_token *tokens)
 	{
 		next = current->next;
 		if (current->raw)
-		{
 			free(current->raw);
-			current->raw = NULL;
-		}
 		if (current->parts)
-		{
 			free_token_parts(current->parts);
-			current->parts = NULL;
-		}
 		free(current);
 		current = next;
 	}
@@ -69,22 +60,14 @@ void	free_cmds(t_cmd *cmd)
 			while (cmd->tokens[i])
 			{
 				free(cmd->tokens[i]);
-				cmd->tokens[i] = NULL;
 				i++;
 			}
 			free(cmd->tokens);
-			cmd->tokens = NULL;
 		}
 		if (cmd->tokn)
-		{
 			free_token_list(cmd->tokn);
-			cmd->tokn = NULL;
-		}
 		if (cmd->redirs)
-		{
 			free_redirs(cmd->redirs);
-			cmd->redirs = NULL;
-		}
 		free(cmd);
 		cmd = n;
 	}
