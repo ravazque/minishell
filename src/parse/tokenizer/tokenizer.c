@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/30 23:00:02 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 15:06:58 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 static void	free_token_parts(t_token_part *parts)
 {

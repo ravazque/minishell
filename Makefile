@@ -94,3 +94,5 @@ re:
 	@$(MAKE) -s all
 
 .PHONY: all clean fclean re
+
+# Hay que cambiar la wildcards [ *.c ]
