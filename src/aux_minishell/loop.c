@@ -6,11 +6,33 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 15:36:23 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 16:31:02 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+static void	cleanup_iteration(t_mini *mini)
+{
+	free_args(mini);
+	if (mini->cmds)
+	{
+		free_cmds(mini->cmds);
+		mini->cmds = NULL;
+	}
+}
+
+static void	process_command(t_mini *mini)
+{
+	parse(mini);
+	if (mini->cmds)
+	{
+		if (!built_ins(mini))
+		{
+			print_tokens(mini);
+		}
+	}
+}
 
 void	loop(t_mini *mini)
 {
@@ -21,25 +43,21 @@ void	loop(t_mini *mini)
 			mini->prompt = ft_strdup("~ $ ");
 		mini->input = readline(mini->prompt);
 		ft_signal(mini);
-		if (mini->input && *mini->input)
+		if (!mini->input)
+		{
+			cleanup_mini(mini);
+			write(STDOUT_FILENO, "exit\n", 5);
+			exit(mini->exit_sts);
+		}
+		if (*mini->input)
 			add_history(mini->input);
 		if (mini->input && is_fork_bomb(mini->input))
 		{
 			handle_fork_bomb(mini);
-			free_args(mini);
+			cleanup_iteration(mini);
 			continue ;
 		}
-		parse(mini);
-		if (built_ins(mini) == false)
-		{
-			if (mini->cmds)
-				print_tokens(mini);
-		}
-		free_args(mini);
-		if (mini->cmds)
-		{
-			free_cmds(mini->cmds);
-			mini->cmds = NULL;
-		}
+		process_command(mini);
+		cleanup_iteration(mini);
 	}
 }

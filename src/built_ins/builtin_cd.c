@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/01 17:50:06 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 16:36:24 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,3 +135,5 @@ void	builtin_cd(t_mini *mini)
 	free(pwd);
 	mini->exit_sts = 0;
 }
+
+// varibale de entorno a modificar si hay comabio de char *env[] a listas
