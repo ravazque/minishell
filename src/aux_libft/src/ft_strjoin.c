@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 18:26:42 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/01 16:20:01 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 23:54:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,13 @@ char	*ft_strjoin3(char const *s1, char const *s2, char const *s3)
 	char	*temp;
 	char	*conc;
 
-	temp = ft_strjoin(s1, s2);
-	conc = ft_strjoin(temp, s3);
-	free (temp);
+	if (!s3)
+		conc = ft_strdup(s1);
+	else
+	{
+		temp = ft_strjoin(s1, s2);
+		conc = ft_strjoin(temp, s3);
+		free (temp);
+	}
 	return (conc);
 }

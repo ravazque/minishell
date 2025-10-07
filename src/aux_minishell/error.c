@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 15:33:16 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 23:20:15 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,6 @@ void	interactive_err(int argc, char *argv[])
 
 void	malloc_error(void) // hay que hacer sus respectivos free
 {
-	ft_putstr_fd("minishell: Error: malloc has failed\n", STDERR_FILENO);
+	ft_putstr_fd("minishell: error: malloc has failed\n", STDERR_FILENO);
 	return ;
 }

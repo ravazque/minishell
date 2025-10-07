@@ -6,81 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 18:37:24 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 22:06:06 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
-
-static int	ft_envlen(char **env)
-{
-	int	i;
-
-	i = 0;
-	while (env[i])
-		i++;
-	return (i);
-}
-
-static char	*get_localenv(const char *name, char **env)
-{
-	int		i;
-	int		n_len;
-
-	if (!name || !env)
-		return (NULL);
-	n_len = ft_strlen(name);
-	i = 0;
-	while (env[i])
-	{
-		if (!ft_strncmp(env[i], name, n_len) && env[i][n_len] == '=')
-			return (env[i] + n_len + 1);
-		i++;
-	}
-	return (NULL);
-}
-
-static void	ft_setenv(char *name, char *value, char ***env)
-{
-	char	*var;
-	int		i;
-	char	**new_env;
-	int		n_len;
-	int		env_len;
-
-	var = ft_strjoin3(name, "=", value);
-	if (!var)
-		return (malloc_error());
-	n_len = ft_strlen(name);
-	i = 0;
-	while ((*env)[i])
-	{
-		if (!ft_strncmp((*env)[i], name, n_len) && (*env)[i][n_len] == '=')
-		{
-			free((*env)[i]);
-			(*env)[i] = var;
-			return ;
-		}
-		i++;
-	}
-	env_len = ft_envlen(*env);
-	new_env = malloc(sizeof(char *) * (env_len + 2));
-	if (!new_env)
-	{
-		free(var);
-		return (malloc_error());
-	}
-	i = 0;
-	while (i < env_len)
-	{
-		new_env[i] = (*env)[i];
-		i++;
-	}
-	new_env[i] = var;
-	new_env[i + 1] = NULL;
-	free(*env);
-	*env = new_env;
-}
 
 static char	*ft_cd_path(t_mini *mini)
 {
@@ -142,5 +72,3 @@ void	builtin_cd(t_mini *mini)
 	}
 	mini->exit_sts = 0;
 }
-
-// revisar cuando paula cambie char *env[] a t_list *list

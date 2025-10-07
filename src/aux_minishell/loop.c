@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 16:31:02 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 21:55:53 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	loop(t_mini *mini)
 		mini->prompt = prompt(mini);
 		if (!mini->prompt)
 			mini->prompt = ft_strdup("~ $ ");
-		mini->input = readline(mini->prompt);
+		mini->input = readline(mini->prompt); // al reescalar la pantalla se rompe el comportamiento de readline (jvidal-t)
 		ft_signal(mini);
 		if (!mini->input)
 		{

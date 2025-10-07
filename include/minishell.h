@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 18:40:38 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/07 23:14:56 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,14 @@ void	builtin_env(t_mini *mini);
 void	builtin_pwd(t_mini *mini);
 void	builtin_cd(t_mini *mini);
 void	builtin_echo(t_mini *mini);
+void	builtin_export(t_mini *mini);
+void	builtin_unset(t_mini *mini);
 bool	built_ins(t_mini *mini);
+
+int		ft_argc(char **argv);
+void	ft_setenv(char *name, char *value, char ***env);
+int		ft_envlen(char **env);
+char	*get_localenv(const char *name, char **env);
 
 // =[ Parse ]======================================================== //
 
