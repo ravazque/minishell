@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 22:06:06 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/08 01:00:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,32 @@ static char	*ft_cd_path(t_mini *mini)
 {
 	char	*path;
 
-	if (mini->cmds->tokens[2] && mini->cmds->tokens[1])
+	if (mini->cmds->tokens[1] && mini->cmds->tokens[2])
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
-		return (mini->exit_sts = 1, NULL);
+		mini->exit_sts = 2;
+		return (NULL);
 	}
 	if (!mini->cmds->tokens[1])
 	{
 		path = get_localenv("HOME", mini->env);
 		if (!path)
-			return (ft_putstr_fd(ERR_HOME, 2), mini->exit_sts = 1, NULL);
+		{
+			ft_putstr_fd(ERR_HOME, 2);
+			mini->exit_sts = 1;
+			return (NULL);
+		}
 		return (path);
 	}
 	if (!ft_strcmp(mini->cmds->tokens[1], "-"))
 	{
 		path = get_localenv("OLDPWD", mini->env);
 		if (!path)
-			return (ft_putstr_fd(ERR_OLDPWD, 2), mini->exit_sts = 1, NULL);
+		{
+			ft_putstr_fd(ERR_OLDPWD, 2);
+			mini->exit_sts = 1;
+			return (NULL);
+		}
 		printf("%s\n", path);
 		return (path);
 	}

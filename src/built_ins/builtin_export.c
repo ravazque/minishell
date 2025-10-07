@@ -6,19 +6,21 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:30:15 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/07 23:32:40 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/08 01:11:16 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	**ft_sort_env(char **env)//f() que te ordena env alfabeticamente
+static char	**ft_sort_env(char **env)
 {
 	char	**abc_env;
 	int		i;
 	char	*temp;
 
 	abc_env = ft_copy_dblptr(env);
+	if (!abc_env)
+		return (NULL);
 	i = 0;
 	while (abc_env[i + 1])
 	{
@@ -35,7 +37,7 @@ char	**ft_sort_env(char **env)//f() que te ordena env alfabeticamente
 	return (abc_env);
 }
 
-char	**ft_split2(char *s, char c)//te hace un split con solo 2 posiciones (+ null)
+static char	**ft_split2(char *s, char c)
 {
 	char	**matrix;
 	int		i;
@@ -43,47 +45,35 @@ char	**ft_split2(char *s, char c)//te hace un split con solo 2 posiciones (+ nul
 
 	i = 0;
 	j = 0;
-	matrix = malloc(sizeof(char *) * 2 + 1);
+	matrix = malloc(sizeof(char *) * 3);
 	if (!matrix)
 		return (NULL);
 	while (s[j] && s[j] != c)
 		j++;
 	matrix[0] = ft_substr(s, i, j);
 	if (!matrix[0])
-		return (free_dblptr(matrix), NULL);
+		return (free(matrix), NULL);
 	j++;
+	i = j;
 	while (s[i])
 		i++;
 	matrix[1] = ft_substr(s, j, (i - j));
 	if (!matrix[1])
-		return (free_dblptr(matrix), NULL);
+		return (free(matrix[0]), free(matrix), NULL);
 	matrix[2] = NULL;
 	return (matrix);
 }
 
-	//NAME=VALUE
-	//si var existe -> la actualiza
-	//si var no existe -> la crea
-	// contiene value
-
-	//NAME=
-	//existe -> cambia su valor a la cadena vacia ""
-	//no existe -> la crea con valor como arriba y nombre en env es con =
-	// value vacío
-
-	//NAME
-	//existe -> conserva el valor
-	//no existe -> la crea sin valor y sin =
-	// value como estaba
-
-void	ft_putexport(char ***env)
+static void	ft_putexport(char ***env)
 {
 	int		i;
 	int		j;
 	char	**abc_env;
 
-	i = 0;
 	abc_env = ft_sort_env(*env);
+	if (!abc_env)
+		return ;
+	i = 0;
 	while (abc_env[i])
 	{
 		j = 0;
@@ -104,55 +94,66 @@ void	ft_putexport(char ***env)
 	free_dblptr(abc_env);
 }
 
-void	ft_setexport(char **argv, char ***env, int i, int flag)
+static int	is_valid_identifier(char *str)
+{
+	int	i;
+
+	if (!str || !str[0])
+		return (0);
+	if (!ft_isalpha(str[0]) && str[0] != '_')
+		return (0);
+	i = 1;
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+static int	ft_setexport(char *arg, char ***env)
 {
 	char	**args;
 
-	if (flag == 0)
+	if (!is_valid_identifier(arg))
 	{
-		if (ft_strchr(argv[i], '='))
-		{
-			args = ft_split2(argv[i], '=');
-			if (args[1])//NAME=VALUE
-				ft_setenv(args[0], args[1], env);
-			else if (!args[1])//NAME=
-				ft_setenv(args[0], "", env);
-			free_dblptr(args);
-		}
-		else if (!ft_strchr(argv[i], '='))//NAME
-			ft_setenv(argv[i], NULL, env);
+		ft_putstr_fd("minishell: export: `", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd("': not a valid identifier\n", 2);
+		return (1);
 	}
+	if (ft_strchr(arg, '='))
+	{
+		args = ft_split2(arg, '=');
+		if (!args)
+			return (1);
+		if (args[1])
+			ft_setenv(args[0], args[1], env);
+		else
+			ft_setenv(args[0], "", env);
+		free_dblptr(args);
+	}
+	else
+		ft_setenv(arg, NULL, env);
+	return (0);
 }
 
 void	builtin_export(t_mini *mini)
 {
 	int	i;
-	int	j;
-	int	flag;
 
-	if (ft_argc(mini->cmds->tokens) == 1)//!mini->cmds->tokens[1])
+	if (ft_argc(mini->cmds->tokens) == 1)
 	{
 		ft_putexport(&mini->env);
+		mini->exit_sts = 0;
 		return ;
 	}
 	i = 1;
-	while (ft_argc(mini->cmds->tokens) > i)
+	mini->exit_sts = 0;
+	while (mini->cmds->tokens[i])
 	{
-		j = 0;
-		flag = 0;
-		while (mini->cmds->tokens[i][j] && mini->cmds->tokens[i][j] != '=' && flag == 0)
-		{
-			if (!((ft_isalnum(mini->cmds->tokens[i][j]) || (mini->cmds->tokens[i][j] == '_'))//si en algun momento [j] no es letra/numero/_
-			&& (ft_isalpha(mini->cmds->tokens[i][0]) || (mini->cmds->tokens[i][0] == '_'))))// && [0] no es letra/_
-			{
-				ft_putstr_fd("minishell: export: `", 2);
-				ft_putstr_fd(mini->cmds->tokens[i], 2);
-				ft_putstr_fd("': not a valid identifier\n", 2);
-				flag = 1;
-			}
-			j++;
-		}
-		ft_setexport(mini->cmds->tokens, &mini->env, i, flag);
+		mini->exit_sts = ft_setexport(mini->cmds->tokens[i], &mini->env);
 		i++;
 	}
 }

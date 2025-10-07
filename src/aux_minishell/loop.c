@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 21:55:53 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/08 00:56:34 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,23 @@
 
 static void	cleanup_iteration(t_mini *mini)
 {
-	free_args(mini);
+	if (!mini)
+		return ;
+	if (mini->input)
+	{
+		free(mini->input);
+		mini->input = NULL;
+	}
+	if (mini->prompt)
+	{
+		free(mini->prompt);
+		mini->prompt = NULL;
+	}
+	if (mini->pwd)
+	{
+		free(mini->pwd);
+		mini->pwd = NULL;
+	}
 	if (mini->cmds)
 	{
 		free_cmds(mini->cmds);
@@ -24,6 +40,8 @@ static void	cleanup_iteration(t_mini *mini)
 
 static void	process_command(t_mini *mini)
 {
+	if (!mini)
+		return ;
 	parse(mini);
 	if (mini->cmds)
 	{
@@ -41,7 +59,7 @@ void	loop(t_mini *mini)
 		mini->prompt = prompt(mini);
 		if (!mini->prompt)
 			mini->prompt = ft_strdup("~ $ ");
-		mini->input = readline(mini->prompt); // al reescalar la pantalla se rompe el comportamiento de readline (jvidal-t)
+		mini->input = readline(mini->prompt);
 		ft_signal(mini);
 		if (!mini->input)
 		{

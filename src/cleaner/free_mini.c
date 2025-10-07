@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 16:03:55 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/08 00:56:25 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,17 @@ void	free_dblptr(char **dblptr)
 	while (dblptr[i])
 	{
 		free(dblptr[i]);
+		dblptr[i] = NULL;
 		i++;
 	}
 	free(dblptr);
+	dblptr = NULL;
 }
 
 void	free_args(t_mini *mini)
 {
+	if (!mini)
+		return ;
 	if (mini->input)
 	{
 		free(mini->input);
@@ -48,6 +52,8 @@ void	free_args(t_mini *mini)
 
 void	cleanup_mini(t_mini *mini)
 {
+	if (!mini)
+		return ;
 	rl_clear_history();
 	if (mini->env)
 	{
