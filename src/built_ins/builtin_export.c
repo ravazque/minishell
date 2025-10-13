@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:30:15 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/07 23:32:40 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/09 00:29:54 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ void	builtin_export(t_mini *mini)
 	int	j;
 	int	flag;
 
-	if (ft_argc(mini->cmds->tokens) == 1)//!mini->cmds->tokens[1])
+	if (ft_argc(mini->cmds->tokens) == 1)
 	{
 		ft_putexport(&mini->env);
 		return ;
