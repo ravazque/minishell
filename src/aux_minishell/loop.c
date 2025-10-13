@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/13 18:20:52 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/13 19:18:47 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ static void	process_command(t_mini *mini)
 	{
 		if (!built_ins(mini))
 		{
-			print_tokens(mini);
+			// print_tokens(mini);
+			try_pipex(mini);
 		}
 	}
 }

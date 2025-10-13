@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 23:14:56 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/13 19:20:52 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,8 +169,9 @@ char	*get_git_branch(const char *repo_path);
 
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
+void	try_pipex(t_mini *mini);
 
-void	print_tokens(t_mini *mini);
+// void	print_tokens(t_mini *mini);
 
 // ================================================================== //
 
