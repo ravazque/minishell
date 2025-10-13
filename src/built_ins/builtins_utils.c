@@ -61,6 +61,10 @@ void	ft_setenv(char *name, char *value, char ***env)
 	var = ft_strjoin3(name, "=", value);
 	if (!var)
 		return (malloc_error());
+	if (value)
+		setenv(name, value, 1);
+	else
+		unsetenv(name);
 	n_len = ft_strlen(name);
 	i = 0;
 	while ((*env)[i])

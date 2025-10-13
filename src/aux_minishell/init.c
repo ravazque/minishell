@@ -19,8 +19,21 @@ void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[])
 	mini->input = NULL;
 	mini->pwd = NULL;
 	mini->exit_sts = 0;
-	mini->env = ft_copy_dblptr(envp);
-	mini->argc = argc;
-	mini->argv = ft_copy_dblptr(argv);
 	mini->apology_mode = 0;
+	mini->argc = argc;
+	mini->env = ft_copy_dblptr(envp);
+	if (!mini->env)
+	{
+		ft_putstr_fd("minishell: fatal error: failed to copy environment\n",
+			STDERR_FILENO);
+		exit(1);
+	}
+	mini->argv = ft_copy_dblptr(argv);
+	if (!mini->argv)
+	{
+		free_dblptr(mini->env);
+		ft_putstr_fd("minishell: fatal error: failed to copy arguments\n",
+			STDERR_FILENO);
+		exit(1);
+	}
 }

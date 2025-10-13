@@ -36,7 +36,7 @@ static char	*get_exit_sts(int exit_status)
 
 	sts_str = ft_itoa(exit_status);
 	if (!sts_str)
-		return (ft_strdup(""));
+		return (NULL);
 	return (sts_str);
 }
 

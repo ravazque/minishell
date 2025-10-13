@@ -53,15 +53,37 @@ int	is_git_repo(const char *path)
 	return (result);
 }
 
+static int	pwd_matches_cwd(const char *pwd, const char *cwd)
+{
+	struct stat	pwd_stat;
+	struct stat	cwd_stat;
+
+	if (!pwd || !cwd)
+		return (0);
+	if (stat(pwd, &pwd_stat) != 0)
+		return (0);
+	if (stat(cwd, &cwd_stat) != 0)
+		return (0);
+	return (pwd_stat.st_ino == cwd_stat.st_ino
+		&& pwd_stat.st_dev == cwd_stat.st_dev);
+}
+
 char	*getcwd_or_pwd(void)
 {
 	char	*cwd;
 	char	*pwd;
 
+	pwd = getenv("PWD");
 	cwd = getcwd(NULL, 0);
+	if (pwd && cwd && pwd_matches_cwd(pwd, cwd))
+	{
+		free(cwd);
+		return (ft_strdup(pwd));
+	}
+	if (pwd && !cwd)
+		return (ft_strdup(pwd));
 	if (cwd)
 		return (cwd);
-	pwd = getenv("PWD");
 	if (pwd)
 		return (ft_strdup(pwd));
 	return (ft_strdup("?"));

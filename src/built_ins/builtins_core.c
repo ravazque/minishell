@@ -25,9 +25,9 @@ bool	built_ins(t_mini *mini)
 	else if (ft_strcmp(mini->cmds->tokens[0], "pwd") == 0)
 		return (builtin_pwd(mini), true);
 	else if (ft_strcmp(mini->cmds->tokens[0], "export") == 0)
-		return (builtin_export(mini), mini->exit_sts = 0, true);
+		return (builtin_export(mini), true);
 	else if (ft_strcmp(mini->cmds->tokens[0], "unset") == 0)
-		return (builtin_unset(mini), mini->exit_sts = 0, true);
+		return (builtin_unset(mini), true);
 	else if (ft_strcmp(mini->cmds->tokens[0], "env") == 0)
 		return (builtin_env(mini), true);
 	else

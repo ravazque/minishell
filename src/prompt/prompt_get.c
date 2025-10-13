@@ -33,6 +33,7 @@ char	*get_git_branch(const char *repo_path)
 		return (fclose(f), NULL);
 	fclose(f);
 	line[ft_strcspn(line, "\n")] = '\0';
+	branch = NULL;
 	if (ft_strncmp(line, "ref: ", 5) == 0)
 	{
 		last_slash = ft_strrchr(line + 5, '/');
@@ -91,6 +92,8 @@ char	*get_short_path(const char *full_path)
 			if (full_path[home_len] == '/')
 			{
 				short_path = ft_strjoin("~", full_path + home_len);
+				if (!short_path)
+					return (ft_strdup(full_path));
 				return (short_path);
 			}
 		}

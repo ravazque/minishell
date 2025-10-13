@@ -24,14 +24,25 @@ static void	handle_sigint(int sig)
 	rl_redisplay();
 }
 
+static void	handle_sigwinch(int sig)
+{
+	(void)sig;
+	rl_resize_terminal();
+}
+
 void	setup_interactive_signals(void)
 {
 	struct sigaction	sa_int;
+	struct sigaction	sa_winch;
 
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_handler = handle_sigint;
 	sa_int.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa_int, NULL);
+	sigemptyset(&sa_winch.sa_mask);
+	sa_winch.sa_handler = handle_sigwinch;
+	sa_winch.sa_flags = 0;
+	sigaction(SIGWINCH, &sa_winch, NULL);
 	signal(SIGQUIT, SIG_IGN);
 }
 

@@ -45,13 +45,14 @@ char	*ft_strjoin3(char const *s1, char const *s2, char const *s3)
 	char	*temp;
 	char	*conc;
 
+	if (!s1 || !s2)
+		return (NULL);
 	if (!s3)
-		conc = ft_strdup(s1);
-	else
-	{
-		temp = ft_strjoin(s1, s2);
-		conc = ft_strjoin(temp, s3);
-		free (temp);
-	}
+		return (ft_strdup(s1));
+	temp = ft_strjoin(s1, s2);
+	if (!temp)
+		return (NULL);
+	conc = ft_strjoin(temp, s3);
+	free(temp);
 	return (conc);
 }

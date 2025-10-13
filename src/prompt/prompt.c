@@ -84,19 +84,17 @@ static char	*build_git_section(const char *branch)
 		return (ft_strdup(""));
 	tmp = ft_strjoin(" git:(", branch);
 	if (!tmp)
-		return (ft_strdup(""));
+		return (NULL);
 	git_part = ft_strjoin(tmp, ")");
 	free(tmp);
 	if (!git_part)
-		return (ft_strdup(""));
+		return (NULL);
 	tmp = ft_strjoin(RL_RED, git_part);
 	free(git_part);
 	if (!tmp)
-		return (ft_strdup(""));
+		return (NULL);
 	colored = ft_strjoin(tmp, RL_RST);
 	free(tmp);
-	if (!colored)
-		return (ft_strdup(""));
 	return (colored);
 }
 
@@ -136,7 +134,7 @@ char	*prompt(t_mini *mini)
 		free(mini->pwd);
 	mini->pwd = getcwd_or_pwd();
 	if (!mini->pwd)
-		return (NULL);
+		return (ft_strdup("$ "));
 	user_host = build_user_host();
 	path_section = build_path_section(mini->pwd);
 	branch = NULL;

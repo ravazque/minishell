@@ -40,4 +40,5 @@ void	builtin_unset(t_mini *mini)
 			j++;
 		}
 	}
+	mini->exit_sts = 0;
 }
