@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 22:06:06 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/13 20:51:56 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ static char	*ft_cd_path(t_mini *mini)
 	}
 	if (!mini->cmds->tokens[1])
 	{
-		path = get_localenv("HOME", mini->env);
+		path = get_local_env("HOME", mini->env);
 		if (!path)
 			return (ft_putstr_fd(ERR_HOME, 2), mini->exit_sts = 1, NULL);
 		return (path);
 	}
 	if (!ft_strcmp(mini->cmds->tokens[1], "-"))
 	{
-		path = get_localenv("OLDPWD", mini->env);
+		path = get_local_env("OLDPWD", mini->env);
 		if (!path)
 			return (ft_putstr_fd(ERR_OLDPWD, 2), mini->exit_sts = 1, NULL);
 		printf("%s\n", path);
@@ -80,7 +80,7 @@ void	builtin_cd(t_mini *mini)
 	path = ft_cd_path(mini);
 	if (!path)
 		return ;
-	oldpwd = get_localenv("PWD", mini->env);
+	oldpwd = get_local_env("PWD", mini->env);
 	if (chdir(path) < 0)
 	{
 		ft_putstr_fd("minishell: cd: ", 2);

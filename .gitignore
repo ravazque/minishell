@@ -1,0 +1,32 @@
+# ===[ Claude y Docs ]===
+.claude/
+docs/
+
+# ===[ Ejecutables ]===
+minishell
+
+# ===[ Librerías ]===
+src/aux_libft/libft.a
+*.a
+
+# ===[ Objetos ]===
+*.o
+minishellObjects/
+
+# ===[ Debug ]===
+*.dSYM/
+vgcore.*
+
+# ===[ IDE ]===
+.vscode/
+*.swp
+*.swo
+*~
+.*.swp
+
+# ===[ Sistema ]===
+.DS_Store
+
+# ===[ Tests ]===
+test/
+a.out

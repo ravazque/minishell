@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/13 19:20:52 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/13 20:55:51 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,11 @@ bool	built_ins(t_mini *mini);
 int		ft_argc(char **argv);
 void	ft_setenv(char *name, char *value, char ***env);
 int		ft_envlen(char **env);
-char	*get_localenv(const char *name, char **env);
+char	*get_local_env(const char *name, char **env);
+
+// =[ Executor ]===================================================== //
+
+void	executor(t_mini *mini);
 
 // =[ Parse ]======================================================== //
 
@@ -169,7 +173,6 @@ char	*get_git_branch(const char *repo_path);
 
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
-void	try_pipex(t_mini *mini);
 
 // void	print_tokens(t_mini *mini);
 

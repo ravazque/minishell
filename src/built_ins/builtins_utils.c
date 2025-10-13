@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:34:14 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/07 23:54:55 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/13 20:51:56 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	ft_envlen(char **env)
 	return (i);
 }
 
-char	*get_localenv(const char *name, char **env)
+char	*get_local_env(const char *name, char **env)
 {
 	int		i;
 	int		n_len;
