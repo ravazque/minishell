@@ -268,4 +268,3 @@ while (cmd) {
 4. **Heredoc**:
    - El delimitador se guarda en `redir->target`
    - `hd_expand` indica si se deben expandir variables en el contenido
-   - 

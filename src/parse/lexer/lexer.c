@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 18:24:29 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 18:32:28 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,7 @@ static int	is_redir(const char *str)
 
 static t_redir	*mk_redir(const char *tgt, const char *op, t_token *tgt_tok)
 {
-	t_redir			*r;
-	t_token_part	*part;
+	t_redir	*r;
 
 	r = (t_redir *)malloc(sizeof(t_redir));
 	if (!r)
@@ -47,28 +46,33 @@ static t_redir	*mk_redir(const char *tgt, const char *op, t_token *tgt_tok)
 	ft_bzero(r, sizeof(t_redir));
 	r->target = ft_strdup(tgt);
 	if (!r->target)
-		return (free(r), malloc_error(), NULL);
+	{
+		free(r);
+		return (malloc_error(), NULL);
+	}
 	if (ft_strcmp(op, "<") == 0)
 		r->in_redir = 1;
 	else if (ft_strcmp(op, "<<") == 0)
 	{
 		r->in_redir = 2;
-		r->hd_expand = 1;
 		if (tgt_tok && (tgt_tok->is_squote || tgt_tok->is_dquote))
 			r->hd_expand = 0;
 		else if (tgt_tok && tgt_tok->parts)
 		{
-			part = tgt_tok->parts;
+			t_token_part *part = tgt_tok->parts;
+			r->hd_expand = 1;
 			while (part)
 			{
 				if (part->is_squote || part->is_dquote)
 				{
 					r->hd_expand = 0;
-					break ;
+					break;
 				}
 				part = part->next;
 			}
 		}
+		else
+			r->hd_expand = 1;
 	}
 	else if (ft_strcmp(op, ">") == 0)
 		r->out_redir = 1;
@@ -102,7 +106,10 @@ static t_token	*mk_tok_node(const char *raw, int sq, int dq)
 		return (malloc_error(), NULL);
 	tok->raw = ft_strdup(raw);
 	if (!tok->raw)
-		return (free(tok), malloc_error(), NULL);
+	{
+		free(tok);
+		return (malloc_error(), NULL);
+	}
 	tok->is_squote = sq;
 	tok->is_dquote = dq;
 	tok->parts = NULL;
@@ -150,8 +157,12 @@ static char	**toks_to_arr(t_token *toks)
 		if (!arr[i])
 		{
 			while (i > 0)
-				free(arr[--i]);
-			return (free(arr), malloc_error(), NULL);
+			{
+				i--;
+				free(arr[i]);
+			}
+			free(arr);
+			return (malloc_error(), NULL);
 		}
 		curr = curr->next;
 		i++;
@@ -200,7 +211,7 @@ static int	proc_redirs(t_cmd *cmd)
 		next = curr->next;
 		if (is_redir(curr->raw))
 		{
-			if (!next || is_redir(next->raw) || is_pipe(next->raw))
+			if (!next)
 			{
 				ft_putstr_fd(ERR_RDI, STDERR_FILENO);
 				return (1);
@@ -223,7 +234,7 @@ static int	proc_redirs(t_cmd *cmd)
 	return (0);
 }
 
-static int	add_cmd_to_lst(t_cmd **lst, t_cmd *new)
+static void	add_cmd_to_lst(t_cmd **lst, t_cmd *new)
 {
 	t_cmd	*curr;
 
@@ -236,81 +247,126 @@ static int	add_cmd_to_lst(t_cmd **lst, t_cmd *new)
 			curr = curr->next;
 		curr->next = new;
 	}
-	return (0);
 }
 
-static int	mk_cmd_range(char **toks, int start, int end, t_cmd **lst)
+static int	count_tokens_until_pipe(t_token *start)
 {
-	t_cmd	*new;
-	t_token	*tok_node;
-	int		i;
+	int		count;
+	t_token	*curr;
 
-	if (end <= start)
-		return (0);
-	new = (t_cmd *)malloc(sizeof(t_cmd));
-	if (!new)
-		return (malloc_error(), 1);
-	ft_bzero(new, sizeof(t_cmd));
-	i = start;
-	while (i < end)
+	count = 0;
+	curr = start;
+	while (curr && !is_pipe(curr->raw))
 	{
-		tok_node = mk_tok_node(toks[i], 0, 0);
-		if (!tok_node)
-		{
-			free_cmds(new);
-			return (1);
-		}
-		add_tok(new, tok_node);
-		i++;
+		count++;
+		curr = curr->next;
 	}
-	return (add_cmd_to_lst(lst, new));
+	return (count);
 }
 
-static int	proc_pipe(char **toks, int *i, int *start, t_cmd **lst)
+static t_token	*skip_to_next_pipe(t_token *start)
 {
-	if (mk_cmd_range(toks, *start, *i, lst))
-		return (1);
-	*start = *i + 1;
-	return (0);
+	t_token	*curr;
+
+	curr = start;
+	while (curr && !is_pipe(curr->raw))
+		curr = curr->next;
+	if (curr && is_pipe(curr->raw))
+		return (curr->next);
+	return (NULL);
 }
 
-static int	split_pipes(t_mini *mini)
+static t_cmd	*create_cmd_from_tokens(t_token *start, int count)
 {
-	char	**toks;
-	t_cmd	*lst;
+	t_cmd	*new_cmd;
+	t_token	*curr;
+	t_token	*new_tok;
 	int		i;
-	int		start;
 
-	if (!mini->cmds || !mini->cmds->tokens)
-		return (0);
-	toks = mini->cmds->tokens;
-	mini->cmds->tokens = NULL;
-	free_cmds(mini->cmds);
-	mini->cmds = NULL;
-	lst = NULL;
-	start = 0;
+	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!new_cmd)
+		return (malloc_error(), NULL);
+	ft_bzero(new_cmd, sizeof(t_cmd));
+	curr = start;
 	i = 0;
-	while (toks[i])
+	while (i < count && curr)
 	{
-		if (is_pipe(toks[i]))
+		new_tok = mk_tok_node(curr->raw, curr->is_squote, curr->is_dquote);
+		if (!new_tok)
 		{
-			if (proc_pipe(toks, &i, &start, &lst))
+			free_cmds(new_cmd);
+			return (NULL);
+		}
+		if (curr->parts)
+		{
+			t_token_part *part_curr = curr->parts;
+			t_token_part *new_part;
+			t_token_part *last_part = NULL;
+			
+			while (part_curr)
 			{
-				free_dblptr(toks);
-				free_cmds(lst);
-				return (1);
+				new_part = (t_token_part *)malloc(sizeof(t_token_part));
+				if (!new_part)
+				{
+					free_cmds(new_cmd);
+					return (NULL);
+				}
+				new_part->content = ft_strdup(part_curr->content);
+				if (!new_part->content)
+				{
+					free(new_part);
+					free_cmds(new_cmd);
+					return (NULL);
+				}
+				new_part->is_squote = part_curr->is_squote;
+				new_part->is_dquote = part_curr->is_dquote;
+				new_part->next = NULL;
+				
+				if (!new_tok->parts)
+					new_tok->parts = new_part;
+				else
+					last_part->next = new_part;
+				last_part = new_part;
+				part_curr = part_curr->next;
 			}
 		}
+		add_tok(new_cmd, new_tok);
+		curr = curr->next;
 		i++;
 	}
-	if (mk_cmd_range(toks, start, i, &lst))
+	return (new_cmd);
+}
+
+static int	split_by_pipes(t_mini *mini)
+{
+	t_token	*curr;
+	t_cmd	*cmd_list;
+	t_cmd	*new_cmd;
+	int		count;
+
+	if (!mini->cmds || !mini->cmds->tokn)
+		return (0);
+	curr = mini->cmds->tokn;
+	cmd_list = NULL;
+	while (curr)
 	{
-		free_dblptr(toks);
-		free_cmds(lst);
-		return (1);
+		count = count_tokens_until_pipe(curr);
+		if (count == 0)
+		{
+			curr = skip_to_next_pipe(curr);
+			continue;
+		}
+		new_cmd = create_cmd_from_tokens(curr, count);
+		if (!new_cmd)
+		{
+			free_cmds(cmd_list);
+			return (1);
+		}
+		add_cmd_to_lst(&cmd_list, new_cmd);
+		curr = skip_to_next_pipe(curr);
 	}
-	mini->cmds = lst;
-	free_dblptr(toks);
+	free_cmds(mini->cmds);
+	mini->cmds = cmd_list;
 	return (0);
 }
 
@@ -338,7 +394,7 @@ int	lexer(t_mini *mini)
 
 	if (!mini || !mini->cmds)
 		return (0);
-	if (split_pipes(mini))
+	if (split_by_pipes(mini))
 		return (1);
 	curr = mini->cmds;
 	while (curr)

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 15:50:37 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 18:41:05 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,10 @@ char	*get_local_env(const char *name, char **env);
 // =[ Executor ]===================================================== //
 
 int		ft_lstsize(t_cmd *lst);
+int		has_redirs(t_cmd *cmd);
+int		count_args(char **tokens);
+int		is_empty_cmd(t_cmd *cmd);
+
 void	executor(t_mini *mini);
 
 // =[ Parse ]======================================================== //
@@ -174,8 +178,6 @@ char	*get_git_branch(const char *repo_path);
 
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
-
-// void	print_tokens(t_mini *mini);
 
 // ================================================================== //
 
