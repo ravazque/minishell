@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 20:12:32 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 15:15:25 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:50:20 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 int	ft_lstsize(t_cmd *lst)
 {
-	int		i;
+	int		count;
 	t_cmd	*curr;
 
-	i = 0;
+	count = 0;
 	curr = lst;
 	while (curr)
 	{
-		i++;
+		count++;
 		curr = curr->next;
 	}
-	return (i);
+	return (count);
 }

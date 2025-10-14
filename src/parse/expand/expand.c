@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 18:34:35 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:40:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -339,7 +339,7 @@ static int	exp_cmd_toks(t_cmd *cmd, t_mini *mini)
 
 static int	should_exp_redir(t_redir *redir)
 {
-	if (redir->i_redir == 2)
+	if (redir->in_redir == 2)
 		return (redir->hd_expand);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 20:31:32 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 22:10:11 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:50:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,12 +76,11 @@ void		ft_putstr_fd(char *s, int fd);
 void		ft_putendl_fd(char *s, int fd);
 void		ft_putnbr_fd(int n, int fd);
 
-// =[ Bonus ]=============================================================== //
+// =[ List ]================================================================ //
 
 t_list		*ft_lstnew(void *content);
 t_list		*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 t_list		*ft_lstlast(t_list *lst);
-int			ft_lstsize(t_list *lst);
 void		ft_lstadd_back(t_list **lst, t_list *new);
 void		ft_lstdelone(t_list *lst, void (*del)(void *));
 void		ft_lstclear(t_list **lst, void (*del)(void *));

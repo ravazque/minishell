@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/13 20:55:51 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:50:37 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ typedef struct s_redir
 {
 	char				*target;
 	int					hd_expand;
-	int					i_redir;
-	int					o_redir;
+	int					in_redir;
+	int					out_redir;
 	struct s_redir		*next;
 }						t_redir;
 
@@ -114,6 +114,7 @@ char	*get_local_env(const char *name, char **env);
 
 // =[ Executor ]===================================================== //
 
+int		ft_lstsize(t_cmd *lst);
 void	executor(t_mini *mini);
 
 // =[ Parse ]======================================================== //

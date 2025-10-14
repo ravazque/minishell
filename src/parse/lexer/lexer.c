@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 18:34:45 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:40:53 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int	is_redir(const char *str)
 	return (0);
 }
 
-static t_redir	*mk_redir(const char *tgt, const char *op)
+static t_redir	*mk_redir(const char *tgt, const char *op, t_token *tgt_tok)
 {
 	t_redir	*r;
 
@@ -51,16 +51,33 @@ static t_redir	*mk_redir(const char *tgt, const char *op)
 		return (malloc_error(), NULL);
 	}
 	if (ft_strcmp(op, "<") == 0)
-		r->i_redir = 1;
+		r->in_redir = 1;
 	else if (ft_strcmp(op, "<<") == 0)
 	{
-		r->i_redir = 2;
-		r->hd_expand = 1;
+		r->in_redir = 2;
+		if (tgt_tok && (tgt_tok->is_squote || tgt_tok->is_dquote))
+			r->hd_expand = 0;
+		else if (tgt_tok && tgt_tok->parts)
+		{
+			t_token_part *part = tgt_tok->parts;
+			r->hd_expand = 1;
+			while (part)
+			{
+				if (part->is_squote || part->is_dquote)
+				{
+					r->hd_expand = 0;
+					break;
+				}
+				part = part->next;
+			}
+		}
+		else
+			r->hd_expand = 1;
 	}
 	else if (ft_strcmp(op, ">") == 0)
-		r->o_redir = 1;
+		r->out_redir = 1;
 	else if (ft_strcmp(op, ">>") == 0)
-		r->o_redir = 2;
+		r->out_redir = 2;
 	r->next = NULL;
 	return (r);
 }
@@ -199,7 +216,7 @@ static int	proc_redirs(t_cmd *cmd)
 				ft_putstr_fd(ERR_RDI, STDERR_FILENO);
 				return (1);
 			}
-			r = mk_redir(next->raw, curr->raw);
+			r = mk_redir(next->raw, curr->raw, next);
 			if (!r)
 				return (1);
 			add_redir(cmd, r);
