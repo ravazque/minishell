@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 15:46:09 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 18:24:01 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ static void	process_heredocs(t_mini *mini)
 					printf("  -> Se expandirán variables\n");
 				else
 					printf("  -> NO se expandirán variables (delimitador con comillas)\n");
-					
 				// TODO: Implementar creación del heredoc
-				// Si hd_expand == 0, NO expandir variables en el contenido
 			}
 			redir = redir->next;
 		}
@@ -55,42 +53,49 @@ static void	process_redirections(t_cmd *cmd)
 			printf("  Redirección de salida: > %s\n", redir->target);
 		else if (redir->out_redir == 2)
 			printf("  Redirección append: >> %s\n", redir->target);
-
 		// TODO: Implementar apertura de archivos y redirecciones
-
 		redir = redir->next;
 	}
+}
+
+static int	cmd_is_valid(t_cmd *cmd)
+{
+	if (!cmd)
+		return (0);
+	if (!cmd->tokens)
+		return (0);
+	if (!cmd->tokens[0])
+		return (0);
+	return (1);
 }
 
 static void	execute_single_cmd(t_mini *mini, t_cmd *cmd)
 {
 	int	i;
 
+	if (!cmd_is_valid(cmd))
+	{
+		mini->exit_sts = 127;
+		return ;
+	}
 	printf("\n=== Comando Simple ===\n");
 	printf("Comando: %s\n", cmd->tokens[0]);
-	
-	// Imprimir argumentos
 	i = 1;
 	while (cmd->tokens[i])
 	{
 		printf("  Arg[%d]: %s\n", i, cmd->tokens[i]);
 		i++;
 	}
-	
-	// Procesar redirecciones de este comando
 	if (cmd->redirs)
 	{
 		printf("Redirecciones:\n");
 		process_redirections(cmd);
 	}
-	
-	// Verificar si es builtin
 	if (built_ins(mini))
 	{
 		printf("Es un builtin - ejecutado\n");
-		return;
+		return ;
 	}
-	
 	printf("Es un comando externo - TODO: implementar execve\n");
 	// TODO: fork() y execve()
 }
@@ -98,10 +103,10 @@ static void	execute_single_cmd(t_mini *mini, t_cmd *cmd)
 static void	execute_pipeline(t_mini *mini)
 {
 	t_cmd	*cmd;
-	int	cmd_count;
-	int	cmd_index;
+	int		cmd_count;
+	int		cmd_index;
+	int		i;
 
-	// Contar comandos
 	cmd_count = 0;
 	cmd = mini->cmds;
 	while (cmd)
@@ -109,38 +114,47 @@ static void	execute_pipeline(t_mini *mini)
 		cmd_count++;
 		cmd = cmd->next;
 	}
-	
 	printf("\n=== Pipeline con %d comandos ===\n", cmd_count);
-	
-	// Ejecutar cada comando
 	cmd = mini->cmds;
 	cmd_index = 0;
 	while (cmd)
 	{
+		if (!cmd_is_valid(cmd))
+		{
+			cmd = cmd->next;
+			cmd_index++;
+			continue ;
+		}
 		printf("\nComando %d: %s\n", cmd_index, cmd->tokens[0]);
-		
-		// Mostrar argumentos
-		int i = 1;
+		i = 1;
 		while (cmd->tokens[i])
 		{
 			printf("  Arg[%d]: %s\n", i, cmd->tokens[i]);
 			i++;
 		}
-		
-		// Procesar redirecciones de este comando
 		if (cmd->redirs)
 		{
 			printf("Redirecciones:\n");
 			process_redirections(cmd);
 		}
-		
 		// TODO: Crear pipes y fork para cada comando
-		
 		cmd = cmd->next;
 		cmd_index++;
 	}
-	
 	printf("\nTODO: Implementar pipes y ejecución\n");
+}
+
+int	ft_lstsize(t_cmd *lst)
+{
+	int	count;
+
+	count = 0;
+	while (lst)
+	{
+		count++;
+		lst = lst->next;
+	}
+	return (count);
 }
 
 void	executor(t_mini *mini)

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 18:35:48 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/03 04:43:54 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 18:24:09 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,31 @@ void	parse(t_mini *mini)
 	{
 		ft_putstr_fd(ERR_QUO, STDERR_FILENO);
 		mini->exit_sts = 2;
+		if (mini->cmds)
+		{
+			free_cmds(mini->cmds);
+			mini->cmds = NULL;
+		}
 		return ;
 	}
 	if (lexer(mini) == 1)
 	{
-		ft_putstr_fd(ERR_QUO, STDERR_FILENO);
 		mini->exit_sts = 2;
+		if (mini->cmds)
+		{
+			free_cmds(mini->cmds);
+			mini->cmds = NULL;
+		}
 		return ;
 	}
 	if (expander(mini) == 1)
 	{
 		mini->exit_sts = 1;
+		if (mini->cmds)
+		{
+			free_cmds(mini->cmds);
+			mini->cmds = NULL;
+		}
 		return ;
 	}
 }

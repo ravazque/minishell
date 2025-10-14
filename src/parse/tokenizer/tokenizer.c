@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 18:40:47 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 18:23:42 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,45 @@ static int	finalize_tok(char **bf, t_token_part **tp, t_cmd *cmd)
 	return (0);
 }
 
-static int	handle_space(const char *in, size_t *i, int *in_tok, char **bf, t_token_part **tp, t_cmd *cmd)
+static int	is_operator_char(char c)
+{
+	return (c == '|' || c == '<' || c == '>');
+}
+
+static int	handle_operator(const char *in, size_t *i, int *in_tok, 
+							char **bf, t_token_part **tp, t_cmd *cmd)
+{
+	char	op[3];
+	int		len;
+
+	if (*in_tok && (*bf || *tp))
+	{
+		if (finalize_tok(bf, tp, cmd))
+			return (1);
+		*in_tok = 0;
+	}
+	len = 0;
+	op[0] = in[*i];
+	len = 1;
+	if (in[*i + 1] && ((in[*i] == '<' && in[*i + 1] == '<') ||
+						(in[*i] == '>' && in[*i + 1] == '>')))
+	{
+		op[1] = in[*i + 1];
+		len = 2;
+		(*i)++;
+	}
+	op[len] = '\0';
+	(*i)++;
+	*bf = ft_strdup(op);
+	if (!*bf)
+		return (1);
+	if (flush_part(bf, 0, 0, tp))
+		return (1);
+	return (finalize_tok(bf, tp, cmd));
+}
+
+static int	handle_space(const char *in, size_t *i, int *in_tok, 
+						char **bf, t_token_part **tp, t_cmd *cmd)
 {
 	if (*in_tok)
 	{
@@ -227,7 +265,8 @@ static int	handle_space(const char *in, size_t *i, int *in_tok, char **bf, t_tok
 	return (0);
 }
 
-static int	handle_quote(const char *in, size_t *i, int *in_tok, char **bf, t_token_part **tp)
+static int	handle_quote(const char *in, size_t *i, int *in_tok, 
+						char **bf, t_token_part **tp)
 {
 	char	q;
 	int		sq;
@@ -294,6 +333,14 @@ int	tokenizer(t_mini **mini)
 		else if (in[i] == '\'' || in[i] == '\"')
 		{
 			if (handle_quote(in, &i, &in_tok, &bf, &tp))
+			{
+				cleanup_tok_data(&bf, &tp, &cmd);
+				return (1);
+			}
+		}
+		else if (is_operator_char(in[i]))
+		{
+			if (handle_operator(in, &i, &in_tok, &bf, &tp, cmd))
 			{
 				cleanup_tok_data(&bf, &tp, &cmd);
 				return (1);

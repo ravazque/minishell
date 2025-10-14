@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 15:40:53 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 18:24:29 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ static int	is_redir(const char *str)
 
 static t_redir	*mk_redir(const char *tgt, const char *op, t_token *tgt_tok)
 {
-	t_redir	*r;
+	t_redir			*r;
+	t_token_part	*part;
 
 	r = (t_redir *)malloc(sizeof(t_redir));
 	if (!r)
@@ -46,33 +47,28 @@ static t_redir	*mk_redir(const char *tgt, const char *op, t_token *tgt_tok)
 	ft_bzero(r, sizeof(t_redir));
 	r->target = ft_strdup(tgt);
 	if (!r->target)
-	{
-		free(r);
-		return (malloc_error(), NULL);
-	}
+		return (free(r), malloc_error(), NULL);
 	if (ft_strcmp(op, "<") == 0)
 		r->in_redir = 1;
 	else if (ft_strcmp(op, "<<") == 0)
 	{
 		r->in_redir = 2;
+		r->hd_expand = 1;
 		if (tgt_tok && (tgt_tok->is_squote || tgt_tok->is_dquote))
 			r->hd_expand = 0;
 		else if (tgt_tok && tgt_tok->parts)
 		{
-			t_token_part *part = tgt_tok->parts;
-			r->hd_expand = 1;
+			part = tgt_tok->parts;
 			while (part)
 			{
 				if (part->is_squote || part->is_dquote)
 				{
 					r->hd_expand = 0;
-					break;
+					break ;
 				}
 				part = part->next;
 			}
 		}
-		else
-			r->hd_expand = 1;
 	}
 	else if (ft_strcmp(op, ">") == 0)
 		r->out_redir = 1;
@@ -106,10 +102,7 @@ static t_token	*mk_tok_node(const char *raw, int sq, int dq)
 		return (malloc_error(), NULL);
 	tok->raw = ft_strdup(raw);
 	if (!tok->raw)
-	{
-		free(tok);
-		return (malloc_error(), NULL);
-	}
+		return (free(tok), malloc_error(), NULL);
 	tok->is_squote = sq;
 	tok->is_dquote = dq;
 	tok->parts = NULL;
@@ -157,12 +150,8 @@ static char	**toks_to_arr(t_token *toks)
 		if (!arr[i])
 		{
 			while (i > 0)
-			{
-				i--;
-				free(arr[i]);
-			}
-			free(arr);
-			return (malloc_error(), NULL);
+				free(arr[--i]);
+			return (free(arr), malloc_error(), NULL);
 		}
 		curr = curr->next;
 		i++;
@@ -211,7 +200,7 @@ static int	proc_redirs(t_cmd *cmd)
 		next = curr->next;
 		if (is_redir(curr->raw))
 		{
-			if (!next)
+			if (!next || is_redir(next->raw) || is_pipe(next->raw))
 			{
 				ft_putstr_fd(ERR_RDI, STDERR_FILENO);
 				return (1);
