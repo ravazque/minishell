@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 18:32:28 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 20:46:46 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,6 +337,44 @@ static t_cmd	*create_cmd_from_tokens(t_token *start, int count)
 	return (new_cmd);
 }
 
+static int	validate_pipe_syntax(t_token *tokens)
+{
+	t_token	*curr;
+	int		first_token;
+
+	if (!tokens)
+		return (0);
+	curr = tokens;
+	first_token = 1;
+	while (curr)
+	{
+		if (is_pipe(curr->raw))
+		{
+			if (first_token)
+			{
+				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 
+					STDERR_FILENO);
+				return (1);
+			}
+			if (curr->next && is_pipe(curr->next->raw))
+			{
+				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 
+					STDERR_FILENO);
+				return (1);
+			}
+			if (!curr->next)
+			{
+				ft_putstr_fd("minishell: syntax error: unexpected end after `|'\n", 
+					STDERR_FILENO);
+				return (1);
+			}
+		}
+		first_token = 0;
+		curr = curr->next;
+	}
+	return (0);
+}
+
 static int	split_by_pipes(t_mini *mini)
 {
 	t_token	*curr;
@@ -346,6 +384,8 @@ static int	split_by_pipes(t_mini *mini)
 
 	if (!mini->cmds || !mini->cmds->tokn)
 		return (0);
+	if (validate_pipe_syntax(mini->cmds->tokn))
+		return (1);
 	curr = mini->cmds->tokn;
 	cmd_list = NULL;
 	while (curr)

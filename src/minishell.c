@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 15:11:24 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 20:55:05 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	execute_command_mode(t_mini *mini, char *command)
 		exit(1);
 	}
 	parse(mini);
-	if (mini->cmds)
+	if (mini->cmds && built_ins(mini) == false)
 		executor(mini);
 	cleanup_mini(mini);
 	exit(mini->exit_sts);

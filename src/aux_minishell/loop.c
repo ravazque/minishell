@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 18:24:51 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 20:53:25 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	cleanup_iteration(t_mini *mini)
 static void	process_command(t_mini *mini)
 {
 	parse(mini);
-	if (mini->cmds)
+	if (mini->cmds && built_ins(mini) == false)
 		executor(mini);
 }
 
