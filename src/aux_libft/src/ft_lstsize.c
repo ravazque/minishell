@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstsize_bonus.c                                 :+:      :+:    :+:   */
+/*   ft_lstsize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 20:12:32 by ravazque          #+#    #+#             */
-/*   Updated: 2025/06/24 18:45:44 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:15:25 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/libft.h"
+#include "../../../include/minishell.h"
 
-int	ft_lstsize(t_list *lst)
+int	ft_lstsize(t_cmd *lst)
 {
-	int	i;
+	int		i;
+	t_cmd	*curr;
 
 	i = 0;
-	while (lst != NULL)
+	curr = lst;
+	while (curr)
 	{
 		i++;
-		lst = lst->next;
+		curr = curr->next;
 	}
 	return (i);
 }
