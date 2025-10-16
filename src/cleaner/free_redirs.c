@@ -19,6 +19,8 @@ void	free_redirs(t_redir *r)
 	while (r)
 	{
 		n = r->next;
+		if (r->fd > 2)
+			close(r->fd);
 		if (r->target)
 			free(r->target);
 		free(r);

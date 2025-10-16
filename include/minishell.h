@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 18:41:05 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/14 21:30:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ typedef struct s_redir
 	int					hd_expand;
 	int					in_redir;
 	int					out_redir;
+	int					fd;
 	struct s_redir		*next;
 }						t_redir;
 
