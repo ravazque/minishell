@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/16 14:03:09 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/16 15:40:33 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static void	handle_heredocs(t_mini *mini)
 	(void)mini;
 
 	// TODO: Implementar procesamiento de heredocs
+
 	// Recorrer todos los comandos y buscar in_redir == 2
 	// Leer input con readline hasta encontrar delimitador
 	// Expandir variables si hd_expand == 1
@@ -32,6 +33,7 @@ static void	execute_simple_command(t_mini *mini)
 	(void)mini;
 
 	// TODO: Implementar ejecución de comando simple
+
 	// Ver esquema detallado en comentarios de executor()
 }
 
@@ -40,6 +42,7 @@ static void	execute_pipeline(t_mini *mini)
 	(void)mini;
 
 	// TODO: Implementar ejecución de pipeline
+
 	// Ver esquema detallado en comentarios de executor()
 }
 
