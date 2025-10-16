@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 18:23:42 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/16 17:24:18 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,12 @@ static int	append_char(char **dst, char c)
 static int	flush_part(char **bf, int sq, int dq, t_token_part **parts)
 {
 	t_token_part	*new;
+	const char		*content;
 
-	new = mk_tok_part(*bf ? *bf : "", sq, dq);
+	content = "";
+	if (*bf)
+		content = *bf;
+	new = mk_tok_part(content, sq, dq);
 	if (!new)
 		return (1);
 	add_tok_part(parts, new);
@@ -219,8 +223,7 @@ static int	is_operator_char(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-static int	handle_operator(const char *in, size_t *i, int *in_tok, 
-							char **bf, t_token_part **tp, t_cmd *cmd)
+static int	handle_operator(const char *in, size_t *i, int *in_tok, char **bf, t_token_part **tp, t_cmd *cmd)
 {
 	char	op[3];
 	int		len;
@@ -234,8 +237,7 @@ static int	handle_operator(const char *in, size_t *i, int *in_tok,
 	len = 0;
 	op[0] = in[*i];
 	len = 1;
-	if (in[*i + 1] && ((in[*i] == '<' && in[*i + 1] == '<') ||
-						(in[*i] == '>' && in[*i + 1] == '>')))
+	if (in[*i + 1] && ((in[*i] == '<' && in[*i + 1] == '<') || (in[*i] == '>' && in[*i + 1] == '>')))
 	{
 		op[1] = in[*i + 1];
 		len = 2;
@@ -251,8 +253,7 @@ static int	handle_operator(const char *in, size_t *i, int *in_tok,
 	return (finalize_tok(bf, tp, cmd));
 }
 
-static int	handle_space(const char *in, size_t *i, int *in_tok, 
-						char **bf, t_token_part **tp, t_cmd *cmd)
+static int	handle_space(const char *in, size_t *i, int *in_tok, char **bf, t_token_part **tp, t_cmd *cmd)
 {
 	if (*in_tok)
 	{
@@ -265,8 +266,7 @@ static int	handle_space(const char *in, size_t *i, int *in_tok,
 	return (0);
 }
 
-static int	handle_quote(const char *in, size_t *i, int *in_tok, 
-						char **bf, t_token_part **tp)
+static int	handle_quote(const char *in, size_t *i, int *in_tok, char **bf, t_token_part **tp)
 {
 	char	q;
 	int		sq;

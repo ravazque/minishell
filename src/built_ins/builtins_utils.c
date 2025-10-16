@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:34:14 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/14 20:44:43 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/16 17:14:35 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	ft_setenv(char *name, char *value, char ***env)
 	i = 0;
 	while ((*env)[i])
 	{
-		if (!ft_strncmp((*env)[i], name, n_len) 
+		if (!ft_strncmp((*env)[i], name, n_len)
 			&& ((*env)[i][n_len] == '=' || (*env)[i][n_len] == '\0'))
 		{
 			free((*env)[i]);

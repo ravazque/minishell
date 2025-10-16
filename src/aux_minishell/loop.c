@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/16 15:45:53 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/16 17:23:10 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	cleanup_iteration(t_mini *mini)
 static void	process_command(t_mini *mini)
 {
 	parse(mini);
-	if (mini->cmds && built_ins(mini) == false)  // quitar comprobacion de buitins y pasarlo al executor
+	if (mini->cmds && built_ins(mini) == false) // quitar comprobacion de buitins y pasarlo al executor
 		executor(mini);
 }
 

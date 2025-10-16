@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 20:46:46 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/16 17:26:05 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ static int	is_redir(const char *str)
 
 static t_redir	*mk_redir(const char *tgt, const char *op, t_token *tgt_tok)
 {
-	t_redir	*r;
+	t_redir			*r;
+	t_token_part	*part;
 
 	r = (t_redir *)malloc(sizeof(t_redir));
 	if (!r)
@@ -59,14 +60,14 @@ static t_redir	*mk_redir(const char *tgt, const char *op, t_token *tgt_tok)
 			r->hd_expand = 0;
 		else if (tgt_tok && tgt_tok->parts)
 		{
-			t_token_part *part = tgt_tok->parts;
+			part = tgt_tok->parts;
 			r->hd_expand = 1;
 			while (part)
 			{
 				if (part->is_squote || part->is_dquote)
 				{
 					r->hd_expand = 0;
-					break;
+					break ;
 				}
 				part = part->next;
 			}
@@ -278,10 +279,13 @@ static t_token	*skip_to_next_pipe(t_token *start)
 
 static t_cmd	*create_cmd_from_tokens(t_token *start, int count)
 {
-	t_cmd	*new_cmd;
-	t_token	*curr;
-	t_token	*new_tok;
-	int		i;
+	t_cmd			*new_cmd;
+	t_token			*curr;
+	t_token			*new_tok;
+	int				i;
+	t_token_part	*part_curr;
+	t_token_part	*new_part;
+	t_token_part	*last_part;
 
 	new_cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!new_cmd)
@@ -299,10 +303,8 @@ static t_cmd	*create_cmd_from_tokens(t_token *start, int count)
 		}
 		if (curr->parts)
 		{
-			t_token_part *part_curr = curr->parts;
-			t_token_part *new_part;
-			t_token_part *last_part = NULL;
-			
+			part_curr = curr->parts;
+			last_part = NULL;
 			while (part_curr)
 			{
 				new_part = (t_token_part *)malloc(sizeof(t_token_part));
@@ -321,7 +323,6 @@ static t_cmd	*create_cmd_from_tokens(t_token *start, int count)
 				new_part->is_squote = part_curr->is_squote;
 				new_part->is_dquote = part_curr->is_dquote;
 				new_part->next = NULL;
-				
 				if (!new_tok->parts)
 					new_tok->parts = new_part;
 				else
@@ -352,20 +353,17 @@ static int	validate_pipe_syntax(t_token *tokens)
 		{
 			if (first_token)
 			{
-				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 
-					STDERR_FILENO);
+				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
 				return (1);
 			}
 			if (curr->next && is_pipe(curr->next->raw))
 			{
-				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 
-					STDERR_FILENO);
+				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
 				return (1);
 			}
 			if (!curr->next)
 			{
-				ft_putstr_fd("minishell: syntax error: unexpected end after `|'\n", 
-					STDERR_FILENO);
+				ft_putstr_fd("minishell: syntax error: unexpected end after `|'\n", STDERR_FILENO);
 				return (1);
 			}
 		}
@@ -394,7 +392,7 @@ static int	split_by_pipes(t_mini *mini)
 		if (count == 0)
 		{
 			curr = skip_to_next_pipe(curr);
-			continue;
+			continue ;
 		}
 		new_cmd = create_cmd_from_tokens(curr, count);
 		if (!new_cmd)
