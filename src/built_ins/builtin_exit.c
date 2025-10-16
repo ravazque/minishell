@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 11:50:27 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/13 16:19:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/16 17:56:26 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,6 @@ void	builtin_exit(t_mini *mini)
 
 	max_ex = false;
 	write(STDOUT_FILENO, "exit\n", 5);
-	if (mini->cmds->tokens[1] && mini->cmds->tokens[2])
-	{
-		ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
-		mini->exit_sts = 2;
-		return ;
-	}
-	mini->exit_sts = 0;
 	if (mini->cmds->tokens[1])
 	{
 		mini->exit_sts = ft_atoi_exit(mini->cmds->tokens[1], &max_ex);
@@ -36,6 +29,12 @@ void	builtin_exit(t_mini *mini)
 			mini->exit_sts = 2;
 			return ;
 		}
+	}
+	if (mini->cmds->tokens[1] && mini->cmds->tokens[2])
+	{
+		ft_putstr_fd("minishell: exit: too many arguments\n", STDERR_FILENO);
+		mini->exit_sts = 2;
+		return ;
 	}
 	cleanup_mini(mini);
 	exit(mini->exit_sts);
