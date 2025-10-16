@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/16 13:59:09 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/16 14:03:09 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,3 +155,50 @@ void	executor(t_mini *mini)
 	else
 		execute_pipeline(mini);
 }
+
+// =============================================================== //
+
+// void	executor(t_mini *mini)
+// {
+// 	int	cmd_count;
+// 	t_cmd	*cmd_aux;
+// 	int	n_redirs;
+// 	int	i;
+// 	int	*fd;
+
+// 	if (!mini || !mini->cmds)
+// 		return ;
+// 	cmd_count = ft_lstsize(mini->cmds);
+// 	cmd_aux = mini->cmds;
+// 	n_redirs = 0;
+// 	i = 0;
+// 	// TODO: Implement execution logic
+	
+// 	//crear pipas dependiendo de los fd
+// 	/*while ((cmd_count - 1) > i)
+// 	{
+// 		if (pipe(fd) == -1)
+// 			return ;
+		
+// 		i++;
+// 	}*/
+// 	while (cmd_aux)
+// 	{
+// 		if (cmd_aux->redirs->out_redir == 1)
+// 			n_redirs++;
+// 		cmd_aux = cmd_aux->next;
+// 	}
+// 	fd = malloc(sizeof(int) * n_redirs);
+// 	cmd_aux = mini->cmds;
+// 	while (cmd_aux)
+// 	{
+// 		if (cmd_aux->redirs->out_redir == 1)
+// 		{
+// 			fd[i] = cmd_aux->tokens[ft_strchr(cmd_aux->tokens, '>')];
+// 			i++;
+// 		}
+// 		cmd_aux = cmd_aux->next;
+// 	}
+	
+// 	(void)cmd_count;
+// }
