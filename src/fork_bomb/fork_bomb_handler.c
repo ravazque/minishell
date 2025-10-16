@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 00:30:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 16:03:42 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/16 17:10:33 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ static void	apology_loop(t_mini *mini)
 		}
 		free(input);
 	}
-	ft_putstr_fd(BOLD_GREEN, STDOUT_FILENO);
+	ft_putstr_fd(RL_BLD, STDOUT_FILENO);
+	ft_putstr_fd(RL_GRN, STDOUT_FILENO);
 	ft_putstr_fd(MSG_FORGIVEN, STDOUT_FILENO);
 	ft_putstr_fd(RL_RST, STDOUT_FILENO);
 }
