@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/19 19:59:38 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/19 22:10:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct s_mini
 	char				**env;
 	int					exit_sts;
 	int					apology_mode;	
+	char				*cd_home;	
 	t_cmd				*cmds;
 }						t_mini;
 
