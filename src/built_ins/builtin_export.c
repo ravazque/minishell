@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:30:15 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/13 16:18:57 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/19 21:31:08 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void	builtin_export(t_mini *mini)
 	}
 	i = 1;
 	has_error = 0;
-	while (ft_argc(mini->cmds->tokens) > i)
+	while (mini->cmds->tokens[i]) // cambiada las multiples interacciones de revisión por una constante
 	{
 		j = 0;
 		flag = 0;
@@ -166,7 +166,7 @@ void	builtin_export(t_mini *mini)
 		while (mini->cmds->tokens[i][j] && mini->cmds->tokens[i][j] != '=' && flag == 0)
 		{
 			if (!((ft_isalnum(mini->cmds->tokens[i][j]) || (mini->cmds->tokens[i][j] == '_'))
-			&& (ft_isalpha(mini->cmds->tokens[i][0]) || (mini->cmds->tokens[i][0] == '_'))))
+				&& (ft_isalpha(mini->cmds->tokens[i][0]) || (mini->cmds->tokens[i][0] == '_'))))
 			{
 				ft_putstr_fd("minishell: export: `", 2);
 				ft_putstr_fd(mini->cmds->tokens[i], 2);

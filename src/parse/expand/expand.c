@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/19 20:01:47 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/19 21:33:11 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,11 @@ static char	*extract_var(const char *str, int start, int *end)
 		*end = start + 1;
 		return (ft_strdup("?"));
 	}
+	if (str[start] == '$')
+	{
+		*end = start + 1;
+		return (ft_strdup("$$"));
+	}
 	i = start;
 	while (str[i] && is_valid_var_chr(str[i]))
 		i++;
@@ -163,6 +168,8 @@ static char	*expand_var(const char *var, t_mini *mini)
 		return (NULL);
 	if (ft_strcmp(var, "?") == 0)
 		return (get_exit_sts(mini->exit_sts));
+	if (ft_strcmp(var, "$$") == 0)
+		return (ft_strdup("80085"));
 	val = get_env_val(var, mini->env);
 	return (val);
 }
@@ -181,7 +188,7 @@ static char	*exp_str_part(const char *s, t_mini *mini, int exp)
 	{
 		if (s[i] == '$' && exp && s[i + 1])
 		{
-			if (is_valid_var_chr(s[i + 1]) || s[i + 1] == '?')
+			if (is_valid_var_chr(s[i + 1]) || s[i + 1] == '?' || s[i + 1] == '$')
 			{
 				var = extract_var(s, i + 1, &vend);
 				if (var)
@@ -272,10 +279,6 @@ char	*exp_tok_parts(t_token *tok, t_mini *mini)
 		return (ft_strdup(""));
 	return (res);
 }
-
-/* ========================================================================== */
-/* FUNCIONES PRIVADAS                                                         */
-/* ========================================================================== */
 
 static int	should_exp_redir(t_redir *redir)
 {
