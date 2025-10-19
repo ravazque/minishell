@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 21:30:12 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/19 19:59:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,10 @@ int		lexer(t_mini *mini);
 // =[ Expand ]======================================================= //
 
 int		expander(t_mini *mini);
+char	*exp_tok_parts(t_token *tok, t_mini *mini);
+int		tok_has_quotes(t_token *tok);
+int		exp_cmd_toks_with_split(t_cmd *cmd, t_mini *mini);
+int		is_empty_str(const char *s);
 
 // =[ Redirs ]======================================================= //
 

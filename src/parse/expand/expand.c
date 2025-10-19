@@ -6,11 +6,86 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 15:40:38 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/19 20:01:47 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
+
+int	is_empty_str(const char *s)
+{
+	if (!s)
+		return (1);
+	if (s[0] == '\0')
+		return (1);
+	return (0);
+}
+
+int	tok_has_quotes(t_token *tok)
+{
+	t_token_part	*curr;
+
+	if (!tok)
+		return (0);
+	if (!tok->parts)
+		return (0);
+	curr = tok->parts;
+	while (curr)
+	{
+		if (curr->is_squote || curr->is_dquote)
+			return (1);
+		curr = curr->next;
+	}
+	return (0);
+}
+
+static char	*str_cat(char *dst, const char *src)
+{
+	char	*res;
+	int		dlen;
+	int		slen;
+	int		i;
+	int		j;
+
+	if (!src)
+		return (dst);
+	dlen = 0;
+	slen = ft_strlen(src);
+	if (dst)
+		dlen = ft_strlen(dst);
+	res = (char *)malloc(dlen + slen + 1);
+	if (!res)
+	{
+		if (dst)
+			free(dst);
+		return (NULL);
+	}
+	i = 0;
+	while (i < dlen && dst)
+	{
+		res[i] = dst[i];
+		i++;
+	}
+	j = 0;
+	while (j < slen)
+	{
+		res[i + j] = src[j];
+		j++;
+	}
+	res[dlen + slen] = '\0';
+	if (dst)
+		free(dst);
+	return (res);
+}
+
+static char	*str_cat_chr(char *dst, char c)
+{
+	char	tmp[2];
+
+	tmp[0] = c;
+	tmp[1] = '\0';
+	return (str_cat(dst, tmp));
+}
 
 static char	*get_env_val(const char *key, char **env)
 {
@@ -80,54 +155,6 @@ static char	*extract_var(const char *str, int start, int *end)
 	return (var);
 }
 
-static char	*str_cat(char *dst, const char *src)
-{
-	char	*res;
-	int		dlen;
-	int		slen;
-	int		i;
-	int		j;
-
-	if (!src)
-		return (dst);
-	dlen = 0;
-	slen = ft_strlen(src);
-	if (dst)
-		dlen = ft_strlen(dst);
-	res = (char *)malloc(dlen + slen + 1);
-	if (!res)
-	{
-		if (dst)
-			free(dst);
-		return (NULL);
-	}
-	i = 0;
-	while (i < dlen && dst)
-	{
-		res[i] = dst[i];
-		i++;
-	}
-	j = 0;
-	while (j < slen)
-	{
-		res[i + j] = src[j];
-		j++;
-	}
-	res[dlen + slen] = '\0';
-	if (dst)
-		free(dst);
-	return (res);
-}
-
-static char	*str_cat_chr(char *dst, char c)
-{
-	char	tmp[2];
-
-	tmp[0] = c;
-	tmp[1] = '\0';
-	return (str_cat(dst, tmp));
-}
-
 static char	*expand_var(const char *var, t_mini *mini)
 {
 	char	*val;
@@ -138,15 +165,6 @@ static char	*expand_var(const char *var, t_mini *mini)
 		return (get_exit_sts(mini->exit_sts));
 	val = get_env_val(var, mini->env);
 	return (val);
-}
-
-static int	is_empty_str(const char *s)
-{
-	if (!s)
-		return (1);
-	if (s[0] == '\0')
-		return (1);
-	return (0);
 }
 
 static char	*exp_str_part(const char *s, t_mini *mini, int exp)
@@ -214,25 +232,7 @@ static char	*exp_str_part(const char *s, t_mini *mini, int exp)
 	return (res);
 }
 
-static int	tok_has_quotes(t_token *tok)
-{
-	t_token_part	*curr;
-
-	if (!tok)
-		return (0);
-	if (!tok->parts)
-		return (0);
-	curr = tok->parts;
-	while (curr)
-	{
-		if (curr->is_squote || curr->is_dquote)
-			return (1);
-		curr = curr->next;
-	}
-	return (0);
-}
-
-static char	*exp_tok_parts(t_token *tok, t_mini *mini)
+char	*exp_tok_parts(t_token *tok, t_mini *mini)
 {
 	char			*res;
 	char			*exp_part;
@@ -273,69 +273,9 @@ static char	*exp_tok_parts(t_token *tok, t_mini *mini)
 	return (res);
 }
 
-static int	count_toks(t_token *tok)
-{
-	int	cnt;
-
-	cnt = 0;
-	while (tok)
-	{
-		cnt++;
-		tok = tok->next;
-	}
-	return (cnt);
-}
-
-static void	free_new_toks(char **new, int i)
-{
-	while (i > 0)
-	{
-		i--;
-		if (new[i])
-			free(new[i]);
-	}
-	free(new);
-}
-
-static int	exp_cmd_toks(t_cmd *cmd, t_mini *mini)
-{
-	t_token	*curr;
-	char	**new;
-	char	*exp;
-	int		cnt;
-	int		j;
-
-	if (!cmd->tokn)
-		return (0);
-	cnt = count_toks(cmd->tokn);
-	new = (char **)malloc(sizeof(char *) * (cnt + 1));
-	if (!new)
-		return (malloc_error(), 1);
-	curr = cmd->tokn;
-	j = 0;
-	while (curr)
-	{
-		exp = exp_tok_parts(curr, mini);
-		if (!exp)
-		{
-			free_new_toks(new, j);
-			return (1);
-		}
-		if (!is_empty_str(exp) || tok_has_quotes(curr))
-		{
-			new[j] = exp;
-			j++;
-		}
-		else
-			free(exp);
-		curr = curr->next;
-	}
-	new[j] = NULL;
-	if (cmd->tokens)
-		free_dblptr(cmd->tokens);
-	cmd->tokens = new;
-	return (0);
-}
+/* ========================================================================== */
+/* FUNCIONES PRIVADAS                                                         */
+/* ========================================================================== */
 
 static int	should_exp_redir(t_redir *redir)
 {
@@ -408,7 +348,7 @@ int	expander(t_mini *mini)
 	curr = mini->cmds;
 	while (curr)
 	{
-		if (exp_cmd_toks(curr, mini))
+		if (exp_cmd_toks_with_split(curr, mini))
 			return (1);
 		if (exp_redirs(curr, mini))
 			return (1);

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/16 17:24:18 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/19 19:32:25 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,9 @@ static int	finalize_tok(char **bf, t_token_part **tp, t_cmd *cmd)
 
 static int	is_operator_char(char c)
 {
-	return (c == '|' || c == '<' || c == '>');
+	if (c == '|' || c == '<' || c == '>')
+		return (1);
+	return (0);
 }
 
 static int	handle_operator(const char *in, size_t *i, int *in_tok, char **bf, t_token_part **tp, t_cmd *cmd)
@@ -250,7 +252,10 @@ static int	handle_operator(const char *in, size_t *i, int *in_tok, char **bf, t_
 		return (1);
 	if (flush_part(bf, 0, 0, tp))
 		return (1);
-	return (finalize_tok(bf, tp, cmd));
+	if (finalize_tok(bf, tp, cmd))
+		return (1);
+	*in_tok = 0;
+	return (0);
 }
 
 static int	handle_space(const char *in, size_t *i, int *in_tok, char **bf, t_token_part **tp, t_cmd *cmd)
