@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:30:15 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/19 21:31:08 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 13:25:48 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void	builtin_export(t_mini *mini)
 	}
 	i = 1;
 	has_error = 0;
-	while (mini->cmds->tokens[i]) // cambiada las multiples interacciones de revisión por una constante
+	while (mini->cmds->tokens[i])
 	{
 		j = 0;
 		flag = 0;

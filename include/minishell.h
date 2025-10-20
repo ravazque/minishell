@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 12:57:44 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 13:32:59 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,6 @@ int		ft_argc(char **argv);
 void	ft_setenv(char *name, char *value, char ***env);
 int		ft_envlen(char **env);
 char	*get_local_env(const char *name, char **env);
-void	update_underscore(t_mini *mini, t_cmd *cmd);
 
 // =[ Executor ]===================================================== //
 
@@ -185,6 +184,7 @@ char	*get_git_branch(const char *repo_path);
 
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
+void	update_underscore_succ(t_mini *mini);
 
 // ================================================================== //
 

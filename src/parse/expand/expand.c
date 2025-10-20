@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 13:21:35 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 13:25:39 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ static char	*extract_var(const char *str, int start, int *end)
 	if (str[start] == '0')
 	{
 		*end = start + 1;
-		return (ft_strdup("0")); // ¿quizás poner ./minishell? actua como un "/bin/bash" o "bash" en la shell de bash
+		return (ft_strdup("0"));
 	}
 	i = start;
 	while (str[i] && is_valid_var_chr(str[i]))
