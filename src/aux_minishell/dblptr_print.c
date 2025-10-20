@@ -1,44 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenizer_aux.c                                    :+:      :+:    :+:   */
+/*   dblptr_print.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/24 03:21:54 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 17:27:29 by ravazque         ###   ########.fr       */
+/*   Created: 2025/10/20 00:00:00 by ravazque          #+#    #+#             */
+/*   Updated: 2025/10/20 17:34:07 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../include/minishell.h"
+#include "../../include/minishell.h"
 
-int	is_space(int c)
+void    print_dblptr(char **dblptr)
 {
-	if (c == ' ' || c == '\t')
-		return (1);
-	return (0);
-}
+    int i;
 
-int	quotes_balanced(const char *s)
-{
-	int		sq;
-	int		dq;
-	size_t	i;
+    if (!dblptr)
+    {
+        printf("(null)\n");
+        return ;
+    }
 
-	if (!s)
-		return (1);
-	sq = 0;
-	dq = 0;
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '\'' && dq == 0)
-			sq = !sq;
-		else if (s[i] == '\"' && sq == 0)
-			dq = !dq;
-		i++;
-	}
-	if (sq == 0 && dq == 0)
-		return (1);
-	return (0);
+    i = 0;
+    while (dblptr[i])
+    {
+        printf("[%d]: %s\n", i, dblptr[i]);
+        i++;
+    }
 }

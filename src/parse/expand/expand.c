@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 13:25:39 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 17:50:40 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,8 +168,6 @@ static char	*extract_var(const char *str, int start, int *end)
 
 static char	*expand_var(const char *var, t_mini *mini)
 {
-	char	*val;
-
 	if (!var)
 		return (NULL);
 	if (ft_strcmp(var, "?") == 0)
@@ -182,11 +180,10 @@ static char	*expand_var(const char *var, t_mini *mini)
 			return (ft_strdup(mini->argv[0]));
 		return (ft_strdup("minishell"));
 	}
-	val = get_env_val(var, mini->env);
-	return (val);
+	return (get_env_val(var, mini->env));
 }
 
-static char	*exp_str_part(const char *s, t_mini *mini, int exp)
+char	*exp_str_part(const char *s, t_mini *mini, int exp)
 {
 	char	*res;
 	char	*var;

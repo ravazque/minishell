@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 13:32:59 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 16:13:27 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static void	cleanup_iteration(t_mini *mini)
 static void	process_command(t_mini *mini)
 {
 	parse(mini);
+	update_underscore_succ(mini);
 	if (mini->cmds && built_ins(mini) == false) // quitar comprobacion de buitins y pasarlo al executor
 		executor(mini);
 }
@@ -53,7 +54,6 @@ void	loop(t_mini *mini)
 			continue ;
 		}
 		process_command(mini);
-		update_underscore_succ(mini);
 		cleanup_iteration(mini);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 19:28:04 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 13:14:38 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 16:22:14 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[])
 {
+	char *path;
+
 	mini->cmds = NULL;
 	mini->prompt = NULL;
 	mini->input = NULL;
@@ -35,8 +37,20 @@ void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[])
 		ft_putstr_fd("minishell: fatal error: failed to copy arguments\n", STDERR_FILENO);
 		exit(1);
 	}
+	path = NULL;
 	if (argv[0])
-		ft_setenv("_", argv[0], &(mini->env));
+	{
+		path = ft_strjoin("PATH=", get_local_env("PATH", envp));
+		if (!path)
+		{
+			free_dblptr(mini->env);
+			free_dblptr(mini->argv);
+			ft_putstr_fd("minishell: fatal error: failed to alloc arguments\n", STDERR_FILENO);
+			exit (1);
+		}
+		ft_setenv("_", path, &(mini->env));
+		free(path);
+	}
 	else
 		ft_setenv("_", "./minishell", &(mini->env));
 }

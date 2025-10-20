@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/16 15:40:33 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 18:12:21 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,61 @@
 
 static void	handle_heredocs(t_mini *mini)
 {
-	(void)mini;
+	t_cmd	*cmd;
+	char	*heredoc_unique;
+	char	**heredoc;
+	char	*expanded;
 
-	// TODO: Implementar procesamiento de heredocs
-
-	// Recorrer todos los comandos y buscar in_redir == 2
-	// Leer input con readline hasta encontrar delimitador
-	// Expandir variables si hd_expand == 1
-	// Guardar en pipe temporal y guardar fd en redir->fd
+	cmd = mini->cmds;
+	heredoc = NULL;
+	while (cmd)
+	{
+		if (!cmd->redirs || cmd->redirs->in_redir != 2)
+			cmd = cmd->next;
+		else
+		{
+			heredoc_unique = readline("> ");
+			if (!heredoc_unique)
+			{
+				ft_putstr_fd(ERR_HEREDOC, STDERR_FILENO);
+				ft_putstr_fd(cmd->redirs->target, STDERR_FILENO);
+				ft_putstr_fd("')\n", STDERR_FILENO);
+				if (heredoc)
+					free_dblptr(heredoc);
+				heredoc = NULL;
+				cmd = cmd->next;
+				continue;
+			}
+			expanded = exp_str_part(heredoc_unique, mini, cmd->redirs->hd_expand);
+			dbpt_push(&heredoc, expanded);
+			free(expanded);
+			while (ft_strcmp(heredoc_unique, cmd->redirs->target) != 0)
+			{
+				free(heredoc_unique);
+				heredoc_unique = readline("> ");
+				if (!heredoc_unique)
+				{
+					ft_putstr_fd(ERR_HEREDOC, STDERR_FILENO);
+					ft_putstr_fd(cmd->redirs->target, STDERR_FILENO);
+					ft_putstr_fd("')\n", STDERR_FILENO);
+					break;
+				}
+				if (ft_strcmp(heredoc_unique, cmd->redirs->target) != 0)
+				{
+					expanded = exp_str_part(heredoc_unique, mini, cmd->redirs->hd_expand);
+					dbpt_push(&heredoc, expanded);
+					free(expanded);
+				}
+			}
+			print_dblptr(heredoc); // printeo para COMPROBACIÓN [ debugging ]
+			if (heredoc_unique)
+				free(heredoc_unique);
+			if (heredoc)
+				free_dblptr(heredoc);
+			heredoc = NULL;
+			cmd = cmd->next;
+		}
+	}
 }
 
 static void	execute_simple_command(t_mini *mini)
@@ -52,30 +99,7 @@ void	executor(t_mini *mini)
 
 	if (!mini || !mini->cmds)
 		return ;
-
-	// ========================================================================
-	// ORDEN DE EJECUCION DEL EXECUTOR
-	// ========================================================================
-
 	cmd_count = ft_lstsize(mini->cmds);
-
-	// ------------------------------------------------------------------------
-	// PASO 1: PROCESAR HEREDOCS (<<)
-	// ------------------------------------------------------------------------
-	// Los heredocs DEBEN procesarse ANTES de hacer fork
-	// Motivo: Necesitan leer del stdin del shell padre
-	//
-	// Para cada comando:
-	//   Para cada redirección:
-	//     Si es heredoc (in_redir == 2):
-	//       - Leer líneas hasta encontrar delimitador
-	//       - Si hd_expand == 1: expandir variables
-	//       - Si hd_expand == 0: NO expandir (delimitador con comillas)
-	//       - Guardar contenido en pipe o archivo temporal
-	//       - Guardar fd en redir->fd para uso posterior
-	//
-	// ------------------------------------------------------------------------
-
 	handle_heredocs(mini);
 
 	// ------------------------------------------------------------------------
@@ -158,50 +182,3 @@ void	executor(t_mini *mini)
 	else
 		execute_pipeline(mini);
 }
-
-// =============================================================== //
-
-// void	executor(t_mini *mini)
-// {
-// 	int	cmd_count;
-// 	t_cmd	*cmd_aux;
-// 	int	n_redirs;
-// 	int	i;
-// 	int	*fd;
-
-// 	if (!mini || !mini->cmds)
-// 		return ;
-// 	cmd_count = ft_lstsize(mini->cmds);
-// 	cmd_aux = mini->cmds;
-// 	n_redirs = 0;
-// 	i = 0;
-// 	// TODO: Implement execution logic
-	
-// 	//crear pipas dependiendo de los fd
-// 	/*while ((cmd_count - 1) > i)
-// 	{
-// 		if (pipe(fd) == -1)
-// 			return ;
-		
-// 		i++;
-// 	}*/
-// 	while (cmd_aux)
-// 	{
-// 		if (cmd_aux->redirs->out_redir == 1)
-// 			n_redirs++;
-// 		cmd_aux = cmd_aux->next;
-// 	}
-// 	fd = malloc(sizeof(int) * n_redirs);
-// 	cmd_aux = mini->cmds;
-// 	while (cmd_aux)
-// 	{
-// 		if (cmd_aux->redirs->out_redir == 1)
-// 		{
-// 			fd[i] = cmd_aux->tokens[ft_strchr(cmd_aux->tokens, '>')];
-// 			i++;
-// 		}
-// 		cmd_aux = cmd_aux->next;
-// 	}
-	
-// 	(void)cmd_count;
-// }

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 13:32:59 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 18:01:30 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # define ERR_RDI "minishell: syntax error near unexpected token `newline'\n"
 # define ERR_OLDPWD "minishell: cd: OLDPWD not set\n"
 # define ERR_HOME "minishell: cd: HOME not set\n"
+# define ERR_HEREDOC "minishell: warning: here-document delimited by end-of-file (wanted `"
 
 # define ERR_FORKBOMB "FORK BOMB DETECTED!\n"
 # define MSG_APOLOGY "You must apologize by typing: Sorry!\n"
@@ -185,6 +186,9 @@ char	*get_git_branch(const char *repo_path);
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
 void	update_underscore_succ(t_mini *mini);
+
+void    print_dblptr(char **dblptr);
+char	*exp_str_part(const char *s, t_mini *mini, int exp);
 
 // ================================================================== //
 
