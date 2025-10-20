@@ -23,10 +23,10 @@ make
 
 - **Prompt personalizado** con usuario, hostname, ruta y branch de git
 - **Historial** de comandos funcional
-- **Expansión** de variables de entorno (`$VAR`, `$?`)
+- **Expansión** de variables de entorno (`$VAR`, `$?` `$$` `$0` `$_`)
 - **Redirecciones**: `<`, `>`, `>>`, `<<`
-- **Pipes** para encadenar comandos
-- **Builtins**: `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`
+- **Pipes y Heredoc** para encadenar comandos
+- **Builtins**: `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit` y variables locales
 - **Señales**: Control de `Ctrl-C`, `Ctrl-D`, `Ctrl-\`
 - **Comillas**: Manejo de `'` y `"` para proteger metacaracteres
 
