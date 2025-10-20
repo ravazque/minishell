@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 19:28:04 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/19 22:13:46 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 13:14:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,8 @@ void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[])
 		ft_putstr_fd("minishell: fatal error: failed to copy arguments\n", STDERR_FILENO);
 		exit(1);
 	}
+	if (argv[0])
+		ft_setenv("_", argv[0], &(mini->env));
+	else
+		ft_setenv("_", "./minishell", &(mini->env));
 }

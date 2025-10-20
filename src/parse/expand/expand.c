@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/19 21:33:11 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 13:21:35 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,11 @@ static char	*extract_var(const char *str, int start, int *end)
 		*end = start + 1;
 		return (ft_strdup("$$"));
 	}
+	if (str[start] == '0')
+	{
+		*end = start + 1;
+		return (ft_strdup("0")); // ¿quizás poner ./minishell? actua como un "/bin/bash" o "bash" en la shell de bash
+	}
 	i = start;
 	while (str[i] && is_valid_var_chr(str[i]))
 		i++;
@@ -160,6 +165,7 @@ static char	*extract_var(const char *str, int start, int *end)
 	return (var);
 }
 
+
 static char	*expand_var(const char *var, t_mini *mini)
 {
 	char	*val;
@@ -170,6 +176,12 @@ static char	*expand_var(const char *var, t_mini *mini)
 		return (get_exit_sts(mini->exit_sts));
 	if (ft_strcmp(var, "$$") == 0)
 		return (ft_strdup("80085"));
+	if (ft_strcmp(var, "0") == 0)
+	{
+		if (mini->argv && mini->argv[0])
+			return (ft_strdup(mini->argv[0]));
+		return (ft_strdup("minishell"));
+	}
 	val = get_env_val(var, mini->env);
 	return (val);
 }
@@ -188,7 +200,7 @@ static char	*exp_str_part(const char *s, t_mini *mini, int exp)
 	{
 		if (s[i] == '$' && exp && s[i + 1])
 		{
-			if (is_valid_var_chr(s[i + 1]) || s[i + 1] == '?' || s[i + 1] == '$')
+			if (is_valid_var_chr(s[i + 1]) || s[i + 1] == '?' || s[i + 1] == '$' || s[i + 1] == '0')
 			{
 				var = extract_var(s, i + 1, &vend);
 				if (var)

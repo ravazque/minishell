@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 02:23:16 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 12:57:44 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int		ft_argc(char **argv);
 void	ft_setenv(char *name, char *value, char ***env);
 int		ft_envlen(char **env);
 char	*get_local_env(const char *name, char **env);
+void	update_underscore(t_mini *mini, t_cmd *cmd);
 
 // =[ Executor ]===================================================== //
 

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:34:14 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/16 17:14:35 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 12:57:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,38 @@ void	ft_setenv(char *name, char *value, char ***env)
 	new_env[i + 1] = NULL;
 	free(*env);
 	*env = new_env;
+}
+
+static char	*get_last_arg(char **tokens)
+{
+	int	i;
+
+	if (!tokens)
+		return (NULL);
+	if (!tokens[0])
+		return (NULL);
+	i = 0;
+	while (tokens[i])
+		i++;
+	i--;
+	if (i < 0)
+		return (NULL);
+	return (tokens[i]);
+}
+
+void	update_underscore(t_mini *mini, t_cmd *cmd)
+{
+	char	*last_arg;
+
+	if (!mini)
+		return;
+	if (!cmd)
+		return;
+	if (!cmd->tokens)
+		return;
+	if (!cmd->tokens[0])
+		return;
+	last_arg = get_last_arg(cmd->tokens);
+	if (last_arg)
+		ft_setenv("_", last_arg, &(mini->env));
 }
