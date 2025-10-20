@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/19 22:10:12 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 02:23:16 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 # include "../src/aux_libft/include/libft.h"
 # include "colors.h"
 
-# define ERR_C "minishell: Error: Argument is not -c.\n"
-# define ERR_QUO "minishell: Error: syntax error\n"
-# define ERR_C_ARG "minishell: Error: -c: option requires an argument\n"
+# define ERR_C "minishell: error: Argument is not -c.\n"
+# define ERR_QUO "minishell: error: syntax error\n"
+# define ERR_C_ARG "minishell: error: -c: option requires an argument\n"
 # define ERR_VAR "minishell: expansion error\n"
 # define ERR_RDI "minishell: syntax error near unexpected token `newline'\n"
 # define ERR_OLDPWD "minishell: cd: OLDPWD not set\n"

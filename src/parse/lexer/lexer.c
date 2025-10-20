@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/16 17:26:05 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 02:27:57 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,6 +215,13 @@ static int	proc_redirs(t_cmd *cmd)
 			if (!next)
 			{
 				ft_putstr_fd(ERR_RDI, STDERR_FILENO);
+				return (1);
+			}
+			if (is_redir(next->raw))
+			{
+				ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+				ft_putstr_fd(next->raw, STDERR_FILENO);
+				ft_putstr_fd("'\n", STDERR_FILENO);
 				return (1);
 			}
 			r = mk_redir(next->raw, curr->raw, next);
