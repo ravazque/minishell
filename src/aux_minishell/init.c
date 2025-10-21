@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 19:28:04 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 16:22:14 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 18:34:27 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[])
 	mini->exit_sts = 0;
 	mini->apology_mode = 0;
 	mini->argc = argc;
-	mini->cd_home = get_local_env("HOME", envp);
+	mini->cd_home = NULL;
 	mini->env = ft_copy_dblptr(envp);
 	if (!mini->env)
 	{

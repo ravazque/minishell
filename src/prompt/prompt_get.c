@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 05:00:39 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/14 20:43:30 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 18:14:29 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,13 @@ char	*get_git_branch(const char *repo_path)
 	return (branch);
 }
 
-char	*get_username(void)
+char	*get_username(t_mini mini)
 {
 	char	*user;
 
-	user = getenv("USER");
+	user = get_local_env("USER", mini.env);
 	if (!user)
-		user = getenv("LOGNAME");
+		user = get_local_env("LOGNAME", mini.env);
 	if (!user)
 		return (ft_strdup("user"));
 	return (ft_strdup(user));
@@ -102,7 +102,7 @@ char	*get_hostname(void)
 	return (ft_strdup(buffer));
 }
 
-char	*get_short_path(const char *full_path)
+char	*get_short_path(const char *full_path, t_mini mini)
 {
 	char	*home;
 	char	*short_path;
@@ -110,7 +110,7 @@ char	*get_short_path(const char *full_path)
 
 	if (!full_path)
 		return (ft_strdup("~"));
-	home = getenv("HOME");
+	home = get_local_env("HOME", mini.env);
 	if (home)
 	{
 		home_len = ft_strlen(home);

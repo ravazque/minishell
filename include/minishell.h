@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 17:30:10 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 18:14:42 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,9 +173,9 @@ char	*getcwd_or_pwd(t_mini mini);
 int		is_git_repo(const char *path);
 size_t	ft_strcspn(const char *s, const char *reject);
 int		can_access_path(const char *path);
-char	*get_short_path(const char *full_path);
+char	*get_short_path(const char *full_path, t_mini mini);
 char	*get_hostname(void);
-char	*get_username(void);
+char	*get_username(t_mini mini);
 char	*get_git_branch(const char *repo_path);
 
 // =[ Aux ]========================================================== //

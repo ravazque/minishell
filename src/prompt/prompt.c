@@ -6,13 +6,13 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 17:30:14 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 18:16:43 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static char	*build_user_host(void)
+static char	*build_user_host(t_mini mini)
 {
 	char	*user;
 	char	*host;
@@ -20,7 +20,7 @@ static char	*build_user_host(void)
 	char	*tmp;
 	char	*colored;
 
-	user = get_username();
+	user = get_username(mini);
 	host = get_hostname();
 	if (!user || !host)
 	{
@@ -56,13 +56,13 @@ static char	*build_user_host(void)
 	return (colored);
 }
 
-static char	*build_path_section(const char *pwd)
+static char	*build_path_section(const char *pwd, t_mini mini)
 {
 	char	*short_path;
 	char	*colored;
 	char	*tmp;
 
-	short_path = get_short_path(pwd);
+	short_path = get_short_path(pwd, mini);
 	if (!short_path)
 		return (NULL);
 	tmp = ft_strjoin(RL_BLU, short_path);
@@ -135,8 +135,8 @@ char	*prompt(t_mini *mini)
 	mini->pwd = getcwd_or_pwd(*mini);
 	if (!mini->pwd)
 		return (ft_strdup("$ "));
-	user_host = build_user_host();
-	path_section = build_path_section(mini->pwd);
+	user_host = build_user_host(*mini);
+	path_section = build_path_section(mini->pwd, *mini);
 	branch = NULL;
 	if (is_git_repo(mini->pwd))
 		branch = get_git_branch(mini->pwd);
