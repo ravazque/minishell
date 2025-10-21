@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/19 22:15:37 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 17:58:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ static char	*ft_cd_path(t_mini *mini)
 	}
 	if (!ft_strcmp(mini->cmds->tokens[1], "~"))
 	{
+		if (!mini->cd_home)
+			mini->cd_home = get_local_env("HOME", mini->env);
 		if (!mini->cd_home)
 			return (ft_putstr_fd(ERR_HOME, 2), mini->exit_sts = 1, NULL);
 		return (mini->cd_home);

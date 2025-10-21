@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 19:25:40 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 17:30:10 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,12 +161,6 @@ void	setup_interactive_signals(void);
 void	restore_default_signals(void);
 void	setup_execution_signals(void);
 
-// =[ Propmt ]======================================================= //
-
-char	*prompt(t_mini *mini);
-char	*getcwd_or_pwd(void);
-int		is_git_repo(const char *path);
-
 // =[ Fork Bomb ]==================================================== //
 
 int		is_fork_bomb(const char *input);
@@ -174,6 +168,9 @@ void	handle_fork_bomb(t_mini *mini);
 
 // =[ Prompt ]======================================================= //
 
+char	*prompt(t_mini *mini);
+char	*getcwd_or_pwd(t_mini mini);
+int		is_git_repo(const char *path);
 size_t	ft_strcspn(const char *s, const char *reject);
 int		can_access_path(const char *path);
 char	*get_short_path(const char *full_path);

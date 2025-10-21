@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/03 05:01:06 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 17:30:14 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ char	*prompt(t_mini *mini)
 		return (NULL);
 	if (mini->pwd)
 		free(mini->pwd);
-	mini->pwd = getcwd_or_pwd();
+	mini->pwd = getcwd_or_pwd(*mini);
 	if (!mini->pwd)
 		return (ft_strdup("$ "));
 	user_host = build_user_host();

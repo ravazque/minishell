@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 17:09:26 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 17:16:32 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static void	handle_heredocs(t_mini *mini)
 					free(expanded);
 				}
 			}
-			print_dblptr(heredoc); // printeo para COMPROBACIÓN [ debugging ]
+			// print_dblptr(heredoc); // printeo para COMPROBACIÓN [ debugging ]
 			if (heredoc_unique)
 				free(heredoc_unique);
 			if (heredoc)
@@ -184,5 +184,5 @@ void	executor(t_mini *mini)
 		execute_simple_command(mini);
 	else
 		execute_pipeline(mini);
-	print_dblptr(mini->cmds->tokens);
+	// print_dblptr(mini->cmds->tokens); // printeo para COMPROBACIÓN [ debugging ]
 }

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:10:03 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/03 05:00:05 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 17:30:38 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,12 @@ static int	pwd_matches_cwd(const char *pwd, const char *cwd)
 		&& pwd_stat.st_dev == cwd_stat.st_dev);
 }
 
-char	*getcwd_or_pwd(void)
+char	*getcwd_or_pwd(t_mini mini)
 {
 	char	*cwd;
 	char	*pwd;
 
-	pwd = getenv("PWD");
+	pwd = get_local_env("PWD", mini.env);
 	cwd = getcwd(NULL, 0);
 	if (pwd && cwd && pwd_matches_cwd(pwd, cwd))
 	{
