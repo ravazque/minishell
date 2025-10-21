@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 17:50:40 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/20 19:27:23 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,7 +292,7 @@ char	*exp_tok_parts(t_token *tok, t_mini *mini)
 static int	should_exp_redir(t_redir *redir)
 {
 	if (redir->in_redir == 2)
-		return (redir->hd_expand);
+		return (0);
 	return (1);
 }
 

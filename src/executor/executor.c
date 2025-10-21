@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 18:12:21 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 17:09:26 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,12 @@ static void	handle_heredocs(t_mini *mini)
 				cmd = cmd->next;
 				continue;
 			}
-			expanded = exp_str_part(heredoc_unique, mini, cmd->redirs->hd_expand);
-			dbpt_push(&heredoc, expanded);
-			free(expanded);
+			if (ft_strcmp(heredoc_unique, cmd->redirs->target) != 0)
+			{
+				expanded = exp_str_part(heredoc_unique, mini, cmd->redirs->hd_expand);
+				dbpt_push(&heredoc, expanded);
+				free(expanded);
+			}
 			while (ft_strcmp(heredoc_unique, cmd->redirs->target) != 0)
 			{
 				free(heredoc_unique);
@@ -181,4 +184,5 @@ void	executor(t_mini *mini)
 		execute_simple_command(mini);
 	else
 		execute_pipeline(mini);
+	print_dblptr(mini->cmds->tokens);
 }
