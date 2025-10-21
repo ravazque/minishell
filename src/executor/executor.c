@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 19:41:22 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 21:56:37 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,5 +111,8 @@ void	executor(t_mini *mini)
 		execute_simple_command(mini);
 	else
 		execute_pipeline(mini);
-	print_dblptr(mini->cmds->tokens); // printeo para COMPROBACIÓN [ debugging ]
+
+	printf("=========== ARGS ============\n");
+	print_dblptr(mini->cmds->tokens);			// printeo para COMPROBACIÓN [ debugging ]
+	printf("=============================\n");
 }
