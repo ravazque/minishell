@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 19:06:16 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 21:25:56 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int		has_redirs(t_cmd *cmd);
 int		count_args(char **tokens);
 int		is_empty_cmd(t_cmd *cmd);
 
-int	handle_heredocs(t_mini *mini);
+int		handle_heredocs(t_mini *mini);
 
 void	executor(t_mini *mini);
 
@@ -187,7 +187,7 @@ void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
 void	update_underscore_succ(t_mini *mini);
 
-void    print_dblptr(char **dblptr);
+void	print_dblptr(char **dblptr);
 char	*exp_str_part(const char *s, t_mini *mini, int exp);
 
 // ================================================================== //

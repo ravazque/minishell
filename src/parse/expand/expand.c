@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 17:17:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 21:27:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,6 @@ static char	*extract_var(const char *str, int start, int *end)
 	var[len] = '\0';
 	return (var);
 }
-
 
 static char	*expand_var(const char *var, t_mini *mini)
 {

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 19:05:09 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 20:18:57 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 21:26:36 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,6 @@ int	handle_heredocs(t_mini *mini)
 		}
 		cmd = cmd->next;
 	}
-	print_dblptr(mini->cmds->tokens);  // printeo para COMPROBACIÓN [ debugging ] | Principalmente válido en un solo heredoc
+	print_dblptr(mini->cmds->tokens); // printeo para COMPROBACIÓN [ debugging ] | Principalmente válido en un solo heredoc
 	return (0);
 }
