@@ -6,96 +6,20 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 18:52:05 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 19:41:22 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-extern volatile sig_atomic_t	g_signal_received;
-
-// ============================================================================
-// FUNCIONES AUXILIARES - A IMPLEMENTAR
-// ============================================================================
-
-static void	handle_heredocs(t_mini *mini)
-{
-	t_cmd	*cmd;
-	char	*heredoc_unique;
-	char	**heredoc;
-	char	*expanded;
-
-	cmd = mini->cmds;
-	heredoc = NULL;
-	while (cmd)
-	{
-		if (!cmd->redirs || cmd->redirs->in_redir != 2)
-			cmd = cmd->next;
-		else
-		{
-			heredoc_unique = readline("> ");
-			if (!heredoc_unique)
-			{
-				ft_putstr_fd(ERR_HEREDOC, STDERR_FILENO);
-				ft_putstr_fd(cmd->redirs->target, STDERR_FILENO);
-				ft_putstr_fd("')\n", STDERR_FILENO);
-				if (heredoc)
-					free_dblptr(heredoc);
-				heredoc = NULL;
-				cmd = cmd->next;
-				continue;
-			}
-			if (ft_strcmp(heredoc_unique, cmd->redirs->target) != 0)
-			{
-				expanded = exp_str_part(heredoc_unique, mini, cmd->redirs->hd_expand);
-				dbpt_push(&heredoc, expanded);
-				free(expanded);
-			}
-			while (ft_strcmp(heredoc_unique, cmd->redirs->target) != 0)
-			{
-				free(heredoc_unique);
-				heredoc_unique = readline("> ");
-				if (!heredoc_unique)
-				{
-					ft_putstr_fd(ERR_HEREDOC, STDERR_FILENO);
-					ft_putstr_fd(cmd->redirs->target, STDERR_FILENO);
-					ft_putstr_fd("')\n", STDERR_FILENO);
-					break;
-				}
-				if (ft_strcmp(heredoc_unique, cmd->redirs->target) != 0)
-				{
-					expanded = exp_str_part(heredoc_unique, mini, cmd->redirs->hd_expand);
-					dbpt_push(&heredoc, expanded);
-					free(expanded);
-				}
-			}
-			// print_dblptr(heredoc); // printeo para COMPROBACIÓN [ debugging ]
-			if (heredoc_unique)
-				free(heredoc_unique);
-			if (heredoc)
-				free_dblptr(heredoc);
-			heredoc = NULL;
-			cmd = cmd->next;
-		}
-	}
-}
-
 static void	execute_simple_command(t_mini *mini)
 {
 	(void)mini;
-
-	// TODO: Implementar ejecución de comando simple
-
-	// Ver esquema detallado en comentarios de executor()
 }
 
 static void	execute_pipeline(t_mini *mini)
 {
 	(void)mini;
-
-	// TODO: Implementar ejecución de pipeline
-
-	// Ver esquema detallado en comentarios de executor()
 }
 
 void	executor(t_mini *mini)
@@ -105,7 +29,8 @@ void	executor(t_mini *mini)
 	if (!mini || !mini->cmds)
 		return ;
 	cmd_count = ft_lstsize(mini->cmds);
-	handle_heredocs(mini);
+	if (handle_heredocs(mini))
+		return ;
 
 	// ------------------------------------------------------------------------
 	// PASO 2: DECIDIR TIPO DE EJECUCION
@@ -186,5 +111,5 @@ void	executor(t_mini *mini)
 		execute_simple_command(mini);
 	else
 		execute_pipeline(mini);
-	// print_dblptr(mini->cmds->tokens); // printeo para COMPROBACIÓN [ debugging ]
+	print_dblptr(mini->cmds->tokens); // printeo para COMPROBACIÓN [ debugging ]
 }

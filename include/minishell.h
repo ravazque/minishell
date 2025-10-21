@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 18:51:31 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 19:06:16 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ int		ft_lstsize(t_cmd *lst);
 int		has_redirs(t_cmd *cmd);
 int		count_args(char **tokens);
 int		is_empty_cmd(t_cmd *cmd);
+
+int	handle_heredocs(t_mini *mini);
 
 void	executor(t_mini *mini);
 

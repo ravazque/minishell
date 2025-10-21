@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 01:53:41 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 18:51:11 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 20:14:20 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ static void	handle_heredoc_sigint(int sig)
 {
 	(void)sig;
 	g_signal_received = SIGINT;
+	rl_done = 1;
 	write(STDOUT_FILENO, "\n", 1);
+	close(STDIN_FILENO);
 }
 
 static void	handle_sigwinch(int sig)

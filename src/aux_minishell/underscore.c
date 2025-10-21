@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:29:45 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 13:35:07 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 19:51:50 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,13 @@ static void	update_underscore(t_mini *mini, t_cmd *cmd)
 	char	*last_arg;
 
 	if (!mini)
-		return;
+		return ;
 	if (!cmd)
-		return;
+		return ;
 	if (!cmd->tokens)
-		return;
+		return ;
 	if (!cmd->tokens[0])
-		return;
+		return ;
 	last_arg = get_last_arg(cmd->tokens);
 	if (last_arg)
 		ft_setenv("_", last_arg, &(mini->env));
@@ -63,11 +63,11 @@ void	update_underscore_succ(t_mini *mini)
 	t_cmd	*last_cmd;
 
 	if (!mini)
-		return;
+		return ;
 	if (!mini->cmds)
-		return;
+		return ;
 	if (mini->exit_sts != 0)
-		return;
+		return ;
 	last_cmd = get_last_cmd(mini->cmds);
 	if (last_cmd)
 		update_underscore(mini, last_cmd);
