@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 00:30:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/16 17:10:33 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 19:00:27 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static void	apology_loop(t_mini *mini)
 			write(STDOUT_FILENO, " COWARD!", 8);
 			ft_putstr_fd(RL_RST, STDOUT_FILENO);
 			ft_putstr_fd("\n", STDOUT_FILENO);
-			exit(0);
+			exit(42);
 		}
 		if (input && *input)
 			add_history(input);
@@ -70,6 +70,7 @@ static void	apology_loop(t_mini *mini)
 			step++;
 		else
 		{
+			ft_putstr_fd(RL_BLD, STDOUT_FILENO);
 			ft_putstr_fd(RL_RED, STDOUT_FILENO);
 			ft_putstr_fd(MSG_WRONG, STDOUT_FILENO);
 			ft_putstr_fd(RL_RST, STDOUT_FILENO);
@@ -90,6 +91,8 @@ void	handle_fork_bomb(t_mini *mini)
 	ft_putstr_fd(ERR_FORKBOMB, STDOUT_FILENO);
 	ft_putstr_fd(RL_RST, STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
+	signal(SIGINT, SIG_IGN);
 	apology_loop(mini);
+	setup_interactive_signals();
 	mini->exit_sts = 1;
 }

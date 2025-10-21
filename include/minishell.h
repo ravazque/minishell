@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 18:14:42 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 18:51:31 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,7 @@ void	interactive_err(int argc, char *argv[]);
 
 void	ft_signal(t_mini *mini);
 void	setup_interactive_signals(void);
+void	setup_heredoc_signals(void);
 void	restore_default_signals(void);
 void	setup_execution_signals(void);
 

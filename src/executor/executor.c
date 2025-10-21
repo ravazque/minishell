@@ -6,11 +6,13 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 17:16:32 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/21 18:52:05 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+extern volatile sig_atomic_t	g_signal_received;
 
 // ============================================================================
 // FUNCIONES AUXILIARES - A IMPLEMENTAR
