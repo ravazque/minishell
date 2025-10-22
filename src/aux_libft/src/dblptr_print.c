@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 00:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 21:30:27 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 17:24:42 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../include/libft.h"
 
 void	print_dblptr(char **dblptr)
 {

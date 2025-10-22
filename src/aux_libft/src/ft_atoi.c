@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 21:41:12 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/18 17:01:12 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 17:06:58 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 static int	ft_ovflow(unsigned long long num, int neg)
 {
-	if (neg == -1 && num > 9223372036854775807)
-		return (0);
-	if (neg == 1 && num > 9223372036854775807)
-		return (-1);
+	if (neg == -1 && num > (unsigned long long)INT_MAX + 1)
+		return (INT_MIN);
+	if (neg == 1 && num > (unsigned long long)INT_MAX)
+		return (INT_MAX);
 	return (num);
 }
 

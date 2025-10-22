@@ -26,14 +26,6 @@ make
 - **Expansión** de variables de entorno (`$VAR`, `$?`, `$0`, `$$` y `$_`)
 - **Redirecciones y Heredoc**: `<`, `>`, `>>`, `<<`
 - **Pipes** para encadenar comandos
-- **Builtins**: `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit` y variables locales
+- **Builtins**: `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`
 - **Señales**: Control de `Ctrl-C`, `Ctrl-D`, `Ctrl-\`
 - **Comillas**: Manejo de `'` y `"` para proteger metacaracteres
-
-## 📚 Documentación Técnica
-
-Para entender la arquitectura interna del proyecto:
-
-- **[Parse](docs/parse.md)** - Tokenización, lexer y expansión
-- **[Executor](docs/executor.md)** - Ejecución de comandos y pipelines
-- **[Builtins](docs/builtins.md)** - Comandos internos implementados

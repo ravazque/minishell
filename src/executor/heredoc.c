@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 19:05:09 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 21:57:20 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 16:55:33 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,9 @@ static int	handle_single_heredoc(t_cmd *cmd, t_mini *mini)
 	close(stdin_backup);
 	if (heredoc)
 	{
-		printf("========== HEREDOC ==========\n");
-		print_dblptr(heredoc);						// printeo para COMPROBACIÓN [ debugging ]
-		printf("=============================\n");
+		// printf("========== HEREDOC ==========\n");
+		// print_dblptr(heredoc);
+		// printf("=============================\n");
 		free_dblptr(heredoc);
 	}
 	return (result);

@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 17:27:43 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 21:30:55 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 17:25:32 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 static size_t	dblptr_len(char **p)
 {

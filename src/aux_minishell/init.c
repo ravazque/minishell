@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 19:28:04 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 21:22:32 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 17:00:39 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[])
 		ft_putstr_fd("minishell: fatal error: failed to copy environment\n", STDERR_FILENO);
 		exit(1);
 	}
+	setup_mshlvl(mini);
 	mini->argv = ft_copy_dblptr(argv);
 	if (!mini->argv)
 	{

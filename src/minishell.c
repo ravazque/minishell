@@ -6,26 +6,26 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:07:16 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/16 15:41:32 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 16:55:51 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/minishell.h"
 
-static void	execute_command_mode(t_mini *mini, char *command)
-{
-	mini->input = ft_strdup(command);
-	if (!mini->input)
-	{
-		cleanup_mini(mini);
-		exit(1);
-	}
-	parse(mini);
-	if (mini->cmds && built_ins(mini) == false) // quitar comprobacion de buitins y pasarlo al executor
-		executor(mini);
-	cleanup_mini(mini);
-	exit(mini->exit_sts);
-}
+// static void	execute_command_mode(t_mini *mini, char *command)
+// {
+// 	mini->input = ft_strdup(command);
+// 	if (!mini->input)
+// 	{
+// 		cleanup_mini(mini);
+// 		exit(1);
+// 	}
+// 	parse(mini);
+// 	if (mini->cmds)
+// 		executor(mini);
+// 	cleanup_mini(mini);
+// 	exit(mini->exit_sts);
+// }
 
 int	main(int argc, char *argv[], char *envp[])
 {
@@ -38,8 +38,8 @@ int	main(int argc, char *argv[], char *envp[])
 		setup_interactive_signals();
 		loop(&mini);
 	}
-	else
-		execute_command_mode(&mini, argv[2]);
+	// else
+	// 	execute_command_mode(&mini, argv[2]);
 	cleanup_mini(&mini);
 	return (mini.exit_sts);
 }

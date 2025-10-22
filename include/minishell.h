@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 21:25:56 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 17:30:39 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	free_token_parts(t_token_part *parts);
 
 // =[ Built Ins ]==================================================== //
 
-void	builtin_exit(t_mini *mini);
+void	builtin_exit(t_mini *mini, char *cmd);
 void	builtin_env(t_mini *mini);
 void	builtin_pwd(t_mini *mini);
 void	builtin_cd(t_mini *mini);
@@ -135,7 +135,6 @@ void	parse(t_mini *mini);
 int		tokenizer(t_mini **minip);
 int		quotes_balanced(const char *s);
 int		is_space(int c);
-char	**dbpt_push(char ***dst, const char *s);
 
 // =[ Lexer ]======================================================== //
 
@@ -148,6 +147,7 @@ char	*exp_tok_parts(t_token *tok, t_mini *mini);
 int		tok_has_quotes(t_token *tok);
 int		exp_cmd_toks_with_split(t_cmd *cmd, t_mini *mini);
 int		is_empty_str(const char *s);
+char	*exp_str_part(const char *s, t_mini *mini, int exp);
 
 // =[ Redirs ]======================================================= //
 
@@ -186,9 +186,7 @@ char	*get_git_branch(const char *repo_path);
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
 void	update_underscore_succ(t_mini *mini);
-
-void	print_dblptr(char **dblptr);
-char	*exp_str_part(const char *s, t_mini *mini, int exp);
+void	setup_mshlvl(t_mini *mini);
 
 // ================================================================== //
 
