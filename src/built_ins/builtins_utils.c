@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:34:14 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/20 13:30:18 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 19:22:49 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,6 @@ int	ft_argc(char **argv)
 
 	i = 0;
 	while (argv[i] != NULL)
-		i++;
-	return (i);
-}
-
-int	ft_envlen(char **env)
-{
-	int	i;
-
-	i = 0;
-	while (env[i])
 		i++;
 	return (i);
 }
@@ -48,6 +38,15 @@ char	*get_local_env(const char *name, char **env)
 		i++;
 	}
 	return (NULL);
+}
+static int	ft_envlen(char **env)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+		i++;
+	return (i);
 }
 
 void	ft_setenv(char *name, char *value, char ***env)

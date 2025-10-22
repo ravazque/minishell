@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:30:15 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/20 13:25:48 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 19:31:54 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 char	**ft_sort_env(char **env)
 {
@@ -75,6 +75,11 @@ void	ft_putexport(char ***env)
 		return (malloc_error());
 	while (abc_env[i])
 	{
+		if (ft_strncmp(abc_env[i], "_=", 2) == 0)
+		{
+			i++;
+			continue;
+		}
 		j = 0;
 		printf("declare -x ");
 		if (ft_strchr(abc_env[i], '='))

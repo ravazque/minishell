@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 17:30:39 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 19:52:58 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,18 +101,25 @@ void	free_token_parts(t_token_part *parts);
 
 // =[ Built Ins ]==================================================== //
 
-void	builtin_exit(t_mini *mini, char *cmd);
+void	builtin_exit(t_mini *mini);
 void	builtin_env(t_mini *mini);
 void	builtin_pwd(t_mini *mini);
-void	builtin_cd(t_mini *mini);
 void	builtin_echo(t_mini *mini);
 void	builtin_export(t_mini *mini);
 void	builtin_unset(t_mini *mini);
 bool	built_ins(t_mini *mini);
 
+char	*get_new_pwd(char *oldpwd, char *path, char *arg);
+char	*get_parent_from_pwd(t_mini *mini);
+char	*handle_home_dir(t_mini *mini);
+char	*handle_oldpwd_dir(t_mini *mini);
+char	*update_home_cache(t_mini *mini, char *current);
+void	print_chdir_error(char *path, char *arg);
+int		needs_free(char *arg);
+void	builtin_cd(t_mini *mini);
+
 int		ft_argc(char **argv);
 void	ft_setenv(char *name, char *value, char ***env);
-int		ft_envlen(char **env);
 char	*get_local_env(const char *name, char **env);
 
 // =[ Executor ]===================================================== //

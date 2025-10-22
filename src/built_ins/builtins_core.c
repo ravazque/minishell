@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 17:10:07 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 17:30:23 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 19:53:23 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	is_builtin_cmd(const char *cmd)
 {
 	if (!cmd)
 		return (0);
-	if (ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "bye") == 0)
+	if (ft_strcmp(cmd, "exit") == 0)
 		return (1);
 	if (ft_strcmp(cmd, "echo") == 0)
 		return (1);
@@ -42,8 +42,8 @@ bool	built_ins(t_mini *mini)
 	cmd = mini->cmds->tokens[0];
 	if (!is_builtin_cmd(cmd))
 		return (false);
-	if (ft_strcmp(cmd, "exit") == 0 || ft_strcmp(cmd, "bye") == 0)
-		builtin_exit(mini, cmd);
+	if (ft_strcmp(cmd, "exit") == 0)
+		builtin_exit(mini);
 	else if (ft_strcmp(cmd, "echo") == 0)
 		builtin_echo(mini);
 	else if (ft_strcmp(cmd, "cd") == 0)
