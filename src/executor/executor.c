@@ -3,34 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 17:08:19 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 20:37:26 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-static void	execute_simple_command(t_mini *mini)
-{
-	(void)mini;
-}
+// void	executor(t_mini *mini)
+// {
+// 	int	cmd_count;
 
-static void	execute_pipeline(t_mini *mini)
-{
-	(void)mini;
-}
-
-void	executor(t_mini *mini)
-{
-	int	cmd_count;
-
-	if (!mini || !mini->cmds)
-		return ;
-	cmd_count = ft_lstsize(mini->cmds);
-	if (handle_heredocs(mini))
-		return ;
+// 	if (!mini || !mini->cmds)
+// 		return ;
+// 	cmd_count = ft_lstsize(mini->cmds);
+// 	if (handle_heredocs(mini))
+// 		return ;
 
 	// ------------------------------------------------------------------------
 	// PASO 2: DECIDIR TIPO DE EJECUCION
@@ -107,13 +97,181 @@ void	executor(t_mini *mini)
 	//
 	// ------------------------------------------------------------------------
 
-	if (cmd_count == 1)
-		execute_simple_command(mini);
-	else
-		execute_pipeline(mini);
+	// if (cmd_count == 1)
+	// 	execute_simple_command(mini);
+	// else
+	// 	execute_pipeline(mini);
 
-	built_ins(mini);
+	// built_ins(mini);
 	// printf("=========== ARGS ============\n");
 	// print_dblptr(mini->cmds->tokens);
 	// printf("=============================\n");
+// }
+
+void	ft_error(char *message)
+{
+	ft_putstr_fd("\033[1;41;5m ERROR \033[0m\n", 2);
+	ft_putstr_fd("\033[91m", 2);
+	perror(message);
+	ft_putstr_fd("\033[0m", 2);
+	exit(EXIT_FAILURE);
+}
+
+char	*ft_get_path(char *cmd, char **envp)
+{
+	char	**paths;
+	char	*path;
+	int		i;
+
+	i = 0;
+	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
+		i++;
+	if (!envp[i])
+		return (NULL);
+	paths = ft_split(envp[i] + 5, ':');
+	i = 0;
+	while (paths[i])
+	{
+		path = ft_strjoin3(paths[i], "/", cmd);
+		if (access(path, X_OK) == 0)
+		{
+			free_dblptr(paths);
+			return (path);
+		}
+		else
+			free(path);
+		i++;
+	}
+	free_dblptr(paths);
+	return (NULL);
+}
+
+void	ft_execve(char **argv, char **envp)
+{
+	char	**cmd;
+	char	*path;
+
+	cmd = argv;
+	if (!cmd || !cmd[0])
+		ft_error("missing command");
+	path = ft_get_path(cmd[0], envp);
+	if (!path)
+	{
+		free(path);
+		ft_error("path not found");
+	}
+	if (execve(path, cmd, envp) == -1)
+		ft_error("execve error");
+}
+
+void	ft_close(int *fd, int index, int n_fd)
+{
+	int	i;
+
+	i = 0;
+	while (i < n_fd)
+	{
+		if (i != ((index - 1) * 2) && i != (index * 2 + 1))
+			close(fd[i]);
+		i++;
+	}
+}
+
+void	ft_close_and_wait(int *fd, int n_fd, pid_t *pid, int n_cmd)
+{
+	int	i;
+
+	i = 0;
+	while (i < n_fd)
+	{
+		close(fd[i]);
+		i++;
+	}
+	i = 0;
+	while (i < n_cmd)
+	{
+		waitpid(pid[i], NULL, 0);
+		i++;
+	}
+}
+
+/*void	ft_pid(t_cmd *cmd_aux, t_mini *mini)
+{
+	pid_t	pid;
+
+	
+}*/
+
+void	executor(t_mini *mini)
+{
+	t_cmd	*cmd_aux;
+	int		n_cmd;
+	pid_t	*pid;
+	int		*fd;
+	int		i;
+	int		index;
+
+	if (!mini || !mini->cmds)
+		return ;
+	cmd_aux = mini->cmds;
+	n_cmd = ft_lstsize(mini->cmds);
+	if (handle_heredocs(mini))
+		return ;
+	pid = malloc(sizeof(pid_t) * n_cmd);
+	fd = malloc(sizeof(int) * 2 * (n_cmd - 1));
+	if (!fd)
+		return ;
+	i = 0;
+	index = 0;
+	//ft_pipes();
+	while (i < (n_cmd - 1))
+	{
+		if (pipe(&fd[i * 2]) == -1)
+		{
+			ft_error("pipe error");
+			return ;
+		}
+		i++;
+	}
+	while (cmd_aux)
+	{
+		//ft_pid(cmd_aux, mini);
+		
+		pid[index] = fork();
+		if (pid[index] == -1)
+		{
+			ft_error("fork error");
+			return ;
+		}
+		else if (pid[index] == 0)
+		{
+			ft_close(fd, index, 2 * (n_cmd - 1));
+			if (index == 0)//si es el primero
+			{
+				dup2(fd[1], STDOUT_FILENO);
+			}
+			else if (cmd_aux->next == NULL)//si es el ultimo
+			{
+				dup2(fd[(index - 1) * 2], STDIN_FILENO);
+			}
+			else
+			{
+				dup2(fd[(index - 1) * 2], STDIN_FILENO);
+				dup2(fd[index * 2 + 1], STDOUT_FILENO);
+			}
+			i = 0;
+			while (i < (2 * (n_cmd - 1)))
+			{
+				close(fd[i]);
+				i++;
+			}
+			if (built_ins(mini, cmd_aux) == false)
+				ft_execve(cmd_aux->tokens, mini->env);
+		}
+		cmd_aux = cmd_aux->next;
+		index++;
+	}
+	ft_close_and_wait(fd, 2 * (n_cmd - 1), pid, n_cmd);
+	free(fd);
+	free(pid);
 }

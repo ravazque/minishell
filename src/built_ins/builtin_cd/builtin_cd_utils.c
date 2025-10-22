@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 19:30:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 19:38:11 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 20:38:41 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void	print_chdir_error(char *path, char *arg)
 {
 	ft_putstr_fd("minishell: cd: ", 2);
 	if (arg && !ft_strcmp(arg, "-"))
+		ft_putstr_fd(path, 2);
+	else if (arg && !ft_strcmp(arg, "~"))
 		ft_putstr_fd(path, 2);
 	else if (arg)
 		ft_putstr_fd(arg, 2);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_core.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 17:10:07 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 19:53:23 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 20:42:13 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ static int	is_builtin_cmd(const char *cmd)
 	return (0);
 }
 
-bool	built_ins(t_mini *mini)
+bool	built_ins(t_mini *mini, t_cmd *command)
 {
 	char	*cmd;
 
-	if (!mini || !mini->cmds || !mini->cmds->tokens || !mini->cmds->tokens[0])
+	if (!mini || !command || !command->tokens || !command->tokens[0])
 		return (false);
-	cmd = mini->cmds->tokens[0];
+	cmd = command->tokens[0];
 	if (!is_builtin_cmd(cmd))
 		return (false);
 	if (ft_strcmp(cmd, "exit") == 0)
