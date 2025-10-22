@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 19:52:58 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 21:37:24 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,12 +102,13 @@ void	free_token_parts(t_token_part *parts);
 // =[ Built Ins ]==================================================== //
 
 void	builtin_exit(t_mini *mini);
-void	builtin_env(t_mini *mini);
+void	builtin_env(t_mini *mini, t_cmd *cmd);
 void	builtin_pwd(t_mini *mini);
-void	builtin_echo(t_mini *mini);
+void	builtin_echo(t_cmd *cmd);
 void	builtin_export(t_mini *mini);
 void	builtin_unset(t_mini *mini);
-bool	built_ins(t_mini *mini);
+int		is_builtin_cmd(const char *cmd);
+bool	built_ins(t_mini *mini, t_cmd *cmd);
 
 char	*get_new_pwd(char *oldpwd, char *path, char *arg);
 char	*get_parent_from_pwd(t_mini *mini);

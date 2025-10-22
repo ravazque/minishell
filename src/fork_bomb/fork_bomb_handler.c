@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 00:30:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 19:00:27 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 22:31:59 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,7 @@ static void	apology_loop(t_mini *mini)
 void	handle_fork_bomb(t_mini *mini)
 {
 	ft_putstr_fd("\n", STDOUT_FILENO);
-	ft_putstr_fd(RL_BLD, STDOUT_FILENO);
-	ft_putstr_fd(RL_RED, STDOUT_FILENO);
+	ft_putstr_fd(RL_FRKBMB, STDOUT_FILENO);
 	ft_putstr_fd(ERR_FORKBOMB, STDOUT_FILENO);
 	ft_putstr_fd(RL_RST, STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);

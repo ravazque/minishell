@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 01:35:17 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/16 17:10:21 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 22:31:41 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,7 @@
 # define RL_MAG "\001\033[35m\002"
 # define RL_CYN "\001\033[36m\002"
 # define RL_WHT "\001\033[37m\002"
+
+# define RL_FRKBMB "\001\033[1;31;5m\002"
 
 #endif
