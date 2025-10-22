@@ -6,7 +6,7 @@
 /*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 20:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 20:37:26 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/10/22 22:15:48 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,10 +217,18 @@ void	executor(t_mini *mini)
 	n_cmd = ft_lstsize(mini->cmds);
 	if (handle_heredocs(mini))
 		return ;
+	if (n_cmd == 1 && is_builtin_cmd(cmd_aux->tokens[0]) == 1)
+	{
+		built_ins(mini, cmd_aux);
+		return ;
+	}
 	pid = malloc(sizeof(pid_t) * n_cmd);
 	fd = malloc(sizeof(int) * 2 * (n_cmd - 1));
 	if (!fd)
+	{
+		free(pid);
 		return ;
+	}
 	i = 0;
 	index = 0;
 	//ft_pipes();
@@ -229,18 +237,24 @@ void	executor(t_mini *mini)
 		if (pipe(&fd[i * 2]) == -1)
 		{
 			ft_error("pipe error");
+			free(fd);
+			free(pid);
 			return ;
 		}
 		i++;
 	}
 	while (cmd_aux)
 	{
+		
+		
 		//ft_pid(cmd_aux, mini);
 		
 		pid[index] = fork();
 		if (pid[index] == -1)
 		{
 			ft_error("fork error");
+			free(fd);
+			free(pid);
 			return ;
 		}
 		else if (pid[index] == 0)
@@ -267,6 +281,8 @@ void	executor(t_mini *mini)
 			}
 			if (built_ins(mini, cmd_aux) == false)
 				ft_execve(cmd_aux->tokens, mini->env);
+			else
+				exit(EXIT_SUCCESS);
 		}
 		cmd_aux = cmd_aux->next;
 		index++;

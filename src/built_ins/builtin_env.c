@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 22:54:02 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/24 16:36:34 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/22 21:01:29 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	builtin_env(t_mini *mini)
+void	builtin_env(t_mini *mini, t_cmd *cmd)
 {
 	int		i;
 
-	if (mini->cmds->tokens[1])
+	if (cmd->tokens[1])
 	{
 		ft_putstr_fd("minishell: env: '", STDERR_FILENO);
-		ft_putstr_fd(mini->cmds->tokens[1], STDERR_FILENO);
+		ft_putstr_fd(cmd->tokens[1], STDERR_FILENO);
 		ft_putstr_fd("': No such file or directory\n", STDERR_FILENO);
 		mini->exit_sts = 127;
 		return ;
