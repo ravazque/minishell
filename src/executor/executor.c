@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 23:16:26 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 18:23:33 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/23 22:40:09 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	is_directory(const char *path)
 	return (0);
 }
 
-static char	*find_command_path(char *cmd, char **envp)
+static char	*ft_get_path(char *cmd, char **envp)
 {
 	char	**paths;
 	char	*path;
@@ -73,6 +73,35 @@ static char	*find_command_path(char *cmd, char **envp)
 	return (NULL);
 }
 
+// char	*ft_get_path(char *cmd, char **envp)
+// {
+// 	char	**paths;
+// 	char	*path;
+// 	int		i;
+
+// 	i = 0;
+// 	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
+// 		i++;
+// 	if (!envp[i])
+// 		return (NULL);
+// 	paths = ft_split(envp[i] + 5, ':');
+// 	i = 0;
+// 	while (paths[i])
+// 	{
+// 		path = ft_strjoin3(paths[i], "/", cmd);
+// 		if (access(path, X_OK) == 0)
+// 		{
+// 			free_dblptr(paths);
+// 			return (path);
+// 		}
+// 		else
+// 			free(path);
+// 		i++;
+// 	}
+// 	free_dblptr(paths);
+// 	return (NULL);
+// }
+
 static void	print_exec_error(char *cmd, int error_type, int is_path)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -98,7 +127,7 @@ static void	print_exec_error(char *cmd, int error_type, int is_path)
 	}
 }
 
-static void	execute_external_command(char **argv, char **envp, char ***env_ptr)
+static void	ft_execve(char **argv, char **envp, char ***env_ptr)
 {
 	char	*path;
 	int		error_code;
@@ -109,7 +138,7 @@ static void	execute_external_command(char **argv, char **envp, char ***env_ptr)
 		exit(127);
 	}
 
-	path = find_command_path(argv[0], envp);
+	path = ft_get_path(argv[0], envp);
 
 	if (!path)
 	{
@@ -145,6 +174,35 @@ static void	execute_external_command(char **argv, char **envp, char ***env_ptr)
 	}
 }
 
+// void	ft_execve(char **argv, char **envp)
+// {
+// 	char	**cmd;
+// 	char	*path;
+
+// 	cmd = argv;
+// 	if (!cmd || !cmd[0])
+// 	{
+// 		ft_putstr_fd("minishell: error: empty command\n", STDERR_FILENO);
+// 		exit(127);
+// 	}
+// 	path = ft_get_path(cmd[0], envp);
+// 	if (!path)
+// 	{
+// 		ft_putstr_fd("minishell: ", STDERR_FILENO);
+// 		ft_putstr_fd(cmd[0], STDERR_FILENO);
+// 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+// 		exit(127);
+// 	}
+// 	if (execve(path, cmd, envp) == -1)
+// 	{
+// 		ft_putstr_fd("minishell: ", STDERR_FILENO);
+// 		ft_putstr_fd(cmd[0], STDERR_FILENO);
+// 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+// 		free(path);
+// 		exit(127);
+// 	}
+// }
+
 static void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 {
 	int	builtin_type;
@@ -161,7 +219,7 @@ static void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int id
 		built_ins(mini, cmd);
 		exit(mini->exit_sts);
 	}
-	execute_external_command(cmd->tokens, mini->env, &(mini->env));
+	ft_execve(cmd->tokens, mini->env, &(mini->env));
 }
 
 static int	execute_pipeline(t_mini *mini, t_exec *exec)
@@ -222,7 +280,7 @@ static int	execute_single_command(t_mini *mini, t_cmd *cmd)
 			built_ins(mini, cmd);
 			exit(mini->exit_sts);
 		}
-		execute_external_command(cmd->tokens, mini->env, &(mini->env));
+		ft_execve(cmd->tokens, mini->env, &(mini->env));
 	}
 	ignore_sigint_for_wait();
 	waitpid(pid, &status, 0);
