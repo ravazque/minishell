@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:30:15 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/22 19:31:54 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/23 17:31:09 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	ft_putexport(char ***env)
 		if (ft_strncmp(abc_env[i], "_=", 2) == 0)
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		j = 0;
 		printf("declare -x ");

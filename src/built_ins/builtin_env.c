@@ -24,6 +24,7 @@ void	builtin_env(t_mini *mini, t_cmd *cmd)
 		mini->exit_sts = 127;
 		return ;
 	}
+	ft_setenv("_", "/usr/bin/env", &(mini->env));
 	i = 0;
 	while (mini->env[i])
 	{

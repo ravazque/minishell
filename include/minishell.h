@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 21:37:24 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/10/23 17:30:11 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,31 @@
 # define ERR_OLDPWD "minishell: cd: OLDPWD not set\n"
 # define ERR_HOME "minishell: cd: HOME not set\n"
 # define ERR_HEREDOC "minishell: warning: here-document delimited by end-of-file (wanted `"
+# define INIT_ERR_ENV "minishell: fatal error: failed to copy environment\n"
+# define INIT_ERR_HOME "minishell: fatal error: failed to allocate cd_home\n"
+# define INIT_ERR_ARGS "minishell: fatal error: failed to copy arguments\n"
 
 # define ERR_FORKBOMB "FORK BOMB DETECTED!\n"
 # define MSG_APOLOGY "You must apologize by typing: Sorry!\n"
 # define MSG_CONFIRM "Now confirm by typing: I'm really sorry!\n"
 # define MSG_FORGIVEN "\nApology accepted. Please be more careful.\n\n"
 # define MSG_WRONG "That's not a proper apology. Try again.\n"
+
+typedef struct s_heredoc_data
+{
+	int					pipe_fd[2];			// FD del pipe temporal
+	char				**lines;			// Líneas del heredoc (backup)
+}						t_heredoc_data;
+
+typedef struct s_exec
+{
+	int					*pipe_fds;			// Array de FDs de pipes
+	int					n_pipes;			// Número de pipes
+	pid_t				*pids;				// Array de PIDs
+	int					n_cmds;				// Número de comandos
+	int					stdin_backup;		// Backup de stdin
+	int					stdout_backup;		// Backup de stdout
+}						t_exec;
 
 typedef enum e_token_type
 {
@@ -65,6 +84,7 @@ typedef struct s_redir
 	int					in_redir;
 	int					out_redir;
 	int					fd;
+	t_heredoc_data		*hd_data;
 	struct s_redir		*next;
 }						t_redir;
 
@@ -98,6 +118,9 @@ void	free_cmds(t_cmd *cmd);
 void	cleanup_mini(t_mini *mini);
 void	free_args(t_mini *mini);
 void	free_token_parts(t_token_part *parts);
+void	cleanup_exec(t_exec *exec);
+
+// =[ Redirs ]======================================================= //
 
 // =[ Built Ins ]==================================================== //
 
@@ -106,9 +129,12 @@ void	builtin_env(t_mini *mini, t_cmd *cmd);
 void	builtin_pwd(t_mini *mini);
 void	builtin_echo(t_cmd *cmd);
 void	builtin_export(t_mini *mini);
+void	builtin_cd(t_mini *mini);
 void	builtin_unset(t_mini *mini);
 int		is_builtin_cmd(const char *cmd);
 bool	built_ins(t_mini *mini, t_cmd *cmd);
+
+// =[ Built Ins ]=( cd )============================================= //
 
 char	*get_new_pwd(char *oldpwd, char *path, char *arg);
 char	*get_parent_from_pwd(t_mini *mini);
@@ -117,7 +143,8 @@ char	*handle_oldpwd_dir(t_mini *mini);
 char	*update_home_cache(t_mini *mini, char *current);
 void	print_chdir_error(char *path, char *arg);
 int		needs_free(char *arg);
-void	builtin_cd(t_mini *mini);
+
+// =[ Built Ins ]=( utils )========================================== //
 
 int		ft_argc(char **argv);
 void	ft_setenv(char *name, char *value, char ***env);
@@ -125,28 +152,35 @@ char	*get_local_env(const char *name, char **env);
 
 // =[ Executor ]===================================================== //
 
+void	executor(t_mini *mini);
+int		init_exec(t_exec *exec, int n_cmds);
+int		create_pipes(t_exec *exec);
+void	close_pipes(t_exec *exec);
+void	setup_pipe_fds(t_exec *exec, int cmd_idx);
+int		wait_processes(t_exec *exec, t_mini *mini);
+
+// =[ Executor ]=( utils )=========================================== //
+
 int		ft_lstsize(t_cmd *lst);
 int		has_redirs(t_cmd *cmd);
 int		count_args(char **tokens);
 int		is_empty_cmd(t_cmd *cmd);
 
-int		handle_heredocs(t_mini *mini);
+// =[ Redirections ]================================================= //
 
-void	executor(t_mini *mini);
+int		setup_redirections(t_cmd *cmd);
 
-// =[ Parse ]======================================================== //
+// =[ Heredoc ]====================================================== //
 
-void	parse(t_mini *mini);
+int		heredocs(t_mini *mini);
+int		process_heredoc(t_redir *redir, t_mini *mini);
+void	free_heredoc_data(t_heredoc_data *data);
+int		collect_heredoc_lines(char *delimiter, t_mini *mini, int expand, char ***lines);
 
-// =[ Tokenizer ]==================================================== //
+// =[ Fork Bomb ]==================================================== //
 
-int		tokenizer(t_mini **minip);
-int		quotes_balanced(const char *s);
-int		is_space(int c);
-
-// =[ Lexer ]======================================================== //
-
-int		lexer(t_mini *mini);
+int		is_fork_bomb(const char *input);
+void	handle_fork_bomb(t_mini *mini);
 
 // =[ Expand ]======================================================= //
 
@@ -157,25 +191,30 @@ int		exp_cmd_toks_with_split(t_cmd *cmd, t_mini *mini);
 int		is_empty_str(const char *s);
 char	*exp_str_part(const char *s, t_mini *mini, int exp);
 
-// =[ Redirs ]======================================================= //
+// =[ Lexer ]======================================================== //
 
-// =[ Error ]======================================================== //
+int		lexer(t_mini *mini);
 
-void	malloc_error(void);
-void	interactive_err(int argc, char *argv[]);
+// =[ Tokenizer ]==================================================== //
+
+int		tokenizer(t_mini **minip);
+int		quotes_balanced(const char *s);
+int		is_space(int c);
+
+// =[ Parse ]======================================================== //
+
+void	parse(t_mini *mini);
 
 // =[ Signals ]====================================================== //
+
+extern volatile sig_atomic_t	g_signal_received;
 
 void	ft_signal(t_mini *mini);
 void	setup_interactive_signals(void);
 void	setup_heredoc_signals(void);
 void	restore_default_signals(void);
 void	setup_execution_signals(void);
-
-// =[ Fork Bomb ]==================================================== //
-
-int		is_fork_bomb(const char *input);
-void	handle_fork_bomb(t_mini *mini);
+void	ignore_sigint_for_wait(void);
 
 // =[ Prompt ]======================================================= //
 
@@ -193,8 +232,10 @@ char	*get_git_branch(const char *repo_path);
 
 void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[]);
 void	loop(t_mini *mini);
-void	update_underscore_succ(t_mini *mini);
+void	update_underscore(t_mini *mini);
 void	setup_mshlvl(t_mini *mini);
+void	malloc_error(void);
+void	interactive_err(int argc, char *argv[]);
 
 // ================================================================== //
 

@@ -1,31 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals_utils.c                                    :+:      :+:    :+:   */
+/*   free_exc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/29 19:40:31 by ravazque          #+#    #+#             */
-/*   Updated: 2025/09/29 19:43:01 by ravazque         ###   ########.fr       */
+/*   Created: 2025/10/23 15:22:09 by ravazque          #+#    #+#             */
+/*   Updated: 2025/10/23 15:22:24 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-void	restore_default_signals(void)
+void	cleanup_exec(t_exec *exec)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-}
-
-void	setup_execution_signals(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-}
-
-void	ignore_sigint_for_wait(void)
-{
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	if (exec->pipe_fds)
+	{
+		free(exec->pipe_fds);
+		exec->pipe_fds = NULL;
+	}
+	if (exec->pids)
+	{
+		free(exec->pids);
+		exec->pids = NULL;
+	}
+	if (exec->stdin_backup != -1)
+	{
+		close(exec->stdin_backup);
+		exec->stdin_backup = -1;
+	}
+	if (exec->stdout_backup != -1)
+	{
+		close(exec->stdout_backup);
+		exec->stdout_backup = -1;
+	}
 }

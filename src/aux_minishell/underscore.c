@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:29:45 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 19:51:50 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/23 17:17:44 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,6 @@ static char	*get_last_arg(char **tokens)
 	return (tokens[i]);
 }
 
-static void	update_underscore(t_mini *mini, t_cmd *cmd)
-{
-	char	*last_arg;
-
-	if (!mini)
-		return ;
-	if (!cmd)
-		return ;
-	if (!cmd->tokens)
-		return ;
-	if (!cmd->tokens[0])
-		return ;
-	last_arg = get_last_arg(cmd->tokens);
-	if (last_arg)
-		ft_setenv("_", last_arg, &(mini->env));
-}
-
 static t_cmd	*get_last_cmd(t_cmd *cmds)
 {
 	t_cmd	*current;
@@ -58,17 +41,17 @@ static t_cmd	*get_last_cmd(t_cmd *cmds)
 	return (current);
 }
 
-void	update_underscore_succ(t_mini *mini)
+void	update_underscore(t_mini *mini)
 {
 	t_cmd	*last_cmd;
+	char	*last_arg;
 
-	if (!mini)
-		return ;
-	if (!mini->cmds)
-		return ;
-	if (mini->exit_sts != 0)
+	if (!mini || !mini->cmds)
 		return ;
 	last_cmd = get_last_cmd(mini->cmds);
-	if (last_cmd)
-		update_underscore(mini, last_cmd);
+	if (!last_cmd || !last_cmd->tokens || !last_cmd->tokens[0])
+		return ;
+	last_arg = get_last_arg(last_cmd->tokens);
+	if (last_arg)
+		ft_setenv("_", last_arg, &(mini->env));
 }
