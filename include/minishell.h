@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 17:30:11 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/23 19:05:31 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,7 @@ void	cleanup_mini(t_mini *mini);
 void	free_args(t_mini *mini);
 void	free_token_parts(t_token_part *parts);
 void	cleanup_exec(t_exec *exec);
-
-// =[ Redirs ]======================================================= //
+void	free_heredoc_data(t_heredoc_data *data);
 
 // =[ Built Ins ]==================================================== //
 
@@ -168,13 +167,12 @@ int		is_empty_cmd(t_cmd *cmd);
 
 // =[ Redirections ]================================================= //
 
-int		setup_redirections(t_cmd *cmd);
+int		redirections(t_cmd *cmd);
 
 // =[ Heredoc ]====================================================== //
 
 int		heredocs(t_mini *mini);
 int		process_heredoc(t_redir *redir, t_mini *mini);
-void	free_heredoc_data(t_heredoc_data *data);
 int		collect_heredoc_lines(char *delimiter, t_mini *mini, int expand, char ***lines);
 
 // =[ Fork Bomb ]==================================================== //

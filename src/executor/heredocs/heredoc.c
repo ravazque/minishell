@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 19:05:09 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 15:38:11 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/23 18:29:34 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 static int	write_lines_to_pipe(int write_fd, char **lines)
 {
@@ -110,15 +110,4 @@ int	heredocs(t_mini *mini)
 		cmd = cmd->next;
 	}
 	return (0);
-}
-
-void	free_heredoc_data(t_heredoc_data *data)
-{
-	if (!data)
-		return ;
-	if (data->pipe_fd[0] != -1)
-		close(data->pipe_fd[0]);
-	if (data->lines)
-		free_dblptr(data->lines);
-	free(data);
 }

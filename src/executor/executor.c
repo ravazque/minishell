@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 23:16:26 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 17:32:27 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/23 18:23:33 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ static void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int id
 
 	setup_execution_signals();
 	setup_pipe_fds(exec, idx);
-	if (setup_redirections(cmd))
+	if (redirections(cmd))
 		exit(1);
 	builtin_type = is_builtin_cmd(cmd->tokens[0]);
 	if (builtin_type == 1 && exec->n_cmds > 1)
@@ -201,7 +201,7 @@ static int	execute_single_command(t_mini *mini, t_cmd *cmd)
 
 	if (is_builtin_cmd(cmd->tokens[0]) == 1)
 	{
-		if (setup_redirections(cmd))
+		if (redirections(cmd))
 			return (1);
 		built_ins(mini, cmd);
 		return (0);
@@ -215,7 +215,7 @@ static int	execute_single_command(t_mini *mini, t_cmd *cmd)
 	if (pid == 0)
 	{
 		setup_execution_signals();
-		if (setup_redirections(cmd))
+		if (redirections(cmd))
 			exit(1);
 		if (is_builtin_cmd(cmd->tokens[0]))
 		{

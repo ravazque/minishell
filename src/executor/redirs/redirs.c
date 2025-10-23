@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute_redirs.c                                   :+:      :+:    :+:   */
+/*   redirs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 12:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 17:34:06 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/23 19:07:04 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 static int	handle_input_redir(t_redir *redir)
 {
@@ -27,14 +27,19 @@ static int	handle_heredoc_redir(t_redir *redir)
 	return (0);
 }
 
-static int	handle_output_redir(t_redir *redir, int append)
+static int	handle_output_redir_trunc(t_redir *redir)
 {
 	(void)redir;
-	(void)append;
 	return (0);
 }
 
-int	setup_redirections(t_cmd *cmd)
+static int	handle_output_redir_add(t_redir *redir)
+{
+	(void)redir;
+	return (0);
+}
+
+int	redirections(t_cmd *cmd)
 {
 	t_redir	*redir;
 
@@ -55,12 +60,12 @@ int	setup_redirections(t_cmd *cmd)
 		}
 		else if (redir->out_redir == 1)
 		{
-			if (handle_output_redir(redir, 0))
+			if (handle_output_redir_trunc(redir))
 				return (1);
 		}
 		else if (redir->out_redir == 2)
 		{
-			if (handle_output_redir(redir, 1))
+			if (handle_output_redir_add(redir))
 				return (1);
 		}
 		redir = redir->next;
