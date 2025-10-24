@@ -6,7 +6,7 @@
 /*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 23:16:26 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 22:40:09 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/10/24 18:53:53 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,32 +102,35 @@ static char	*ft_get_path(char *cmd, char **envp)
 // 	return (NULL);
 // }
 
-static void	print_exec_error(char *cmd, int error_type, int is_path)
+static void	print_exec_error(t_mini *mini, char *cmd, int error_type, int is_path)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
 
-	if (error_type == 126)
+	if (error_type == 126 && mini->flag_error == 0)
 	{
+		mini->flag_error = 1;
 		if (is_directory(cmd))
 			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
 		else
 			ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 	}
-	else if (error_type == 127)
+	else if (error_type == 127 && mini->flag_error == 0)
 	{
+		mini->flag_error = 1;
 		if (is_path)
 			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 		else
 			ft_putstr_fd(": command not found\n", STDERR_FILENO);
 	}
-	else
+	else if (mini->flag_error == 0)
 	{
+		mini->flag_error = 1;
 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 	}
 }
 
-static void	ft_execve(char **argv, char **envp, char ***env_ptr)
+static void	ft_execve(t_mini *mini, char **argv, char **envp, char ***env_ptr)
 {
 	char	*path;
 	int		error_code;
@@ -146,18 +149,18 @@ static void	ft_execve(char **argv, char **envp, char ***env_ptr)
 		{
 			if (access(argv[0], F_OK) == 0)
 			{
-				print_exec_error(argv[0], 126, 1);
+				print_exec_error(mini, argv[0], 126, 1);
 				exit(126);
 			}
 			else
 			{
-				print_exec_error(argv[0], 127, 1);
+				print_exec_error(mini, argv[0], 127, 1);
 				exit(127);
 			}
 		}
 		else
 		{
-			print_exec_error(argv[0], 127, 0);
+			print_exec_error(mini, argv[0], 127, 0);
 			exit(127);
 		}
 	}
@@ -168,7 +171,7 @@ static void	ft_execve(char **argv, char **envp, char ***env_ptr)
 		error_code = 127;
 		if (errno == EACCES)
 			error_code = 126;
-		print_exec_error(path, error_code, 1);
+		print_exec_error(mini, path, error_code, 1);
 		free(path);
 		exit(error_code);
 	}
@@ -209,7 +212,7 @@ static void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int id
 
 	setup_execution_signals();
 	setup_pipe_fds(exec, idx);
-	if (redirections(cmd))
+	if (redirections(mini, cmd))
 		exit(1);
 	builtin_type = is_builtin_cmd(cmd->tokens[0]);
 	if (builtin_type == 1 && exec->n_cmds > 1)
@@ -219,7 +222,7 @@ static void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int id
 		built_ins(mini, cmd);
 		exit(mini->exit_sts);
 	}
-	ft_execve(cmd->tokens, mini->env, &(mini->env));
+	ft_execve(mini, cmd->tokens, mini->env, &(mini->env));
 }
 
 static int	execute_pipeline(t_mini *mini, t_exec *exec)
@@ -259,7 +262,7 @@ static int	execute_single_command(t_mini *mini, t_cmd *cmd)
 
 	if (is_builtin_cmd(cmd->tokens[0]) == 1)
 	{
-		if (redirections(cmd))
+		if (redirections(mini, cmd))
 			return (1);
 		built_ins(mini, cmd);
 		return (0);
@@ -273,14 +276,14 @@ static int	execute_single_command(t_mini *mini, t_cmd *cmd)
 	if (pid == 0)
 	{
 		setup_execution_signals();
-		if (redirections(cmd))
+		if (redirections(mini, cmd))
 			exit(1);
 		if (is_builtin_cmd(cmd->tokens[0]))
 		{
 			built_ins(mini, cmd);
 			exit(mini->exit_sts);
 		}
-		ft_execve(cmd->tokens, mini->env, &(mini->env));
+		ft_execve(mini, cmd->tokens, mini->env, &(mini->env));
 	}
 	ignore_sigint_for_wait();
 	waitpid(pid, &status, 0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 19:28:04 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 17:41:46 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/24 18:53:02 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	init_mini(t_mini *mini, int argc, char *argv[], char *envp[])
 	mini->apology_mode = 0;
 	mini->argc = argc;
 	mini->cd_home = NULL;
+	mini->flag_error = 0;
 	mini->env = ft_copy_dblptr(envp);
 	if (!mini->env)
 	{

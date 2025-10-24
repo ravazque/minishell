@@ -6,7 +6,7 @@
 /*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 20:31:26 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/10/24 18:50:35 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ typedef struct s_mini
 	int					exit_sts;
 	int					apology_mode;	
 	char				*cd_home;	
+	int					flag_error;
 	t_cmd				*cmds;
 }						t_mini;
 
@@ -167,7 +168,7 @@ int		is_empty_cmd(t_cmd *cmd);
 
 // =[ Redirections ]================================================= //
 
-int		redirections(t_cmd *cmd);
+int		redirections(t_mini *mini, t_cmd *cmd);
 
 // =[ Heredoc ]====================================================== //
 
