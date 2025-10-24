@@ -6,7 +6,7 @@
 /*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 12:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 23:11:14 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/10/24 17:55:40 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,16 @@ static int	handle_input_redir(t_redir *redir)
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(redir->target, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
-		perror(redir->target);
+		ft_putstr_fd(strerror(errno), STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);
 		return (1);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
-		close (fd);
+		close(fd);
 		return (1);
 	}
+	close(fd);
 	return (0);
 }
 
@@ -47,13 +48,13 @@ static int	handle_output_redir_trunc(t_redir *redir)
 {
 	int	fd;
 
-	fd = open(redir->target, O_WRONLY, O_CREAT, O_TRUNC);
+	fd = open(redir->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(redir->target, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
-		perror(redir->target);
+		ft_putstr_fd(strerror(errno), STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);
 		return (1);
 	}
@@ -62,6 +63,7 @@ static int	handle_output_redir_trunc(t_redir *redir)
 		close (fd);
 		return (1);
 	}
+	close (fd);
 	return (0);
 }
 
@@ -69,13 +71,13 @@ static int	handle_output_redir_add(t_redir *redir)
 {
 	int	fd;
 
-	fd = open(redir->target, O_WRONLY, O_CREAT, O_APPEND);
+	fd = open(redir->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(redir->target, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
-		perror(redir->target);
+		ft_putstr_fd(strerror(errno), STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);
 		return (1);
 	}
@@ -84,6 +86,7 @@ static int	handle_output_redir_add(t_redir *redir)
 		close (fd);
 		return (1);
 	}
+	close (fd);
 	return (0);
 }
 
