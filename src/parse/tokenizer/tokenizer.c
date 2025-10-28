@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:22:36 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/19 19:32:25 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:13:48 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,38 @@ static char	*join_parts(t_token_part *parts)
 	return (res);
 }
 
+static int	is_operator_char(char c)
+{
+	if (c == '|' || c == '<' || c == '>')
+		return (1);
+	return (0);
+}
+
+void	mark_assignments(t_cmd *cmd)
+{
+	t_token	*curr;
+	int		found_non_assignment;
+
+	if (!cmd || !cmd->tokn)
+		return ;
+	found_non_assignment = 0;
+	curr = cmd->tokn;
+	while (curr)
+	{
+		if (is_operator_char(curr->raw[0]))
+			found_non_assignment = 1;
+		if (!found_non_assignment && is_assignment(curr->raw))
+			curr->is_assignment = 1;
+		else
+		{
+			curr->is_assignment = 0;
+			if (!is_space(curr->raw[0]))
+				found_non_assignment = 1;
+		}
+		curr = curr->next;
+	}
+}
+
 static t_token	*mk_tok_from_parts(t_token_part *parts)
 {
 	t_token	*tok;
@@ -215,13 +247,6 @@ static int	finalize_tok(char **bf, t_token_part **tp, t_cmd *cmd)
 			return (1);
 		*tp = NULL;
 	}
-	return (0);
-}
-
-static int	is_operator_char(char c)
-{
-	if (c == '|' || c == '<' || c == '>')
-		return (1);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 19:28:30 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 16:56:08 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/23 17:03:23 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ static void	cleanup_iteration(t_mini *mini)
 static void	process_command(t_mini *mini)
 {
 	parse(mini);
-	update_underscore_succ(mini);
 	if (mini->cmds)
+	{
 		executor(mini);
+		update_underscore(mini);
+	}
 }
 
 void	loop(t_mini *mini)

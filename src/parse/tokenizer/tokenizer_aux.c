@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 03:21:54 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 17:27:29 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:11:01 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,26 @@ int	quotes_balanced(const char *s)
 		i++;
 	}
 	if (sq == 0 && dq == 0)
+		return (1);
+	return (0);
+}
+
+int	is_assignment(const char *str)
+{
+	int	i;
+
+	if (!str || !str[0])
+		return (0);
+	if (!ft_isalpha(str[0]) && str[0] != '_')
+		return (0);
+	i = 1;
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	if (str[i] == '=')
 		return (1);
 	return (0);
 }

@@ -6,213 +6,284 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 23:16:26 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 23:16:28 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:10:40 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
 
-char	*ft_get_path(char *cmd, char **envp)
+static int	is_directory(const char *path)
+{
+	struct stat	statbuf;
+
+	if (stat(path, &statbuf) == 0)
+	{
+		if (S_ISDIR(statbuf.st_mode))
+			return (1);
+	}
+	return (0);
+}
+
+static char	*ft_get_path(char *cmd, char **envp)
 {
 	char	**paths;
 	char	*path;
 	int		i;
 
+	if (!cmd || !envp)
+		return (NULL);
+	if (ft_strchr(cmd, '/'))
+	{
+		if (is_directory(cmd))
+			return (NULL);
+		if (access(cmd, F_OK) == 0)
+		{
+			if (access(cmd, X_OK) == 0)
+				return (ft_strdup(cmd));
+			return (NULL);
+		}
+		return (NULL);
+	}
 	i = 0;
 	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
 		i++;
 	if (!envp[i])
 		return (NULL);
 	paths = ft_split(envp[i] + 5, ':');
+	if (!paths)
+		return (NULL);
 	i = 0;
 	while (paths[i])
 	{
 		path = ft_strjoin3(paths[i], "/", cmd);
+		if (!path)
+		{
+			free_dblptr(paths);
+			return (NULL);
+		}
 		if (access(path, X_OK) == 0)
 		{
 			free_dblptr(paths);
 			return (path);
 		}
-		else
-			free(path);
+		free(path);
 		i++;
 	}
 	free_dblptr(paths);
 	return (NULL);
 }
 
-void	ft_execve(char **argv, char **envp)
+static void	print_exec_error(char *cmd, int error_type, int is_path)
 {
-	char	**cmd;
-	char	*path;
-
-	cmd = argv;
-	if (!cmd || !cmd[0])
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(cmd, STDERR_FILENO);
+	if (error_type == 126)
 	{
-		ft_putstr_fd("minishell: error: empty command\n", STDERR_FILENO);
+		if (is_directory(cmd))
+			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		else
+			ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+	}
+	else if (error_type == 127)
+	{
+		if (is_path)
+			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		else
+			ft_putstr_fd(": command not found\n", STDERR_FILENO);
+	}
+	else
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+}
+
+static void	ft_execve(char **argv, char **envp, char ***env_ptr)
+{
+	char	*path;
+	int		error_code;
+
+	if (!argv || !argv[0])
+	{
+		ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
 		exit(127);
 	}
-	path = ft_get_path(cmd[0], envp);
+	if (argv[0][0] == '\0')
+	{
+		ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
+		exit(127);
+	}
+	path = ft_get_path(argv[0], envp);
 	if (!path)
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(cmd[0], STDERR_FILENO);
-		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-		exit(127);
+		if (ft_strchr(argv[0], '/'))
+		{
+			if (access(argv[0], F_OK) == 0)
+			{
+				print_exec_error(argv[0], 126, 1);
+				exit(126);
+			}
+			else
+			{
+				print_exec_error(argv[0], 127, 1);
+				exit(127);
+			}
+		}
+		else
+		{
+			print_exec_error(argv[0], 127, 0);
+			exit(127);
+		}
 	}
-	if (execve(path, cmd, envp) == -1)
+	ft_setenv("_", path, env_ptr);
+	if (execve(path, argv, *env_ptr) == -1)
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(cmd[0], STDERR_FILENO);
-		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		error_code = 127;
+		if (errno == EACCES)
+			error_code = 126;
+		print_exec_error(path, error_code, 1);
 		free(path);
-		exit(127);
+		exit(error_code);
 	}
 }
 
-void	ft_close(int *fd, int index, int n_fd)
+static void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec,
+		int idx)
 {
-	int	i;
+	int		builtin_type;
+	char	**exec_env;
 
-	i = 0;
-	while (i < n_fd)
+	setup_execution_signals();
+	setup_pipe_fds(exec, idx);
+	if (redirections(cmd))
+		exit(1);
+	if (!cmd->tokens || !cmd->tokens[0])
+		exit(0);
+	builtin_type = is_builtin_cmd(cmd->tokens[0]);
+	if (builtin_type == 1 && exec->n_cmds > 1)
+		exit(0);
+	if (builtin_type)
 	{
-		if (i != ((index - 1) * 2) && i != (index * 2 + 1))
-			close(fd[i]);
-		i++;
+		built_ins(mini, cmd);
+		exit(mini->exit_sts);
 	}
+	exec_env = build_exec_env(mini);
+	if (!exec_env)
+		exit(1);
+	ft_execve(cmd->tokens, exec_env, &exec_env);
+	free_dblptr(exec_env);
 }
 
-void	ft_close_and_wait(int *fd, int n_fd, pid_t *pid, int n_cmd)
+static int	execute_pipeline(t_mini *mini, t_exec *exec)
 {
-	int	i;
+	t_cmd	*cmd;
+	int		idx;
 
-	i = 0;
-	while (i < n_fd)
+	if (create_pipes(exec))
 	{
-		close(fd[i]);
-		i++;
+		ft_putstr_fd("minishell: error: pipe creation failed\n",
+			STDERR_FILENO);
+		return (1);
 	}
-	i = 0;
-	while (i < n_cmd)
+	cmd = mini->cmds;
+	idx = 0;
+	while (cmd)
 	{
-		waitpid(pid[i], NULL, 0);
-		i++;
+		exec->pids[idx] = fork();
+		if (exec->pids[idx] == -1)
+		{
+			ft_putstr_fd("minishell: error: fork failed\n", STDERR_FILENO);
+			close_pipes(exec);
+			return (1);
+		}
+		if (exec->pids[idx] == 0)
+			execute_child_process(mini, cmd, exec, idx);
+		cmd = cmd->next;
+		idx++;
 	}
+	close_pipes(exec);
+	return (wait_processes(exec, mini));
 }
 
-// void	ft_pid(t_cmd *cmd_aux, t_mini *mini)
-// {
-// 	pid_t	pid;
-// }
+static int	execute_single_command(t_mini *mini, t_cmd *cmd)
+{
+	pid_t	pid;
+	int		status;
+	char	**exec_env;
+
+	if (!cmd->tokens || !cmd->tokens[0])
+		return (0);
+	if (is_builtin_cmd(cmd->tokens[0]) == 1)
+	{
+		if (redirections(cmd))
+			return (1);
+		built_ins(mini, cmd);
+		return (0);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		ft_putstr_fd("minishell: error: fork failed\n", STDERR_FILENO);
+		return (1);
+	}
+	if (pid == 0)
+	{
+		setup_execution_signals();
+		if (redirections(cmd))
+			exit(1);
+		if (is_builtin_cmd(cmd->tokens[0]))
+		{
+			built_ins(mini, cmd);
+			exit(mini->exit_sts);
+		}
+		exec_env = build_exec_env(mini);
+		if (!exec_env)
+			exit(1);
+		ft_execve(cmd->tokens, exec_env, &exec_env);
+		free_dblptr(exec_env);
+	}
+	ignore_sigint_for_wait();
+	waitpid(pid, &status, 0);
+	setup_interactive_signals();
+	if (WIFEXITED(status))
+		mini->exit_sts = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		mini->exit_sts = 128 + WTERMSIG(status);
+		if (WTERMSIG(status) == SIGINT)
+			write(STDOUT_FILENO, "\n", 1);
+	}
+	return (0);
+}
 
 void	executor(t_mini *mini)
 {
-	t_cmd	*cmd_aux;
-	int		n_cmd;
-	pid_t	*pid;
-	int		*fd;
-	int		i;
-	int		index;
+	t_exec	exec;
+	int		n_cmds;
 
 	if (!mini || !mini->cmds)
 		return ;
-	cmd_aux = mini->cmds;
-	n_cmd = ft_lstsize(mini->cmds);
-	if (handle_heredocs(mini))
-		return ;
-	if (n_cmd == 1 && is_builtin_cmd(cmd_aux->tokens[0]) == 1)
+	n_cmds = ft_lstsize(mini->cmds);
+	if (heredocs(mini))
 	{
-		built_ins(mini, cmd_aux);
+		mini->exit_sts = 130;
 		return ;
 	}
-	pid = malloc(sizeof(pid_t) * n_cmd);
-	fd = malloc(sizeof(int) * 2 * (n_cmd - 1));
-	if (!fd)
+	if (!mini->cmds->tokens || !mini->cmds->tokens[0])
+		return ;
+	if (mini->cmds->tokens[0][0] == '\0')
 	{
-		free(pid);
+		ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
+		mini->exit_sts = 127;
 		return ;
 	}
-	i = 0;
-	index = 0;
-	//ft_pipes();
-	while (i < (n_cmd - 1))
+	if (init_exec(&exec, n_cmds))
 	{
-		if (pipe(&fd[i * 2]) == -1)
-		{
-			ft_putstr_fd("minishell: error: pipe creation failed\n", STDERR_FILENO);
-			free(fd);
-			free(pid);
-			return ;
-		}
-		i++;
+		ft_putstr_fd("minishell: error: executor init failed\n",
+			STDERR_FILENO);
+		mini->exit_sts = 1;
+		return ;
 	}
-	while (cmd_aux)
-	{
-		//ft_pid(cmd_aux, mini);
-		pid[index] = fork();
-		if (pid[index] == -1)
-		{
-			ft_putstr_fd("minishell: error: fork failed\n", STDERR_FILENO);
-			ft_close_and_wait(fd, 2 * (n_cmd - 1), pid, index);
-			free(fd);
-			free(pid);
-			return ;
-		}
-		else if (pid[index] == 0)
-		{
-			ft_close(fd, index, 2 * (n_cmd - 1));
-			if (index == 0)
-			{
-				dup2(fd[1], STDOUT_FILENO);
-			}
-			else if (cmd_aux->next == NULL)
-			{
-				dup2(fd[(index - 1) * 2], STDIN_FILENO);
-			}
-			else
-			{
-				dup2(fd[(index - 1) * 2], STDIN_FILENO);
-				dup2(fd[index * 2 + 1], STDOUT_FILENO);
-			}
-			i = 0;
-			while (i < (2 * (n_cmd - 1)))
-			{
-				close(fd[i]);
-				i++;
-			}
-			if (built_ins(mini, cmd_aux) == false)
-				ft_execve(cmd_aux->tokens, mini->env);
-			else
-				exit(EXIT_SUCCESS);
-		}
-		cmd_aux = cmd_aux->next;
-		index++;
-	}
-	ft_close_and_wait(fd, 2 * (n_cmd - 1), pid, n_cmd);
-	free(fd);
-	free(pid);
+	if (n_cmds == 1)
+		execute_single_command(mini, mini->cmds);
+	else
+		execute_pipeline(mini, &exec);
+	cleanup_exec(&exec);
 }
-
-// ============================================================================== //
-
-// void	executor(t_mini *mini)	// mi versión del ejecutor con pseudo-cat
-// {
-// 	int	cmd_count;
-
-// 	if (!mini || !mini->cmds)
-// 		return ;
-// 	cmd_count = ft_lstsize(mini->cmds);
-// 	if (handle_heredocs(mini))
-// 		return ;
-// 	if (cmd_count == 1)
-// 		execute_simple_command(mini);
-// 	else
-// 		execute_pipeline(mini);
-// 	built_ins(mini);
-// 	printf("=========== ARGS ============\n");
-// 	print_dblptr(mini->cmds->tokens);
-// 	printf("=============================\n");
-// }
-
-// ============================================================================== //

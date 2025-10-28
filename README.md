@@ -1,7 +1,7 @@
 
 # Minishell
 
-Un shell simple implementado en C que replica funcionalidades básicas de bash.
+¡Un shell simple implementado en C que replica funcionalidades básicas de bash!
 
 ## 🔧 Compilación
 

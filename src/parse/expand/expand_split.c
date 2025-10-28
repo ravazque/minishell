@@ -117,26 +117,6 @@ static char	**split_by_spaces(const char *str)
 	return (result);
 }
 
-static int	is_assignment(const char *str)
-{
-	int	i;
-
-	if (!str || !str[0])
-		return (0);
-	if (!ft_isalpha(str[0]) && str[0] != '_')
-		return (0);
-	i = 1;
-	while (str[i] && str[i] != '=')
-	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
-		i++;
-	}
-	if (str[i] == '=')
-		return (1);
-	return (0);
-}
-
 static int	needs_word_split(t_token *tok)
 {
 	t_token_part	*curr;
@@ -171,6 +151,11 @@ static int	count_expanded_tokens(t_token *tokens, t_mini *mini)
 	curr = tokens;
 	while (curr)
 	{
+		if (curr->is_assignment)
+		{
+			curr = curr->next;
+			continue ;
+		}
 		expanded = exp_tok_parts(curr, mini);
 		if (!expanded)
 			return (-1);
