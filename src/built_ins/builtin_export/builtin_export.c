@@ -116,7 +116,18 @@ static int	var_exists_with_value(char *name, char **env)
 	return (0);
 }
 
-void	ft_setexport(char **argv, char ***env, int i, int flag)
+static void	export_local_to_env(char *name, char ***env, char ***local_vars)
+{
+	char	*local_val;
+
+	local_val = get_local_env(name, *local_vars);
+	if (local_val)
+		ft_setenv(name, local_val, env);
+	else if (!var_exists_with_value(name, *env))
+		ft_setenv(name, NULL, env);
+}
+
+void	ft_setexport(char **argv, char ***env, int i, int flag, char ***local_vars)
 {
 	char	**args;
 
@@ -135,8 +146,7 @@ void	ft_setexport(char **argv, char ***env, int i, int flag)
 		}
 		else if (!ft_strchr(argv[i], '='))
 		{
-			if (!var_exists_with_value(argv[i], *env))
-				ft_setenv(argv[i], NULL, env);
+			export_local_to_env(argv[i], env, local_vars);
 		}
 	}
 }
@@ -181,7 +191,7 @@ void	builtin_export(t_mini *mini)
 			}
 			j++;
 		}
-		ft_setexport(mini->cmds->tokens, &mini->env, i, flag);
+		ft_setexport(mini->cmds->tokens, &mini->env, i, flag, &mini->local_vars);
 		i++;
 	}
 	if (has_error)

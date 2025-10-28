@@ -6,24 +6,48 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/20 19:26:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/28 17:02:15 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
 
-static int	is_pipe(const char *str)
+static int	tok_has_any_quotes(t_token *tok)
+{
+	t_token_part	*part;
+
+	if (!tok)
+		return (0);
+	if (tok->is_squote || tok->is_dquote)
+		return (1);
+	if (!tok->parts)
+		return (0);
+	part = tok->parts;
+	while (part)
+	{
+		if (part->is_squote || part->is_dquote)
+			return (1);
+		part = part->next;
+	}
+	return (0);
+}
+
+static int	is_pipe(const char *str, t_token *tok)
 {
 	if (!str)
+		return (0);
+	if (tok_has_any_quotes(tok))
 		return (0);
 	if (ft_strcmp(str, "|") == 0)
 		return (1);
 	return (0);
 }
 
-static int	is_redir(const char *str)
+static int	is_redir(const char *str, t_token *tok)
 {
 	if (!str)
+		return (0);
+	if (tok_has_any_quotes(tok))
 		return (0);
 	if (ft_strcmp(str, "<") == 0)
 		return (1);
@@ -34,6 +58,28 @@ static int	is_redir(const char *str)
 	if (ft_strcmp(str, "<<") == 0)
 		return (1);
 	return (0);
+}
+
+static int	is_valid_filename(const char *name)
+{
+	if (!name || !name[0])
+		return (0);
+	if (name[0] == '\0')
+		return (0);
+	return (1);
+}
+
+static int	validate_redir_target(t_token *tgt_tok)
+{
+	if (!tgt_tok)
+		return (0);
+	if (!tgt_tok->raw)
+		return (0);
+	if (tgt_tok->raw[0] == '\0')
+		return (0);
+	if (!is_valid_filename(tgt_tok->raw))
+		return (0);
+	return (1);
 }
 
 static t_redir	*mk_redir(const char *tgt, const char *op, t_token *tgt_tok)
@@ -113,6 +159,7 @@ static t_token	*mk_tok_node(const char *raw, int sq, int dq)
 	}
 	tok->is_squote = sq;
 	tok->is_dquote = dq;
+	tok->is_assignment = 0;
 	tok->parts = NULL;
 	tok->next = NULL;
 	return (tok);
@@ -144,7 +191,8 @@ static char	**toks_to_arr(t_token *toks)
 	curr = toks;
 	while (curr)
 	{
-		cnt++;
+		if (!curr->is_assignment)
+			cnt++;
 		curr = curr->next;
 	}
 	arr = (char **)malloc(sizeof(char *) * (cnt + 1));
@@ -154,19 +202,22 @@ static char	**toks_to_arr(t_token *toks)
 	i = 0;
 	while (curr)
 	{
-		arr[i] = ft_strdup(curr->raw);
-		if (!arr[i])
+		if (!curr->is_assignment)
 		{
-			while (i > 0)
+			arr[i] = ft_strdup(curr->raw);
+			if (!arr[i])
 			{
-				i--;
-				free(arr[i]);
+				while (i > 0)
+				{
+					i--;
+					free(arr[i]);
+				}
+				free(arr);
+				return (malloc_error(), NULL);
 			}
-			free(arr);
-			return (malloc_error(), NULL);
+			i++;
 		}
 		curr = curr->next;
-		i++;
 	}
 	arr[cnt] = NULL;
 	return (arr);
@@ -210,18 +261,23 @@ static int	proc_redirs(t_cmd *cmd)
 	while (curr)
 	{
 		next = curr->next;
-		if (is_redir(curr->raw))
+		if (is_redir(curr->raw, curr))
 		{
 			if (!next)
 			{
 				ft_putstr_fd(ERR_RDI, STDERR_FILENO);
 				return (1);
 			}
-			if (is_redir(next->raw))
+			if (is_redir(next->raw, next))
 			{
 				ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
 				ft_putstr_fd(next->raw, STDERR_FILENO);
 				ft_putstr_fd("'\n", STDERR_FILENO);
+				return (1);
+			}
+			if (!validate_redir_target(next))
+			{
+				ft_putstr_fd(ERR_RDI, STDERR_FILENO);
 				return (1);
 			}
 			r = mk_redir(next->raw, curr->raw, next);
@@ -264,7 +320,7 @@ static int	count_tokens_until_pipe(t_token *start)
 
 	count = 0;
 	curr = start;
-	while (curr && !is_pipe(curr->raw))
+	while (curr && !is_pipe(curr->raw, curr))
 	{
 		count++;
 		curr = curr->next;
@@ -277,9 +333,9 @@ static t_token	*skip_to_next_pipe(t_token *start)
 	t_token	*curr;
 
 	curr = start;
-	while (curr && !is_pipe(curr->raw))
+	while (curr && !is_pipe(curr->raw, curr))
 		curr = curr->next;
-	if (curr && is_pipe(curr->raw))
+	if (curr && is_pipe(curr->raw, curr))
 		return (curr->next);
 	return (NULL);
 }
@@ -308,6 +364,7 @@ static t_cmd	*create_cmd_from_tokens(t_token *start, int count)
 			free_cmds(new_cmd);
 			return (NULL);
 		}
+		new_tok->is_assignment = curr->is_assignment;
 		if (curr->parts)
 		{
 			part_curr = curr->parts;
@@ -356,14 +413,14 @@ static int	validate_pipe_syntax(t_token *tokens)
 	first_token = 1;
 	while (curr)
 	{
-		if (is_pipe(curr->raw))
+		if (is_pipe(curr->raw, curr))
 		{
 			if (first_token)
 			{
 				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
 				return (1);
 			}
-			if (curr->next && is_pipe(curr->next->raw))
+			if (curr->next && is_pipe(curr->next->raw, curr->next))
 			{
 				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
 				return (1);
@@ -444,6 +501,7 @@ int	lexer(t_mini *mini)
 	curr = mini->cmds;
 	while (curr)
 	{
+		mark_assignments(curr);
 		if (proc_redirs(curr))
 			return (1);
 		curr = curr->next;

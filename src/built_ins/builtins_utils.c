@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:34:14 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/22 19:22:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:07:53 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,38 @@ char	*get_local_env(const char *name, char **env)
 	}
 	return (NULL);
 }
+
+char	*get_var_value(const char *name, t_mini *mini)
+{
+	char	*env_val;
+	char	*local_val;
+
+	if (!name || !mini)
+		return (NULL);
+	env_val = get_local_env(name, mini->env);
+	if (env_val)
+		return (env_val);
+	local_val = get_local_env(name, mini->local_vars);
+	if (local_val)
+		return (local_val);
+	return (NULL);
+}
+
+void	set_local_var(char *name, char *value, t_mini *mini)
+{
+	char	*env_val;
+
+	if (!name || !mini)
+		return ;
+	env_val = get_local_env(name, mini->env);
+	if (env_val)
+	{
+		ft_setenv(name, value, &(mini->env));
+		return ;
+	}
+	ft_setenv(name, value, &(mini->local_vars));
+}
+
 static int	ft_envlen(char **env)
 {
 	int	i;

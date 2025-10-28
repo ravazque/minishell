@@ -167,6 +167,8 @@ static char	*extract_var(const char *str, int start, int *end)
 
 static char	*expand_var(const char *var, t_mini *mini)
 {
+	char	*val;
+
 	if (!var)
 		return (NULL);
 	if (ft_strcmp(var, "?") == 0)
@@ -179,7 +181,10 @@ static char	*expand_var(const char *var, t_mini *mini)
 			return (ft_strdup(mini->argv[0]));
 		return (ft_strdup("minishell"));
 	}
-	return (get_env_val(var, mini->env));
+	val = get_env_val(var, mini->env);
+	if (val)
+		return (val);
+	return (get_env_val(var, mini->local_vars));
 }
 
 char	*exp_str_part(const char *s, t_mini *mini, int exp)

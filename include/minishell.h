@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/24 18:50:35 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:05:58 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,20 +34,21 @@
 # define MSG_FORGIVEN "\nApology accepted. Please be more careful.\n\n"
 # define MSG_WRONG "That's not a proper apology. Try again.\n"
 
+
 typedef struct s_heredoc_data
 {
-	int					pipe_fd[2];			// FD del pipe temporal
-	char				**lines;			// Líneas del heredoc (backup)
+	int					pipe_fd[2];
+	char				**lines;
 }						t_heredoc_data;
 
 typedef struct s_exec
 {
-	int					*pipe_fds;			// Array de FDs de pipes
-	int					n_pipes;			// Número de pipes
-	pid_t				*pids;				// Array de PIDs
-	int					n_cmds;				// Número de comandos
-	int					stdin_backup;		// Backup de stdin
-	int					stdout_backup;		// Backup de stdout
+	int					*pipe_fds;
+	int					n_pipes;
+	pid_t				*pids;
+	int					n_cmds;
+	int					stdin_backup;
+	int					stdout_backup;
 }						t_exec;
 
 typedef enum e_token_type
@@ -73,6 +74,7 @@ typedef struct s_token
 	char				*raw;
 	int					is_squote;
 	int					is_dquote;
+	int					is_assignment;
 	t_token_part		*parts;
 	struct s_token		*next;
 }						t_token;
@@ -104,10 +106,10 @@ typedef struct s_mini
 	int					argc;
 	char				**argv;
 	char				**env;
+	char				**local_vars;
 	int					exit_sts;
-	int					apology_mode;	
-	char				*cd_home;	
-	int					flag_error;
+	int					apology_mode;
+	char				*cd_home;
 	t_cmd				*cmds;
 }						t_mini;
 
@@ -149,6 +151,8 @@ int		needs_free(char *arg);
 int		ft_argc(char **argv);
 void	ft_setenv(char *name, char *value, char ***env);
 char	*get_local_env(const char *name, char **env);
+char	*get_var_value(const char *name, t_mini *mini);
+void	set_local_var(char *name, char *value, t_mini *mini);
 
 // =[ Executor ]===================================================== //
 
@@ -158,6 +162,7 @@ int		create_pipes(t_exec *exec);
 void	close_pipes(t_exec *exec);
 void	setup_pipe_fds(t_exec *exec, int cmd_idx);
 int		wait_processes(t_exec *exec, t_mini *mini);
+char	**build_exec_env(t_mini *mini);
 
 // =[ Executor ]=( utils )=========================================== //
 
@@ -168,7 +173,7 @@ int		is_empty_cmd(t_cmd *cmd);
 
 // =[ Redirections ]================================================= //
 
-int		redirections(t_mini *mini, t_cmd *cmd);
+int		redirections(t_cmd *cmd);
 
 // =[ Heredoc ]====================================================== //
 
@@ -199,6 +204,9 @@ int		lexer(t_mini *mini);
 int		tokenizer(t_mini **minip);
 int		quotes_balanced(const char *s);
 int		is_space(int c);
+int		is_assignment(const char *str);
+int		process_assignments(t_mini *mini);
+void	mark_assignments(t_cmd *cmd);
 
 // =[ Parse ]======================================================== //
 
@@ -235,6 +243,7 @@ void	update_underscore(t_mini *mini);
 void	setup_mshlvl(t_mini *mini);
 void	malloc_error(void);
 void	interactive_err(int argc, char *argv[]);
+void	ensure_path(t_mini *mini);
 
 // ================================================================== //
 

@@ -6,11 +6,22 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 13:29:45 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 17:17:44 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/28 16:07:11 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+void	ensure_path(t_mini *mini)
+{
+	char	*path;
+
+	if (!mini || !mini->env)
+		return ;
+	path = get_local_env("PATH", mini->env);
+	if (!path)
+		ft_setenv("PATH", ".", &(mini->env));
+}
 
 static char	*get_last_arg(char **tokens)
 {
@@ -50,6 +61,8 @@ void	update_underscore(t_mini *mini)
 		return ;
 	last_cmd = get_last_cmd(mini->cmds);
 	if (!last_cmd || !last_cmd->tokens || !last_cmd->tokens[0])
+		return ;
+	if (ft_strcmp(last_cmd->tokens[0], "env") == 0)
 		return ;
 	last_arg = get_last_arg(last_cmd->tokens);
 	if (last_arg)
