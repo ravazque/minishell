@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 23:16:26 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/28 16:10:40 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/29 20:15:48 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,8 +157,6 @@ static void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec,
 	if (!cmd->tokens || !cmd->tokens[0])
 		exit(0);
 	builtin_type = is_builtin_cmd(cmd->tokens[0]);
-	if (builtin_type == 1 && exec->n_cmds > 1)
-		exit(0);
 	if (builtin_type)
 	{
 		built_ins(mini, cmd);
@@ -276,8 +274,7 @@ void	executor(t_mini *mini)
 	}
 	if (init_exec(&exec, n_cmds))
 	{
-		ft_putstr_fd("minishell: error: executor init failed\n",
-			STDERR_FILENO);
+		ft_putstr_fd("minishell: error: executor init failed\n", STDERR_FILENO);
 		mini->exit_sts = 1;
 		return ;
 	}

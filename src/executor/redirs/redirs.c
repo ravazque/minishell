@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 12:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/28 16:08:19 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/28 20:54:39 by ptrapero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,26 +99,14 @@ int	redirections(t_cmd *cmd)
 	redir = cmd->redirs;
 	while (redir)
 	{
-		if (redir->in_redir == 1)
-		{
-			if (handle_input_redir(redir))
-				return (1);
-		}
-		else if (redir->in_redir == 2)
-		{
-			if (handle_heredoc_redir(redir))
-				return (1);
-		}
-		else if (redir->out_redir == 1)
-		{
-			if (handle_output_redir_trunc(redir))
-				return (1);
-		}
-		else if (redir->out_redir == 2)
-		{
-			if (handle_output_redir_add(redir))
-				return (1);
-		}
+		if (redir->in_redir == 1 && handle_input_redir(redir))
+			return (1);
+		else if (redir->in_redir == 2 && handle_heredoc_redir(redir))
+			return (1);
+		else if (redir->out_redir == 1 && handle_output_redir_trunc(redir))
+			return (1);
+		else if (redir->out_redir == 2 && handle_output_redir_add(redir))
+			return (1);
 		redir = redir->next;
 	}
 	return (0);
