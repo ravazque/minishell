@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:02:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:02:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:36:55 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 static void	check_empty_cmd(char **argv)
 {

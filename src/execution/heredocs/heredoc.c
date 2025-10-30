@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 19:05:09 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 18:29:34 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:15:58 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	process_heredoc(t_redir *redir, t_mini *mini)
 	t_heredoc_data	*data;
 
 	heredoc_lines = NULL;
-	if (collect_heredoc_lines(redir->target, mini,
+	if (collect_lines(redir->target, mini,
 			redir->hd_expand, &heredoc_lines))
 		return (1);
 	data = create_heredoc_data(heredoc_lines);

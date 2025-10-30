@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:35:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:35:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:31:35 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 
 int	handle_eof(char *delimiter)
 {
+	ft_putstr_fd("minishell: warning: ", STDERR_FILENO);
 	ft_putstr_fd(ERR_HEREDOC, STDERR_FILENO);
 	ft_putstr_fd(delimiter, STDERR_FILENO);
 	ft_putstr_fd("')\n", STDERR_FILENO);
 	return (0);
 }
 
-int	handle_line_error(t_heredoc_ctx *ctx)
+int	handle_line_error(t_heredoc *ctx)
 {
 	setup_interactive_signals();
 	restore_stdin(ctx->stdin_backup);
@@ -29,7 +30,7 @@ int	handle_line_error(t_heredoc_ctx *ctx)
 	return (1);
 }
 
-int	handle_interrupt(t_heredoc_ctx *ctx)
+int	handle_interrupt(t_heredoc *ctx)
 {
 	setup_interactive_signals();
 	restore_stdin(ctx->stdin_backup);

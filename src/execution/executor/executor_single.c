@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executor_single.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:03:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:03:00 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:37:04 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 static void	execute_single_child(t_mini *mini, t_cmd *cmd)
 {

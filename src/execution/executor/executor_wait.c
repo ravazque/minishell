@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:32:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:32:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:37:08 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 static void	handle_exit_status(int status, int *last_exit)
 {

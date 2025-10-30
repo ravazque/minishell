@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 17:16:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:33:48 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,13 @@
 # define ERR_OLDPWD "minishell: cd: OLDPWD not set\n"
 # define ERR_HOME "minishell: cd: HOME not set\n"
 
-# define ERR_HEREDOC \
-		"minishell: warning: here-document delimited by end-of-file (wanted `"
+# define ERR_HEREDOC "here-document delimited by end-of-file (wanted `"
 
-# define INIT_ERR_VARS \
-		"minishell: fatal error: failed to allocate local_vars\n"
-
+# define INIT_ERR_VARS "failed to allocate local_vars\n"
 # define INIT_ERR_ENV "minishell: fatal error: failed to copy environment\n"
 # define INIT_ERR_HOME "minishell: fatal error: failed to allocate cd_home\n"
-# define INIT_ERR_ARGS "minishell: fatal error: failed to copy arguments\n"
-# define INIT_ERR_ARGS_2 "minishell: fatal error: failed to alloc arguments\n"
+# define INIT_ERR_ARGS_COPY "minishell: fatal error: failed to copy arguments\n"
+# define INIT_ERR_ARGS_COPY_ALLOC "minishell: fatal error: failed to alloc arguments\n"
 # define INIT_ERR_MSHLVL "minishell: fatal error: failed to allocate MSHLVL\n"
 
 # define ERR_FORKBOMB "FORK BOMB DETECTED!\n"
@@ -120,20 +117,20 @@ typedef struct s_mini
 	t_cmd				*cmds;
 }						t_mini;
 
-typedef struct s_export_ctx
+typedef struct s_export
 {
 	char				***env;
 	char				***local_vars;
-}						t_export_ctx;
+}						t_export;
 
-typedef struct s_heredoc_ctx
+typedef struct s_heredoc
 {
 	char				*delimiter;
 	t_mini				*mini;
 	int					expand;
 	char				***lines;
 	int					stdin_backup;
-}						t_heredoc_ctx;
+}						t_heredoc;
 
 // =[ Cleaner ]====================================================== //
 
@@ -186,7 +183,7 @@ char	**ft_sort_env(char **env);
 char	**ft_split2(char *s, char c);
 int		var_exists_with_value(char *name, char **env);
 void	ft_putexport(char ***env);
-void	ft_setexport(char *arg, t_export_ctx *ctx, int flag);
+void	ft_setexport(char *arg, t_export *ctx, int flag);
 int		validate_export_arg(char *token);
 
 // =[ Executor ]===================================================== //
@@ -205,9 +202,6 @@ void	handle_no_path(char **argv);
 void	ft_execve(char **argv, char **envp, char ***env_ptr);
 void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx);
 int		execute_single_command(t_mini *mini, t_cmd *cmd);
-
-// =[ Executor ]=( utils )=========================================== //
-
 int		ft_lstsize(t_cmd *lst);
 int		has_redirs(t_cmd *cmd);
 int		count_args(char **tokens);
@@ -221,12 +215,11 @@ int		redirections(t_cmd *cmd);
 
 int		heredocs(t_mini *mini);
 int		process_heredoc(t_redir *redir, t_mini *mini);
-int		collect_heredoc_lines(char *delimiter, t_mini *mini, int expand,
-			char ***lines);
+int		collect_lines(char *delim, t_mini *mini, int expand, char ***lines);
 void	restore_stdin(int stdin_backup);
 int		handle_eof(char *delimiter);
-int		handle_line_error(t_heredoc_ctx *ctx);
-int		handle_interrupt(t_heredoc_ctx *ctx);
+int		handle_line_error(t_heredoc *ctx);
+int		handle_interrupt(t_heredoc *ctx);
 
 // =[ Fork Bomb ]==================================================== //
 

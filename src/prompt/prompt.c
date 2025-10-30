@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:02:21 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:25:53 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,5 +69,5 @@ char	*prompt(t_mini *mini)
 	if (!final_prompt)
 		return (ft_strdup("$ "));
 	// return (final_prompt);
-	return (ft_strdup("mininshell $"));
+	return (ft_strdup("mininshell $ "));
 }

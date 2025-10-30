@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 23:16:26 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/29 20:15:48 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:37:10 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 static int	fork_single_cmd(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 {

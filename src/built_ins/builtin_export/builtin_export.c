@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 01:30:15 by ptrapero          #+#    #+#             */
-/*   Updated: 2025/10/23 17:31:09 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:23:35 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	process_single_export(t_mini *mini, int i, int *has_error)
 {
-	t_export_ctx	ctx;
+	t_export	ctx;
 	int				flag;
 
 	ctx.env = &mini->env;

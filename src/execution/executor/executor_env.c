@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:40:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:40:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:36:51 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 static int	copy_env_vars(char **new_env, char **env, int count)
 {

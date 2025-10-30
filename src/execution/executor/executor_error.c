@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:01:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:01:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:36:52 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 void	print_exec_error(char *cmd, int error_type, int is_path)
 {

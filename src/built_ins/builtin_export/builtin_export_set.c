@@ -6,13 +6,13 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 17:42:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 17:42:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:23:35 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
 
-static void	export_local_to_env(char *name, t_export_ctx *ctx)
+static void	export_local_to_env(char *name, t_export *ctx)
 {
 	char	*local_val;
 
@@ -37,7 +37,7 @@ static void	handle_with_equal(char *arg, char ***env)
 	free_dblptr(args);
 }
 
-void	ft_setexport(char *arg, t_export_ctx *ctx, int flag)
+void	ft_setexport(char *arg, t_export *ctx, int flag)
 {
 	if (flag == 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 18:29:32 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:24:00 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	restore_stdin(int stdin_backup)
 	close(stdin_backup);
 }
 
-static int	read_single_line(char **line, t_heredoc_ctx *ctx)
+static int	read_single_line(char **line, t_heredoc *ctx)
 {
 	g_signal_received = 0;
 	*line = readline("> ");
@@ -38,7 +38,7 @@ static int	read_single_line(char **line, t_heredoc_ctx *ctx)
 	return (0);
 }
 
-static int	process_line(char *line, t_heredoc_ctx *ctx)
+static int	process_line(char *line, t_heredoc *ctx)
 {
 	char	*expanded;
 
@@ -59,7 +59,7 @@ static int	process_line(char *line, t_heredoc_ctx *ctx)
 	return (0);
 }
 
-static int	init_heredoc_stdin(t_heredoc_ctx *ctx, char ***lines, int expand)
+static int	init_heredoc_stdin(t_heredoc *ctx, char ***lines, int expand)
 {
 	ctx->expand = expand;
 	ctx->lines = lines;
@@ -70,9 +70,9 @@ static int	init_heredoc_stdin(t_heredoc_ctx *ctx, char ***lines, int expand)
 	return (0);
 }
 
-int	collect_heredoc_lines(char *delim, t_mini *mini, int expand, char ***lines)
+int	collect_lines(char *delim, t_mini *mini, int expand, char ***lines)
 {
-	t_heredoc_ctx	ctx;
+	t_heredoc	ctx;
 	char			*line;
 	int				result;
 

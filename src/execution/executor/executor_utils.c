@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/28 16:10:48 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:37:06 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 int	has_redirs(t_cmd *cmd)
 {
