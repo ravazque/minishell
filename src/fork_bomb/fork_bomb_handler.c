@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 00:30:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 22:31:59 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 17:06:40 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,15 @@ static int	check_confirmation(const char *input)
 	return (0);
 }
 
+static int	validate_step_input(const char *input, int step)
+{
+	if (step == 0)
+		return (check_apology(input));
+	if (step == 1)
+		return (check_confirmation(input));
+	return (0);
+}
+
 static void	apology_loop(t_mini *mini)
 {
 	char	*input;
@@ -38,52 +47,22 @@ static void	apology_loop(t_mini *mini)
 	step = 0;
 	while (step < 2)
 	{
-		if (step == 0)
-		{
-			ft_putstr_fd(RL_RED, STDOUT_FILENO);
-			ft_putstr_fd(MSG_APOLOGY, STDOUT_FILENO);
-			ft_putstr_fd(RL_RST, STDOUT_FILENO);
-		}
-		else
-		{
-			ft_putstr_fd(RL_YEL, STDOUT_FILENO);
-			ft_putstr_fd(MSG_CONFIRM, STDOUT_FILENO);
-			ft_putstr_fd(RL_RST, STDOUT_FILENO);
-		}
+		print_step_message(step);
 		input = readline("> ");
 		if (!input)
-		{
-			cleanup_mini(mini);
-			write(STDOUT_FILENO, "exit...", 8);
-			ft_putstr_fd(RL_BLD, STDOUT_FILENO);
-			ft_putstr_fd(RL_RED, STDOUT_FILENO);
-			write(STDOUT_FILENO, " COWARD!", 8);
-			ft_putstr_fd(RL_RST, STDOUT_FILENO);
-			ft_putstr_fd("\n", STDOUT_FILENO);
-			exit(42);
-		}
+			fork_bomb_signal(mini);
 		if (input && *input)
 			add_history(input);
-		if (step == 0 && check_apology(input))
-			step++;
-		else if (step == 1 && check_confirmation(input))
+		if (validate_step_input(input, step))
 			step++;
 		else
-		{
-			ft_putstr_fd(RL_BLD, STDOUT_FILENO);
-			ft_putstr_fd(RL_RED, STDOUT_FILENO);
-			ft_putstr_fd(MSG_WRONG, STDOUT_FILENO);
-			ft_putstr_fd(RL_RST, STDOUT_FILENO);
-		}
+			print_wrong_answer();
 		free(input);
 	}
-	ft_putstr_fd(RL_BLD, STDOUT_FILENO);
-	ft_putstr_fd(RL_GRN, STDOUT_FILENO);
-	ft_putstr_fd(MSG_FORGIVEN, STDOUT_FILENO);
-	ft_putstr_fd(RL_RST, STDOUT_FILENO);
+	correct_message();
 }
 
-void	handle_fork_bomb(t_mini *mini)
+void	fork_bomb(t_mini *mini)
 {
 	ft_putstr_fd("\n", STDOUT_FILENO);
 	ft_putstr_fd(RL_FRKBMB, STDOUT_FILENO);

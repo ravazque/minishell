@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 01:53:41 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/21 20:14:20 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 17:21:19 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,6 @@ static void	handle_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-}
-
-static void	handle_heredoc_sigint(int sig)
-{
-	(void)sig;
-	g_signal_received = SIGINT;
-	rl_done = 1;
-	write(STDOUT_FILENO, "\n", 1);
-	close(STDIN_FILENO);
 }
 
 static void	handle_sigwinch(int sig)
@@ -52,17 +43,6 @@ void	setup_interactive_signals(void)
 	sa_winch.sa_handler = handle_sigwinch;
 	sa_winch.sa_flags = 0;
 	sigaction(SIGWINCH, &sa_winch, NULL);
-	signal(SIGQUIT, SIG_IGN);
-}
-
-void	setup_heredoc_signals(void)
-{
-	struct sigaction	sa_int;
-
-	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_handler = handle_heredoc_sigint;
-	sa_int.sa_flags = 0;
-	sigaction(SIGINT, &sa_int, NULL);
 	signal(SIGQUIT, SIG_IGN);
 }
 

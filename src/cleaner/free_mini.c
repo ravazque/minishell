@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/28 18:06:12 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 17:11:18 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	free_dblptr(char **dblptr)
 	free(dblptr);
 }
 
-
 void	free_args(t_mini *mini)
 {
 	if (mini->input)
@@ -44,6 +43,15 @@ void	free_args(t_mini *mini)
 	{
 		free(mini->pwd);
 		mini->pwd = NULL;
+	}
+}
+
+void	check_cmds(t_mini *mini)
+{
+	if (mini->cmds)
+	{
+		free_cmds(mini->cmds);
+		mini->cmds = NULL;
 	}
 }
 
@@ -71,9 +79,5 @@ void	cleanup_mini(t_mini *mini)
 		mini->local_vars = NULL;
 	}
 	free_args(mini);
-	if (mini->cmds)
-	{
-		free_cmds(mini->cmds);
-		mini->cmds = NULL;
-	}
+	check_cmds(mini);
 }

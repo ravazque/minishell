@@ -6,11 +6,23 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 04:57:17 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/03 04:57:18 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 17:06:50 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+void	fork_bomb_signal(t_mini *mini)
+{
+	cleanup_mini(mini);
+	write(STDOUT_FILENO, "exit...", 8);
+	ft_putstr_fd(RL_BLD, STDOUT_FILENO);
+	ft_putstr_fd(RL_RED, STDOUT_FILENO);
+	write(STDOUT_FILENO, " COWARD!", 8);
+	ft_putstr_fd(RL_RST, STDOUT_FILENO);
+	ft_putstr_fd("\n", STDOUT_FILENO);
+	exit(42);
+}
 
 static int	match_pattern(const char *input, const char *pattern)
 {

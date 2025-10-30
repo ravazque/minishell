@@ -12,150 +12,22 @@
 
 #include "../../../include/minishell.h"
 
-char	**ft_sort_env(char **env)
+static void	process_single_export(t_mini *mini, int i, int *has_error)
 {
-	char	**abc_env;
-	int		i;
-	char	*temp;
+	t_export_ctx	ctx;
+	int				flag;
 
-	abc_env = ft_copy_dblptr(env);
-	if (!abc_env)
-		return (NULL);
-	i = 0;
-	while (abc_env[i + 1])
-	{
-		if (ft_strcmp(abc_env[i], abc_env[i + 1]) > 0)
-		{
-			temp = abc_env[i];
-			abc_env[i] = abc_env[i + 1];
-			abc_env[i + 1] = temp;
-			i = 0;
-		}
-		else
-			i++;
-	}
-	return (abc_env);
-}
-
-char	**ft_split2(char *s, char c)
-{
-	char	**matrix;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	matrix = malloc(sizeof(char *) * 3);
-	if (!matrix)
-		return (NULL);
-	while (s[j] && s[j] != c)
-		j++;
-	matrix[0] = ft_substr(s, i, j);
-	if (!matrix[0])
-		return (free(matrix), NULL);
-	j++;
-	while (s[i])
-		i++;
-	matrix[1] = ft_substr(s, j, (i - j));
-	if (!matrix[1])
-		return (free(matrix[0]), free(matrix), NULL);
-	matrix[2] = NULL;
-	return (matrix);
-}
-
-void	ft_putexport(char ***env)
-{
-	int		i;
-	int		j;
-	char	**abc_env;
-
-	i = 0;
-	abc_env = ft_sort_env(*env);
-	if (!abc_env)
-		return (malloc_error());
-	while (abc_env[i])
-	{
-		if (ft_strncmp(abc_env[i], "_=", 2) == 0)
-		{
-			i++;
-			continue ;
-		}
-		j = 0;
-		printf("declare -x ");
-		if (ft_strchr(abc_env[i], '='))
-		{
-			while (abc_env[i][j] != '=')
-				printf("%c", abc_env[i][j++]);
-			printf("%c\"", abc_env[i][j++]);
-			while (abc_env[i][j])
-				printf("%c", abc_env[i][j++]);
-			printf("\"\n");
-		}
-		else
-			printf("%s\n", abc_env[i]);
-		i++;
-	}
-	free_dblptr(abc_env);
-}
-
-static int	var_exists_with_value(char *name, char **env)
-{
-	int		i;
-	int		n_len;
-
-	if (!name || !env)
-		return (0);
-	n_len = ft_strlen(name);
-	i = 0;
-	while (env[i])
-	{
-		if (!ft_strncmp(env[i], name, n_len) && env[i][n_len] == '=')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-static void	export_local_to_env(char *name, char ***env, char ***local_vars)
-{
-	char	*local_val;
-
-	local_val = get_local_env(name, *local_vars);
-	if (local_val)
-		ft_setenv(name, local_val, env);
-	else if (!var_exists_with_value(name, *env))
-		ft_setenv(name, NULL, env);
-}
-
-void	ft_setexport(char **argv, char ***env, int i, int flag, char ***local_vars)
-{
-	char	**args;
-
-	if (flag == 0)
-	{
-		if (ft_strchr(argv[i], '='))
-		{
-			args = ft_split2(argv[i], '=');
-			if (!args)
-				return (malloc_error());
-			if (args[1])
-				ft_setenv(args[0], args[1], env);
-			else if (!args[1])
-				ft_setenv(args[0], "", env);
-			free_dblptr(args);
-		}
-		else if (!ft_strchr(argv[i], '='))
-		{
-			export_local_to_env(argv[i], env, local_vars);
-		}
-	}
+	ctx.env = &mini->env;
+	ctx.local_vars = &mini->local_vars;
+	flag = validate_export_arg(mini->cmds->tokens[i]);
+	if (flag)
+		*has_error = 1;
+	ft_setexport(mini->cmds->tokens[i], &ctx, flag);
 }
 
 void	builtin_export(t_mini *mini)
 {
 	int	i;
-	int	j;
-	int	flag;
 	int	has_error;
 
 	if (ft_argc(mini->cmds->tokens) == 1)
@@ -168,30 +40,7 @@ void	builtin_export(t_mini *mini)
 	has_error = 0;
 	while (mini->cmds->tokens[i])
 	{
-		j = 0;
-		flag = 0;
-		if (mini->cmds->tokens[i][0] == '=' || mini->cmds->tokens[i][0] == '\0')
-		{
-			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(mini->cmds->tokens[i], 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
-			flag = 1;
-			has_error = 1;
-		}
-		while (mini->cmds->tokens[i][j] && mini->cmds->tokens[i][j] != '=' && flag == 0)
-		{
-			if (!((ft_isalnum(mini->cmds->tokens[i][j]) || (mini->cmds->tokens[i][j] == '_'))
-				&& (ft_isalpha(mini->cmds->tokens[i][0]) || (mini->cmds->tokens[i][0] == '_'))))
-			{
-				ft_putstr_fd("minishell: export: `", 2);
-				ft_putstr_fd(mini->cmds->tokens[i], 2);
-				ft_putstr_fd("': not a valid identifier\n", 2);
-				flag = 1;
-				has_error = 1;
-			}
-			j++;
-		}
-		ft_setexport(mini->cmds->tokens, &mini->env, i, flag, &mini->local_vars);
+		process_single_export(mini, i, &has_error);
 		i++;
 	}
 	if (has_error)

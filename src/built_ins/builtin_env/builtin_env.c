@@ -1,43 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executor_utils.c                                   :+:      :+:    :+:   */
+/*   builtin_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 16:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/28 16:10:48 by ravazque         ###   ########.fr       */
+/*   Created: 2025/09/18 22:54:02 by ravazque          #+#    #+#             */
+/*   Updated: 2025/10/30 17:57:30 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
-int	has_redirs(t_cmd *cmd)
-{
-	if (!cmd)
-		return (0);
-	return (cmd->redirs != NULL);
-}
-
-int	count_args(char **tokens)
+void	print_env(char **env)
 {
 	int	i;
 
 	i = 0;
-	if (!tokens)
-		return (0);
-	while (tokens[i])
+	while (env[i])
+	{
+		if (ft_strchr(env[i], '='))
+		{
+			ft_putstr_fd(env[i], STDOUT_FILENO);
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		}
 		i++;
-	return (i);
+	}
 }
 
-int	is_empty_cmd(t_cmd *cmd)
+void	builtin_env(t_mini *mini, t_cmd *cmd)
 {
-	if (!cmd)
-		return (1);
-	if (!cmd->tokens || !cmd->tokens[0])
-		return (1);
-	if (cmd->tokens[0][0] == '\0')
-		return (1);
-	return (0);
+	if (!cmd->tokens[1])
+	{
+		ft_setenv("_", "/usr/bin/env", &(mini->env));
+		print_env(mini->env);
+		mini->exit_sts = 0;
+		return ;
+	}
+	execute_env_command(mini, cmd);
 }
