@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/03 17:15:12 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/03 18:31:15 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ void	free_args(t_mini *mini);
 void	free_token_parts(t_token_part *parts);
 void	cleanup_exec(t_exec *exec);
 void	free_heredoc_data(t_heredoc_data *data);
+void	free_token_list(t_token *tokens);
 
 // =[ Built Ins ]==================================================== //
 
@@ -238,6 +239,24 @@ int		tok_has_quotes(t_token *tok);
 int		exp_cmd_toks_with_split(t_cmd *cmd, t_mini *mini);
 int		is_empty_str(const char *s);
 char	*exp_str_part(const char *s, t_mini *mini, int exp);
+char	*expand_var(const char *var, t_mini *mini);
+int		is_valid_var_chr(char c);
+char	*extract_var(const char *str, int start, int *end);
+char	*str_cat(char *dst, const char *src);
+char	*str_cat_chr(char *dst, char c);
+int		exp_redirs(t_cmd *cmd, t_mini *mini);
+int		count_words(const char *str);
+void	free_split_result(char **result, int count);
+int		needs_word_split(t_token *tok);
+char	*extract_word(const char *str, int *start);
+char	**split_by_spaces(const char *str);
+int		count_expanded_tokens(t_token *tokens, t_mini *mini);
+int		add_expanded_tokens(char **result, int *j, t_token *tok, t_mini *mini);
+char	*expand_part(t_token_part *curr, t_mini *mini);
+char	*exp_parts_list(t_token *tok, t_mini *mini);
+void	skip_spaces(const char *str, int *start);
+int		get_word_len(const char *str, int start);
+char	*alloc_and_copy(const char *str, int start, int len);
 
 // =[ Lexer ]======================================================== //
 
