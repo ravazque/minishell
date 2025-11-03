@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 17:00:44 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 17:25:57 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 17:15:44 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	setup_mshlvl(t_mini *mini)
 	level_str = ft_itoa(level);
 	if (!level_str)
 	{
-		ft_putstr_fd("minishell: fatal error: failed to allocate MSHLVL\n", STDERR_FILENO);
+		ft_putstr_fd(INIT_ERR_MSHLVL, STDERR_FILENO);
 		cleanup_mini(mini);
 		exit(1);
 	}

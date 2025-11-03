@@ -96,4 +96,3 @@ re:
 .PHONY: all clean fclean re
 
 # Hay que cambiar la wildcards [ *.c ]
-

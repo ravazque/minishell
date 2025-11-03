@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 04:26:47 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/07 18:39:26 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/03 18:31:02 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	free_token_parts(t_token_part *parts)
 	}
 }
 
-static void	free_token_list(t_token *tokens)
+void	free_token_list(t_token *tokens)
 {
 	t_token	*current;
 	t_token	*next;

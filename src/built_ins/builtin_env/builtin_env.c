@@ -1,33 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   builtin_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/19 18:35:48 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/03 17:13:11 by ravazque         ###   ########.fr       */
+/*   Created: 2025/09/18 22:54:02 by ravazque          #+#    #+#             */
+/*   Updated: 2025/10/30 17:57:30 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
-void	parse(t_mini *mini)
+void	print_env(char **env)
 {
-	if (!mini || !mini->input || is_empty_or_whitespace(mini->input))
-		return ;
-	if (!quotes_balanced(mini->input))
+	int	i;
+
+	i = 0;
+	while (env[i])
 	{
-		ft_putstr_fd(ERR_QUO, STDERR_FILENO);
-		mini->exit_sts = 2;
+		if (ft_strchr(env[i], '='))
+		{
+			ft_putstr_fd(env[i], STDOUT_FILENO);
+			ft_putstr_fd("\n", STDOUT_FILENO);
+		}
+		i++;
+	}
+}
+
+void	builtin_env(t_mini *mini, t_cmd *cmd)
+{
+	if (!cmd->tokens[1])
+	{
+		ft_setenv("_", "/usr/bin/env", &(mini->env));
+		print_env(mini->env);
+		mini->exit_sts = 0;
 		return ;
 	}
-	if (start_tokenizer(mini) == 1)
-		return ;
-	if (start_lexer(mini) == 1)
-		return ;
-	if (start_assignments(mini) == 1)
-		return ;
-	if (start_expander(mini) == 1)
-		return ;
+	execute_env_command(mini, cmd);
 }

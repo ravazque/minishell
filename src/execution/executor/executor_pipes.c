@@ -6,11 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 12:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 15:32:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/30 18:37:02 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/minishell.h"
+#include "../../../include/minishell.h"
 
 int	create_pipes(t_exec *exec)
 {

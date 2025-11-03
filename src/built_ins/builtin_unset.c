@@ -12,33 +12,47 @@
 
 #include "../../include/minishell.h"
 
-void	builtin_unset(t_mini *mini)
+static void	shift_env_vars(char **env, int pos)
 {
-	int	i;
+	int	k;
+
+	k = pos;
+	while (env[k + 1])
+	{
+		env[k] = env[k + 1];
+		k++;
+	}
+	env[k] = NULL;
+}
+
+static void	unset_single_var(char *var_name, char **env)
+{
 	int	j;
 	int	len;
 
-	i = 0;
-	while (ft_argc(mini->cmds->tokens) > ++i)
+	j = 0;
+	len = ft_strlen(var_name);
+	while (env[j])
 	{
-		j = 0;
-		len = ft_strlen(mini->cmds->tokens[i]);
-		while (mini->env[j])
+		if (!ft_strncmp(var_name, env[j], len))
 		{
-			if (!ft_strncmp(mini->cmds->tokens[i], mini->env[j], len)
-				&& (mini->env[j][len] == '\0' || mini->env[j][len] == '='))
+			if (env[j][len] == '\0' || env[j][len] == '=')
 			{
-				free(mini->env[j]);
-				while (mini->env[j + 1])
-				{
-					mini->env[j] = mini->env[j + 1];
-					j++;
-				}
-				mini->env[j] = NULL;
+				free(env[j]);
+				shift_env_vars(env, j);
 				break ;
 			}
-			j++;
 		}
+		j++;
 	}
+}
+
+void	builtin_unset(t_mini *mini)
+{
+	int	i;
+
+	i = 0;
+	while (ft_argc(mini->cmds->tokens) > ++i)
+		unset_single_var(mini->cmds->tokens[i], mini->env);
 	mini->exit_sts = 0;
 }
