@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:33:48 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/03 17:15:12 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@
 # define INIT_ERR_VARS "failed to allocate local_vars\n"
 # define INIT_ERR_ENV "minishell: fatal error: failed to copy environment\n"
 # define INIT_ERR_HOME "minishell: fatal error: failed to allocate cd_home\n"
-# define INIT_ERR_ARGS_COPY "minishell: fatal error: failed to copy arguments\n"
-# define INIT_ERR_ARGS_COPY_ALLOC "minishell: fatal error: failed to alloc arguments\n"
+# define INIT_ERR_ARG_COPY "minishell: fatal error: failed to copy arguments\n"
+# define INIT_ERR_ALLOC "minishell: fatal error: failed to alloc arguments\n"
 # define INIT_ERR_MSHLVL "minishell: fatal error: failed to allocate MSHLVL\n"
 
 # define ERR_FORKBOMB "FORK BOMB DETECTED!\n"
@@ -255,6 +255,12 @@ void	mark_assignments(t_cmd *cmd);
 // =[ Parse ]======================================================== //
 
 void	parse(t_mini *mini);
+void	cleanup_parse_error(t_mini *mini);
+int		is_empty_or_whitespace(const char *str);
+int		start_tokenizer(t_mini *mini);
+int		start_lexer(t_mini *mini);
+int		start_assignments(t_mini *mini);
+int		start_expander(t_mini *mini);
 
 // =[ Signals ]====================================================== //
 

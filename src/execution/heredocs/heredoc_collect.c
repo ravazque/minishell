@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:24:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/10/31 17:02:10 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ static int	init_heredoc_stdin(t_heredoc *ctx, char ***lines, int expand)
 int	collect_lines(char *delim, t_mini *mini, int expand, char ***lines)
 {
 	t_heredoc	ctx;
-	char			*line;
-	int				result;
+	char		*line;
+	int			result;
 
 	ctx.delimiter = delim;
 	ctx.mini = mini;
