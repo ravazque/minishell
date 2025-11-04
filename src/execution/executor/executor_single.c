@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:03:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:37:04 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/04 12:40:03 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ static void	wait_single_child(pid_t pid, t_mini *mini)
 		mini->exit_sts = 128 + WTERMSIG(status);
 		if (WTERMSIG(status) == SIGINT)
 			write(STDOUT_FILENO, "\n", 1);
+		else if (WTERMSIG(status) == SIGQUIT)
+			write(STDOUT_FILENO, "Quit\n", 5);
 	}
 }
 

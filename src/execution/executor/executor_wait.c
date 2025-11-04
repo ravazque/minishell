@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:32:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:37:08 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/04 12:39:34 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static void	handle_exit_status(int status, int *last_exit)
 		*last_exit = 128 + WTERMSIG(status);
 		if (WTERMSIG(status) == SIGINT)
 			write(STDOUT_FILENO, "\n", 1);
+		else if (WTERMSIG(status) == SIGQUIT)
+			write(STDOUT_FILENO, "Quit\n", 5);
 	}
 }
 
