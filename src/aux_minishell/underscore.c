@@ -52,6 +52,22 @@ static t_cmd	*get_last_cmd(t_cmd *cmds)
 	return (current);
 }
 
+static int	has_only_assignments(t_cmd *cmd)
+{
+	t_token	*tok;
+
+	if (!cmd || !cmd->tokn)
+		return (0);
+	tok = cmd->tokn;
+	while (tok)
+	{
+		if (!tok->is_assignment)
+			return (0);
+		tok = tok->next;
+	}
+	return (1);
+}
+
 void	update_underscore(t_mini *mini)
 {
 	t_cmd	*last_cmd;
@@ -60,9 +76,11 @@ void	update_underscore(t_mini *mini)
 	if (!mini || !mini->cmds)
 		return ;
 	last_cmd = get_last_cmd(mini->cmds);
-	if (!last_cmd || !last_cmd->tokens || !last_cmd->tokens[0])
+	if (!last_cmd)
 		return ;
-	if (ft_strcmp(last_cmd->tokens[0], "env") == 0)
+	if (has_only_assignments(last_cmd))
+		return ;
+	if (!last_cmd->tokens || !last_cmd->tokens[0])
 		return ;
 	last_arg = get_last_arg(last_cmd->tokens);
 	if (last_arg)

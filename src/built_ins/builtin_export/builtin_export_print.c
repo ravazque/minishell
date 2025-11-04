@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 17:40:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 17:40:00 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/04 01:16:49 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,22 @@ static void	print_var_name(char *var, int *j)
 {
 	while (var[*j] != '=')
 	{
-		printf("%c", var[*j]);
+		ft_putchar_fd(var[*j], STDOUT_FILENO);
 		(*j)++;
 	}
 }
 
 static void	print_var_value(char *var, int *j)
 {
-	printf("%c\"", var[*j]);
+	ft_putchar_fd(var[*j], STDOUT_FILENO);
+	ft_putchar_fd('"', STDOUT_FILENO);
 	(*j)++;
 	while (var[*j])
 	{
-		printf("%c", var[*j]);
+		ft_putchar_fd(var[*j], STDOUT_FILENO);
 		(*j)++;
 	}
-	printf("\"\n");
+	ft_putstr_fd("\"\n", STDOUT_FILENO);
 }
 
 static void	print_single_export(char *var)
@@ -40,14 +41,17 @@ static void	print_single_export(char *var)
 	if (ft_strncmp(var, "_=", 2) == 0)
 		return ;
 	j = 0;
-	printf("declare -x ");
+	ft_putstr_fd("declare -x ", STDOUT_FILENO);
 	if (ft_strchr(var, '='))
 	{
 		print_var_name(var, &j);
 		print_var_value(var, &j);
 	}
 	else
-		printf("%s\n", var);
+	{
+		ft_putstr_fd(var, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	}
 }
 
 void	ft_putexport(char ***env)

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:02:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:36:55 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/03 21:02:31 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 {
 	int		builtin_type;
 	char	**exec_env;
+	t_cmd	*original_cmds;
 
 	setup_execution_signals();
 	setup_pipe_fds(exec, idx);
@@ -61,7 +62,10 @@ void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 	builtin_type = is_builtin_cmd(cmd->tokens[0]);
 	if (builtin_type)
 	{
+		original_cmds = mini->cmds;
+		mini->cmds = cmd;
 		built_ins(mini, cmd);
+		mini->cmds = original_cmds;
 		exit(mini->exit_sts);
 	}
 	exec_env = build_exec_env(mini);

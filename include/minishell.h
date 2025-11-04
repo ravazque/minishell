@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/03 18:31:15 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/03 20:58:51 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ void	setup_pipe_fds(t_exec *exec, int cmd_idx);
 int		wait_processes(t_exec *exec, t_mini *mini);
 char	**build_exec_env(t_mini *mini);
 int		is_directory(const char *path);
+int		check_empty_command(t_mini *mini);
 char	*ft_get_path(char *cmd, char **envp);
 void	print_exec_error(char *cmd, int error_type, int is_path);
 void	handle_no_path(char **argv);

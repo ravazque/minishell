@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 19:32:02 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/04 01:16:59 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,10 @@ static int	change_directory(t_mini *mini, char *path, char *arg)
 		return (0);
 	}
 	if (arg && !ft_strcmp(arg, "-"))
-		printf("%s\n", path);
+	{
+		ft_putstr_fd(path, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	}
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 23:16:26 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:37:10 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/03 21:01:49 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,6 @@ static int	check_heredocs(t_mini *mini)
 	if (heredocs(mini))
 	{
 		mini->exit_sts = 130;
-		return (1);
-	}
-	return (0);
-}
-
-static int	check_empty_command(t_mini *mini)
-{
-	if (!mini->cmds->tokens || !mini->cmds->tokens[0])
-		return (1);
-	if (mini->cmds->tokens[0][0] == '\0')
-	{
-		ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
-		mini->exit_sts = 127;
 		return (1);
 	}
 	return (0);
