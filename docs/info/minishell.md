@@ -559,28 +559,6 @@ EOF
 1. Redirecciones de entrada (`<`, `<<`)
 2. Redirecciones de salida (`>`, `>>`)
 
-**Algoritmo:**
-```c
-int redirections(t_cmd *cmd)
-{
-    for each redir in cmd->redirs:
-        if (in_redir == 1):  // <
-            fd = open(target, O_RDONLY)
-            dup2(fd, STDIN)
-
-        if (in_redir == 2):  // <<
-            dup2(redir->fd, STDIN)  // fd del heredoc
-
-        if (out_redir == 1):  // >
-            fd = open(target, O_WRONLY|O_CREAT|O_TRUNC, 0644)
-            dup2(fd, STDOUT)
-
-        if (out_redir == 2):  // >>
-            fd = open(target, O_WRONLY|O_CREAT|O_APPEND, 0644)
-            dup2(fd, STDOUT)
-}
-```
-
 **Múltiples redirecciones:**
 ```bash
 cat < in1.txt < in2.txt > out.txt

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/05 16:05:51 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/05 22:32:52 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,12 @@ typedef struct s_heredoc
 	char				***lines;
 	int					stdin_backup;
 }						t_heredoc;
+
+typedef struct s_exp_ctx
+{
+	t_mini				*mini;
+	int					exp;
+}						t_exp_ctx;
 
 // =[ Cleaner ]====================================================== //
 
@@ -261,6 +267,7 @@ int		get_word_len(const char *str, int start);
 char	*alloc_and_copy(const char *str, int start, int len);
 char	*process_tilde_expansion(int *i, t_mini *mini);
 int		should_expand_tilde(const char *s, int i, int exp);
+char	*process_char_exp(char *res, const char *s, int *i, t_exp_ctx *ctx);
 
 // =[ Lexer ]======================================================== //
 
