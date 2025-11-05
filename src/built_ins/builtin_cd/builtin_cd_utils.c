@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 19:30:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 20:38:41 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/11/05 15:32:52 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,13 +100,4 @@ void	print_chdir_error(char *path, char *arg)
 		ft_putstr_fd(": Not a directory\n", 2);
 	else
 		ft_putstr_fd(": No such file or directory\n", 2);
-}
-
-int	needs_free(char *arg)
-{
-	if (!arg)
-		return (0);
-	if (!ft_strcmp(arg, ".."))
-		return (1);
-	return (0);
 }

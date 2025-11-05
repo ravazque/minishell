@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/04 01:38:12 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/05 15:27:26 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	*prompt(t_mini *mini)
 	free_prompt_parts(user_host, path_section, git_section);
 	if (!final_prompt)
 		return (ft_strdup("$ "));
-	return (final_prompt);
+	return (ft_strdup("mininshell $ "));
 }
 
-// return (ft_strdup("mininshell $ "));
+// cambiar a "final_prompt" el último return en la versión final

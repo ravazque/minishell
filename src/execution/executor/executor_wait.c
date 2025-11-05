@@ -39,6 +39,18 @@ static void	print_signal_message(int signal_num)
 		write(STDOUT_FILENO, "Quit\n", 5);
 }
 
+static void	wait_for_stderr_flush(void)
+{
+	int		dummy_pipe[2];
+	char	buf;
+
+	if (pipe(dummy_pipe) == -1)
+		return ;
+	close(dummy_pipe[1]);
+	read(dummy_pipe[0], &buf, 1);
+	close(dummy_pipe[0]);
+}
+
 int	wait_processes(t_exec *exec, t_mini *mini)
 {
 	int	i;
@@ -60,6 +72,7 @@ int	wait_processes(t_exec *exec, t_mini *mini)
 			handle_exit_status(status, &last_exit);
 		i++;
 	}
+	wait_for_stderr_flush();
 	setup_interactive_signals();
 	if (signal_found)
 		print_signal_message(signal_found);

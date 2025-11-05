@@ -12,26 +12,44 @@
 
 #include "../../../include/minishell.h"
 
-void	print_exec_error(char *cmd, int error_type, int is_path)
+static char	*get_error_msg(int error_type, int is_path, char *cmd)
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	ft_putstr_fd(cmd, STDERR_FILENO);
 	if (error_type == 126)
 	{
 		if (is_directory(cmd))
-			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+			return (": Is a directory\n");
 		else
-			ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
+			return (": Permission denied\n");
 	}
 	else if (error_type == 127)
 	{
 		if (is_path)
-			ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+			return (": No such file or directory\n");
 		else
-			ft_putstr_fd(": command not found\n", STDERR_FILENO);
+			return (": command not found\n");
 	}
 	else
-		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+		return (": No such file or directory\n");
+}
+
+void	print_exec_error(char *cmd, int error_type, int is_path)
+{
+	char	*prefix;
+	char	*error_msg;
+	char	*temp;
+	char	*full_msg;
+
+	prefix = "minishell: ";
+	error_msg = get_error_msg(error_type, is_path, cmd);
+	temp = ft_strjoin(prefix, cmd);
+	if (!temp)
+		return ;
+	full_msg = ft_strjoin(temp, error_msg);
+	free(temp);
+	if (!full_msg)
+		return ;
+	write(STDERR_FILENO, full_msg, ft_strlen(full_msg));
+	free(full_msg);
 }
 
 static void	handle_path_error(char *cmd)
