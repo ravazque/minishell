@@ -163,6 +163,7 @@ char	*get_parent_from_pwd(t_mini *mini);
 char	*handle_home_dir(t_mini *mini);
 char	*handle_oldpwd_dir(t_mini *mini);
 char	*update_home_cache(t_mini *mini, char *current);
+char	*get_home_cached(t_mini *mini);
 void	print_chdir_error(char *path, char *arg);
 int		needs_free(char *arg);
 

@@ -14,17 +14,13 @@
 
 static char	*process_tilde_expansion(int *i, t_mini *mini)
 {
-	char	*home;
+	char	*cached;
 
 	(*i)++;
-	home = get_local_env("HOME", mini->env);
-	if (!home)
-	{
-		if (mini->cd_home)
-			return (ft_strdup(mini->cd_home));
+	cached = get_home_cached(mini);
+	if (!cached)
 		return (ft_strdup("~"));
-	}
-	return (ft_strdup(home));
+	return (ft_strdup(cached));
 }
 
 static char	*process_var_expansion(const char *s, int *i, t_mini *mini)

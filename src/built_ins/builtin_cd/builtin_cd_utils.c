@@ -12,20 +12,37 @@
 
 #include "../../../include/minishell.h"
 
+char	*get_home_cached(t_mini *mini)
+{
+	char	*home;
+
+	home = get_var_value("HOME", mini);
+	if (home && home[0] != '\0')
+	{
+		if (!mini->cd_home || ft_strcmp(home, mini->cd_home) != 0)
+		{
+			if (mini->cd_home)
+				free(mini->cd_home);
+			mini->cd_home = ft_strdup(home);
+			if (!mini->cd_home)
+			{
+				malloc_error();
+				return (NULL);
+			}
+		}
+		return (mini->cd_home);
+	}
+	if (mini->cd_home)
+		return (mini->cd_home);
+	return (NULL);
+}
+
 char	*handle_home_dir(t_mini *mini)
 {
 	char	*home;
 
-	home = get_local_env("HOME", mini->env);
-	if (!home)
-	{
-		if (mini->cd_home)
-			return (mini->cd_home);
-		ft_putstr_fd(ERR_HOME, 2);
-		mini->exit_sts = 1;
-		return (NULL);
-	}
-	return (home);
+	home = get_var_value("HOME", mini);
+	return (update_home_cache(mini, home));
 }
 
 char	*handle_oldpwd_dir(t_mini *mini)
@@ -44,26 +61,26 @@ char	*handle_oldpwd_dir(t_mini *mini)
 
 char	*update_home_cache(t_mini *mini, char *current)
 {
-	if (!current)
+	if (current && current[0] != '\0')
 	{
-		if (mini->cd_home)
-			return (mini->cd_home);
-		ft_putstr_fd(ERR_HOME, 2);
-		mini->exit_sts = 1;
-		return (NULL);
-	}
-	if (!mini->cd_home || ft_strcmp(current, mini->cd_home) != 0)
-	{
-		if (mini->cd_home)
-			free(mini->cd_home);
-		mini->cd_home = ft_strdup(current);
-		if (!mini->cd_home)
+		if (!mini->cd_home || ft_strcmp(current, mini->cd_home) != 0)
 		{
-			malloc_error();
-			return (NULL);
+			if (mini->cd_home)
+				free(mini->cd_home);
+			mini->cd_home = ft_strdup(current);
+			if (!mini->cd_home)
+			{
+				malloc_error();
+				return (NULL);
+			}
 		}
+		return (mini->cd_home);
 	}
-	return (mini->cd_home);
+	if (mini->cd_home)
+		return (mini->cd_home);
+	ft_putstr_fd(ERR_HOME, 2);
+	mini->exit_sts = 1;
+	return (NULL);
 }
 
 void	print_chdir_error(char *path, char *arg)

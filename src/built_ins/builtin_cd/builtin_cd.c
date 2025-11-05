@@ -25,12 +25,23 @@ static int	check_multiple_args(t_mini *mini)
 
 static char	*get_target_path(t_mini *mini, char *arg)
 {
+	char	*path;
+
 	if (!arg)
 		return (handle_home_dir(mini));
 	if (!ft_strcmp(arg, "-"))
 		return (handle_oldpwd_dir(mini));
 	if (!ft_strcmp(arg, "~"))
-		return (update_home_cache(mini, get_local_env("HOME", mini->env)));
+	{
+		path = get_home_cached(mini);
+		if (!path)
+		{
+			ft_putstr_fd(ERR_HOME, 2);
+			mini->exit_sts = 1;
+			return (NULL);
+		}
+		return (path);
+	}
 	if (!ft_strcmp(arg, ".."))
 		return (get_parent_from_pwd(mini));
 	return (arg);
