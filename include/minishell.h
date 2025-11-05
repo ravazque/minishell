@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/03 20:58:51 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/04 13:48:49 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,8 +200,8 @@ int		is_directory(const char *path);
 int		check_empty_command(t_mini *mini);
 char	*ft_get_path(char *cmd, char **envp);
 void	print_exec_error(char *cmd, int error_type, int is_path);
-void	handle_no_path(char **argv);
-void	ft_execve(char **argv, char **envp, char ***env_ptr);
+void	handle_no_path(char **argv, char *cd_home);
+void	ft_execve(char **argv, char **envp, char ***env_ptr, char *cd_home);
 void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx);
 int		execute_single_command(t_mini *mini, t_cmd *cmd);
 int		ft_lstsize(t_cmd *lst);

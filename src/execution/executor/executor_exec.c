@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:02:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/03 21:02:31 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/04 13:48:07 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	check_empty_cmd(char **argv)
 	}
 }
 
-void	ft_execve(char **argv, char **envp, char ***env_ptr)
+void	ft_execve(char **argv, char **envp, char ***env_ptr, char *cd_home)
 {
 	char	*path;
 	int		error_code;
@@ -34,7 +34,7 @@ void	ft_execve(char **argv, char **envp, char ***env_ptr)
 	check_empty_cmd(argv);
 	path = ft_get_path(argv[0], envp);
 	if (!path)
-		handle_no_path(argv);
+		handle_no_path(argv, cd_home);
 	ft_setenv("_", path, env_ptr);
 	if (execve(path, argv, *env_ptr) == -1)
 	{
@@ -71,6 +71,6 @@ void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 	exec_env = build_exec_env(mini);
 	if (!exec_env)
 		exit(1);
-	ft_execve(cmd->tokens, exec_env, &exec_env);
+	ft_execve(cmd->tokens, exec_env, &exec_env, mini->cd_home);
 	free_dblptr(exec_env);
 }

@@ -12,6 +12,21 @@
 
 #include "../../../include/minishell.h"
 
+static char	*process_tilde_expansion(int *i, t_mini *mini)
+{
+	char	*home;
+
+	(*i)++;
+	home = get_local_env("HOME", mini->env);
+	if (!home)
+	{
+		if (mini->cd_home)
+			return (ft_strdup(mini->cd_home));
+		return (ft_strdup("~"));
+	}
+	return (ft_strdup(home));
+}
+
 static char	*process_var_expansion(const char *s, int *i, t_mini *mini)
 {
 	char	*var;
@@ -27,6 +42,19 @@ static char	*process_var_expansion(const char *s, int *i, t_mini *mini)
 	if (!val)
 		return (ft_strdup(""));
 	return (val);
+}
+
+static int	should_expand_tilde(const char *s, int i, int exp)
+{
+	if (s[i] != '~')
+		return (0);
+	if (!exp)
+		return (0);
+	if (i != 0)
+		return (0);
+	if (s[i + 1] && s[i + 1] != '/' && s[i + 1] != ' ')
+		return (0);
+	return (1);
 }
 
 static int	should_expand_var(const char *s, int i, int exp)
@@ -62,13 +90,24 @@ static char	*handle_expansion(char *res, const char *s, int *i, t_mini *mini)
 char	*exp_str_part(const char *s, t_mini *mini, int exp)
 {
 	char	*res;
+	char	*val;
 	int		i;
 
 	res = NULL;
 	i = 0;
 	while (s[i])
 	{
-		if (should_expand_var(s, i, exp))
+		if (should_expand_tilde(s, i, exp))
+		{
+			val = process_tilde_expansion(&i, mini);
+			if (!val)
+				return (free(res), NULL);
+			res = str_cat(res, val);
+			free(val);
+			if (!res)
+				return (NULL);
+		}
+		else if (should_expand_var(s, i, exp))
 		{
 			res = handle_expansion(res, s, &i, mini);
 			if (!res)

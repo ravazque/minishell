@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:03:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/04 12:40:03 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/04 13:51:32 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void	execute_single_child(t_mini *mini, t_cmd *cmd)
 	exec_env = build_exec_env(mini);
 	if (!exec_env)
 		exit(1);
-	ft_execve(cmd->tokens, exec_env, &exec_env);
+	ft_execve(cmd->tokens, exec_env, &exec_env, mini->cd_home);
 	free_dblptr(exec_env);
 }
 
