@@ -6,22 +6,11 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/03 18:29:35 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/05 16:05:07 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
-
-static char	*process_tilde_expansion(int *i, t_mini *mini)
-{
-	char	*cached;
-
-	(*i)++;
-	cached = get_home_cached(mini);
-	if (!cached)
-		return (ft_strdup("~"));
-	return (ft_strdup(cached));
-}
 
 static char	*process_var_expansion(const char *s, int *i, t_mini *mini)
 {
@@ -38,19 +27,6 @@ static char	*process_var_expansion(const char *s, int *i, t_mini *mini)
 	if (!val)
 		return (ft_strdup(""));
 	return (val);
-}
-
-static int	should_expand_tilde(const char *s, int i, int exp)
-{
-	if (s[i] != '~')
-		return (0);
-	if (!exp)
-		return (0);
-	if (i != 0)
-		return (0);
-	if (s[i + 1] && s[i + 1] != '/' && s[i + 1] != ' ')
-		return (0);
-	return (1);
 }
 
 static int	should_expand_var(const char *s, int i, int exp)

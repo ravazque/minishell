@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/04 13:48:49 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/05 16:05:51 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,6 +259,8 @@ char	*exp_parts_list(t_token *tok, t_mini *mini);
 void	skip_spaces(const char *str, int *start);
 int		get_word_len(const char *str, int start);
 char	*alloc_and_copy(const char *str, int start, int len);
+char	*process_tilde_expansion(int *i, t_mini *mini);
+int		should_expand_tilde(const char *s, int i, int exp);
 
 // =[ Lexer ]======================================================== //
 

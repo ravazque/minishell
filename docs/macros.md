@@ -2,6 +2,8 @@
 
 Este documento lista todas las macros utilizadas en el proyecto que no están explícitamente definidas en el subject de 42.
 
+---
+
 ## Macros del Sistema (sys/wait.h)
 
 Estas macros son parte de la biblioteca estándar de POSIX y se utilizan para el manejo de procesos:
@@ -25,11 +27,6 @@ Estas macros son parte de la biblioteca estándar de POSIX y se utilizan para el
 - **Descripción**: Extrae el número de la señal que terminó el proceso
 - **Uso**: Obtener qué señal mató al proceso cuando WIFSIGNALED es true
 - **Ejemplo**: `signal_num = WTERMSIG(status);`
-
-### WNOHANG (no usada actualmente)
-- **Descripción**: Opción para waitpid() que hace que no bloquee si no hay hijos terminados
-- **Uso**: Polling de procesos sin bloquear
-- **Ejemplo**: `waitpid(pid, &status, WNOHANG);`
 
 ## Macros de File Descriptors (unistd.h)
 
@@ -147,3 +144,5 @@ RL_FRKBMB       "\001\033[1;31;5m\002"  // Rojo parpadeante y bold (fork bomb)
 3. **Colores en Readline**: Las secuencias `\001` y `\002` son especiales de readline e indican que el texto entre ellas no debe contarse para el ancho del prompt.
 
 4. **Una Variable Global**: Solo se usa `g_signal_received` (tipo `volatile sig_atomic_t`) para cumplir con el requisito del subject.
+
+---
