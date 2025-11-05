@@ -1,0 +1,5 @@
+minishell
+src/aux_libft/libft.a
+.claude
+.vscode
+minishellObjects

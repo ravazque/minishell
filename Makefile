@@ -19,8 +19,6 @@ LIBFT_OBJ_DIR   = $(OBJ_ROOT)/aux_libft
 CC       = cc
 CFLAGS   = -Wall -Wextra -Werror -g3 -I$(INC_DIR) -I$(LIBFT_INC_D)
 LDFLAGS  = -lreadline
-AR       = ar
-ARFLAGS  = rcs
 
 SRCS = $(shell find $(SRC_DIR) -type f -name '*.c' -not -path '$(LIBFT_DIR)/*')
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(APP_OBJ_DIR)/%.o)
@@ -63,7 +61,10 @@ $(NAME): $(LIBFT_A) $(OBJS)
 	@echo -e "$(LIGHT_TURQUOISE)Minishell ready!$(RESET)"
 
 $(LIBFT_A): $(LIBFT_OBJS)
-	@$(AR) $(ARFLAGS) $@ $^
+	@$(MAKE) -C $(LIBFT_DIR) \
+		OBJ_DIR=$(abspath $(LIBFT_OBJ_DIR)) \
+		SHOW_PROGRESS='$(call show_progress)' \
+		all
 
 $(LIBFT_OBJ_DIR)/%.o: $(LIBFT_SRC_D)/%.c | $(LIBFT_OBJ_DIR)
 	@mkdir -p $(dir $@)
@@ -81,12 +82,14 @@ $(OBJ_ROOT) $(APP_OBJ_DIR) $(LIBFT_OBJ_DIR):
 clean:
 	@echo -e "$(LIGHT_RED)Running object cleanup...$(RESET)"
 	@rm -rf "$(OBJ_ROOT)"
+	@$(MAKE) -C $(LIBFT_DIR) clean OBJ_DIR=$(abspath $(LIBFT_OBJ_DIR)) 2>/dev/null || true
 	@echo -e "$(TURQUOISE)Cleaning of objects completed!$(RESET)"
 
 fclean:
 	@echo -e "$(LIGHT_RED)Running a full cleanup...$(RESET)"
 	@rm -rf "$(OBJ_ROOT)"
-	@rm -f "$(NAME)" "$(LIBFT_A)"
+	@rm -f "$(NAME)"
+	@$(MAKE) -C $(LIBFT_DIR) fclean OBJ_DIR=$(abspath $(LIBFT_OBJ_DIR)) 2>/dev/null || true
 	@echo -e "$(TURQUOISE)Full cleaning finished!$(RESET)"
 
 re:
