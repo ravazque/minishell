@@ -1,366 +1,221 @@
 
-# Minishell
+# MINISHELL
 
-¡Un shell simple implementado en C que replica funcionalidades básicas de bash!
+## 📖 About
 
-## 🔧 Compilación
+"minishell" is a project at 42 Madrid that involves creating a simple shell that replicates basic functionalities of bash. This project introduces command parsing, process management, signal handling, and teaches how to implement a command-line interpreter in a systematic way.
+
+The goal is to implement a shell program that can execute commands, manage environment variables, handle redirections and pipes, and provide a user-friendly interactive experience similar to bash.
+
+## 🎯 Objectives
+
+- Understanding and implementing command-line parsing and tokenization
+- Learning about process creation and management with fork() and execve()
+- Managing pipes and redirections for inter-process communication
+- Implementing built-in shell commands
+- Handling signals (SIGINT, SIGQUIT, EOF)
+- Managing environment variables and shell variables
+- Implementing command history functionality
+- Handling quotes and special characters properly
+
+## 📋 Function Overview
+
+<details>
+<summary><strong>minishell</strong></summary>
+
+### Concepts
+
+**Description:** A minimal shell implementation that mimics bash behavior
+**Usage:** `./minishell` or `./minishell -c "command"`
+**Behavior:** Reads and executes commands interactively or from arguments
+
+```c
+int main(int argc, char **argv, char **envp);
+```
+
+### Use of processes and signal handling
+The implementation of **minishell** requires creating processes and handling signals. For this, several system calls are used:
+
+The main system calls and functions are:
+
+- **`fork()`** ➜ Creates a child process to execute commands.
+
+```c
+pid_t pid = fork();
+```
+
+- **`execve()`** ➜ Replaces the current process with a new program.
+
+```c
+execve(cmd_path, cmd_args, envp);
+```
+
+- **`pipe()`** ➜ Creates a pipe for communication between processes.
+
+```c
+int pipefd[2];
+pipe(pipefd);
+```
+
+- **`dup2()`** ➜ Duplicates file descriptors for redirection.
+
+```c
+dup2(fd, STDIN_FILENO);
+```
+
+- **`signal()`** / **`sigaction()`** ➜ Sets up signal handlers for Ctrl-C, Ctrl-\, etc.
+
+```c
+signal(SIGINT, signal_handler);
+```
+
+- **`readline()`** ➜ Reads a line from the terminal with line editing capabilities.
+
+```c
+char *line = readline("minishell> ");
+```
+
+- **`add_history()`** ➜ Adds a command to the history list.
+
+```c
+add_history(line);
+```
+
+These functions are essential for implementing **minishell**, as they allow command execution, process management, and user interaction.
+
+</details>
+
+<details>
+<summary><strong>Features and Behavior</strong></summary>
+
+### Interactive Mode
+
+- **Prompt**: Displays custom prompt with `user@hostname:path (git_branch) $`
+- **Command execution**: Supports absolute paths, relative paths, and PATH resolution
+- **History**: Full command history navigation with up/down arrows
+- **Signals**: Proper handling of:
+  - `Ctrl-C`: Interrupts current command (SIGINT)
+  - `Ctrl-D`: Exits shell when line is empty (EOF)
+  - `Ctrl-\`: Does nothing in interactive mode (SIGQUIT)
+
+### Supported Features
+
+**Environment Variables:**
+- `$VAR` - Environment variable expansion
+- `$?` - Exit status of last command
+- `$0` - Shell name
+- `$$` - Shell process ID
+- `$_` - Last argument of previous command
+
+**Redirections:**
+- `<` - Input redirection
+- `>` - Output redirection (truncate)
+- `>>` - Output redirection (append)
+- `<<` - Heredoc (read until delimiter)
+
+**Pipes:**
+- `|` - Connect output of one command to input of another
+
+**Quotes:**
+- `'single quotes'` - Preserve literal value of all characters
+- `"double quotes"` - Preserve literal value except `$` and `\`
+
+### Built-in Commands
+
+- `echo [-n]` - Print arguments to stdout
+- `cd [path]` - Change working directory
+- `pwd` - Print working directory
+- `export [var=value]` - Set environment variables
+- `unset [var]` - Unset environment variables
+- `env` - Display environment variables
+- `exit [n]` - Exit shell with status code
+
+### Command Mode
 
 ```bash
+./minishell -c "command"
+# Executes command and exits
+```
+
+</details>
+
+## 🚀 Installation & Structure
+
+<details>
+<summary><strong>📥 Download & Compilation</strong></summary>
+
+<br>
+
+```bash
+# Clone the repository
+git clone https://github.com/ravazque/minishell.git
+cd minishell
+
+# Compile the program
 make
-```
 
-## 🚀 Uso
+# Clean object files
+make clean
 
-```bash
-# Modo interactivo
+# Clean everything including executable
+make fclean
+
+# Recompile everything
+make re
+
+# Run the program
 ./minishell
-
-# Modo comando
-./minishell -c "comando"
 ```
 
-## ✨ Características
+<br>
 
-- **Prompt personalizado** con usuario, hostname, ruta y branch de git
-- **Historial** de comandos funcional
-- **Expansión** de variables de entorno (`$VAR`, `$?`, `$0`, `$$` y `$_`) y locales
-- **Redirecciones y Heredoc**: `<`, `>`, `>>`, `<<`
-- **Pipes** para encadenar comandos
-- **Builtins**: `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`
-- **Señales**: Control de `Ctrl-C`, `Ctrl-D`, `Ctrl-\`
-- **Comillas**: Manejo de `'` y `"` para proteger metacaracteres
+</details>
 
-## 📚 Documentación
+<details>
+<summary><strong>📁 Project Structure</strong></summary>
 
-- [Minishell](https://github.com/ravazque/minishell/blob/norminette/docs/minishell.md) - Información sobre el **funcionamiento de la Minishell**
+<br>
 
-## Test 🧪
-
-```bash
-
-
- 
-\n
->
->>
-<>
->>>>>
->>>>>>>>>>>>>>>
-<<<
-<<<<<<<<<<<<<<
-> > > >
->> >> >> >>
->>>> >> >> >>
-/
-//
-/.
-/./../../../../..
-///////
--
-|
-| hola
-| | |
->>|>
-""
-"hola"
-'hola'
-''
-..
-~
-ABC=hola
-4ABC=hola
-hola
-hola que tal
-Makefile
-echo
-echo -n
-echo Hola
-echoHola
-echo-nHola
-echo -nHola
-echo Hola -n
-echo Hola Que Tal
-echo Hola
-echo Hola Que Tal
-echo \n hola
-echo " " | cat -e
-echo | cat -e
-""''echo hola""'''' que""'' tal""''
-echo -n -n
-echo -p
-echo -nnnnn
-echo -n -nnn -nnnn
-echo -n-nnn -nnnn
-echo --------n
-echo $
-echo $?
-echo $?$
-echo $? | echo $? | echo $?
-echo $:$= | cat -e
-echo " $ " | cat -e
-echo ' $ ' | cat -e
-echo my shit terminal is [$TERM]
-echo my shit terminal is [$TERM4
-echo my shit terminal is [$TERM4]
-echo $HOME9
-echo $9HOME
-echo Le path de mon HOME est $HOME
-echo $USER$var\$USER$USER\$USERtest$USER
-echo -nnnn $hola
-echo > 
-echo | |
-EechoE
-.echo.
->echo>
-<echo
->>echo>>
-|echo|
-|echo -n hola
-echo $""
-echo "$"""
-echo '$'''
-echo $"HOME"
-echo $''HOME
-echo $""HOME
-echo "$HO"ME
-echo '$HO'ME
-echo "$HO""ME"
-echo '$HO''ME'
-echo "'$HO''ME'"
-echo ""$HOME
-echo "" $HOME
-echo ''$HOME
-echo '' $HOME
-echo $"HO""ME"
-echo $'HO''ME'
-echo $'HOME'
-echo "$"HOME
-echo $=HOME
-echo $"HOLA"
-echo $'HOLA'
-echo $DONTEXIST Hola
-echo "hola"
-echo 'hola'
-echo ''hola''
-echo ''h'o'la''
-echo "''h'o'la''"
-echo "'"h'o'la"'"
-echo"'hola'"
-echo "'hola'"
-echo '"hola"'
-echo '''ho"''''l"a'''
-echo hola""""""""""""
-echo hola"''''''''''"
-echo hola''''''''''
-echo hola'""""""""""'
-e"cho hola"
-e'cho hola'
-echo "hola " | cat -e
-echo ""hola
-echo "" hola
-echo "" hola
-echo ""hola
-echo "" hola
-echo hola""bonjour
-"e"'c'ho 'b'"o"nj"o"'u'r
-""e"'c'ho 'b'"o"nj"o"'u'r"
-echo "$DONTEXIST"Makefile
-echo "$DONTEXIST""Makefile"
-echo "$DONTEXIST" "Makefile"
-$?
-$?$?
-?$HOME
-$
-$HOME
-$HOMEdskjhfkdshfsd
-"$HOMEdskjhfkdshfsd"
-'$HOMEdskjhfkdshfsd'
-$DONTEXIST
-$LESS$VAR
-env hola
-env hola que tal
-env ls
-env ./Makefile
-export "" HOLA=bonjour
-export | grep "HOME"
-export ""
-export =
-export $?
-export ?=2
-export 9HOLA=
-export HOL@=bonjour
-export HOL\~A=bonjour
-export HOLA-=bonjour
-export HO-LA=bonjour
-export HOL.A=bonjour
-export HOL\\\$A=bonjour
-export HOL}A=bonjour
-export HOL{A=bonjour
-export HO#LA=bonjour
-export HO@LA=bonjour
-export HO!LA=bonjour
-export +HOLA=bonjour
-export HOL+A=bonjour
-exportHOLA=bonjour
-export HOLA =bonjour
-export HOLA = bonjour
-export HOLA=bon!jour
-export HOL@ 
-export HOL^A
-export ======
-export ++++++
-export _______
-export export
-export echo
-export pwd
-export cd
-export unset
-export sudo
-export hola | unset hola | echo $?
-/bin/echo
-/bin/echo Hola Que Tal
-/bin/cd Desktop
-pwd
-pwd hola
-pwd ./hola
-pwd hola que tal
-pwd -- p
-pwd pwd pwd
-pwd ls
-pwd ls env
-cd
-cd .
-cd ./
-cd ./././.
-cd ././././
-cd ..
-cd ../
-cd ../..
-cd ../.
-cd .././././.
-cd srcs
-cd srcs objs
-cd 'srcs'
-cd "srcs"
-cd '/etc'
-cd /e'tc'
-cd /e"tc"
-cd sr
-cd Makefile
-cd ../minishell
-cd ../../../../../../..
-cd .././../.././../bin/ls
-cd /
-cd '/'
-cd ///
-cd ////////
-cd '////////'
-cd /minishell
-cd _
-cd -
-cd $HOME
-cd $HOME $HOME
-cd $HOME/42_works
-cd "$PWD/srcs"
-cd '$PWD/srcs'
-cd minishell Docs crashtest.c
-cd ~
-cd ~/
-chmod 000 minishell
-ls hola
-./Makefile
-./minishell
-expr 1 + 1
-expr $? + $?
-exit
-exit exit
-exit hola
-exit hola que tal
-exit 42
-exit 000042
-exit 666
-exit 666 666
-exit -666 666
-exit hola 666
-exit 666 666 666 666
-exit 666 hola 666
-exit hola 666 666
-exit 259
-exit -4
-exit -42
-exit -0000042
-exit -259
-exit -666
-exit +666
-exit 0
-exit +0
-exit -0
-exit +42
-exit -69 -96
-exit --666
-exit ++++666
-exit ++++++0
-exit ------0
-exit "666"
-exit '666'
-exit '-666'
-exit '+666'
-exit '----666'
-exit '++++666'
-exit '6'66
-exit '2'66'32'
-exit "'666'"
-exit '"666"'
-exit '666'"666"666
-exit +'666'"666"666
-exit -'666'"666"666
-exit 9223372036854775807
-exit 9223372036854775808
-exit -9223372036854775808
-exit -9223372036854775809
-ls | exit
-ls | exit 42
-exit | ls
-echo | echo
-echo hola | echo que tal
-pwd | echo hola
-env | echo hola
-echo oui | cat -e
-echo oui | echo non | echo hola | grep oui
-echo oui | echo non | echo hola | grep non
-echo oui | echo non | echo hola | grep hola
-echo hola | cat -e | cat -e | cat -e
-cd .. | echo "hola"
-cd / | echo "hola"
-cd .. | pwd
-ifconfig | grep ":"
-ifconfig | grep hola
-whoami | grep $USER
-ls | hola
-ls | ls hola
-ls | ls | hola
-ls | hola | ls
-ls | ls | hola | rev
-ls | ls | echo hola | rev
-ls -la | grep "."
-ls -la | grep "'.'"
-ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls|ls
-echo hola | cat | cat | cat | cat | cat | grep hola
-echo hola | cat
-echo hola| cat
-echo hola |cat
-echo hola|cat
-ech|o hola | cat
-cat Makefile | cat -e | cat -e
-cat Makefile | grep srcs | cat -e
-cat Makefile | grep srcs | grep srcs | cat -e
-cat Makefile | grep pr | head -n 5 | cd file_not_exist
-cat Makefile | grep pr | head -n 5 | hello
-export HOLA=bonjour | cat -e | cat -e
-unset HOLA | cat -e
-export | echo hola
-sleep 3 | sleep 3
-sleep 3 | exit
-exit | sleep 3
-echo hey > hola
 ```
+minishell/
+├──┬ include/
+│  ├── colors.h                         # Header file with colors
+│  └── minishell.h                      # Header file with prototypes and structures
+├──┬ src/
+│  └── minishell.c                      # In the process of refactoring and delivery
+├── Makefile                            # Compilation rules
+└── README.md                           # Project documentation
+```
+
+<br>
+
+</details>
+
+## 💡 Key Learning Outcomes
+
+The minishell project teaches advanced system programming and shell implementation concepts:
+
+- **Process Management**: Understanding fork(), execve(), and wait() system calls
+- **Command Parsing**: Learning to tokenize and parse complex command-line syntax
+- **Signal Handling**: Proper management of SIGINT, SIGQUIT, and EOF signals
+- **File Descriptor Management**: Deep knowledge of redirections and pipes
+- **Environment Management**: Manipulating and maintaining environment variables
+- **Error Handling**: Robust error checking and proper exit codes
+- **Memory Management**: Preventing leaks in a complex interactive program
+
+## ⚙️ Technical Specifications
+
+- **Language**: C (C90 standard)
+- **Compiler**: cc with flags `-Wall -Wextra -Werror`
+- **System Calls**: fork(), execve(), pipe(), dup2(), waitpid(), signal()
+- **External Functions**: readline(), add_history() (GNU Readline library)
+- **Platform**: UNIX-like systems (Linux, macOS)
+- **Memory Management**: Proper cleanup of all allocated memory and file descriptors
+- **Process Handling**: Parent-child process synchronization and signal propagation
+- **Exit Codes**: Proper exit status propagation and `$?` handling
+
+---
+
+> [!NOTE]
+> This project serves as a comprehensive introduction to shell programming and demonstrates proficiency in process management parsing, and inter-process communication concepts.
+
