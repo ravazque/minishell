@@ -32,9 +32,7 @@ make
 
 ## 📚 Documentación
 
-- [Minishell](https://github.com/ravazque/minishell/blob/norminette/docs/info/minishell.md) - Información sobre el **funcionamiento de la Minishell**
-- [Macros](https://github.com/ravazque/minishell/blob/norminette/docs/info/macros.md) - Información sobre **X macros** y su **funcionamineto**
-- [Subject](https://github.com/ravazque/minishell/blob/norminette/docs/subject.pdf)  - Subject del proyecto en **42 Madrid** a 01/11/2025
+- [Minishell](https://github.com/ravazque/minishell/blob/norminette/docs/minishell.md) - Información sobre el **funcionamiento de la Minishell**
 
 ---
 

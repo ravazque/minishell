@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 22:34:53 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/05 22:35:54 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/06 12:43:28 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static char	*handle_expansion(char *res, const char *s, int *i, t_mini *mini)
 	return (res);
 }
 
-char	*process_char_exp(char *res, const char *s, int *i, t_exp_ctx *ctx)
+char	*process_char_exp(char *res, const char *s, int *i, t_normi_ctx *ctx)
 {
 	char	*val;
 

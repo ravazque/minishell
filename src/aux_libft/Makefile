@@ -15,11 +15,11 @@ ARFLAGS     = rcs
 SRCS = $(shell find $(SRC_DIR) -type f -name '*.c')
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-RESET           = \033[0m
-TURQUOISE       = \033[0;36m
-LIGHT_TURQUOISE = \033[1;36m
-LIGHT_GREEN     = \033[1;32m
-LIGHT_RED       = \033[1;91m
+RESET           = \001\033[0m\002
+TURQUOISE       = \001\033[0;36m\002
+LIGHT_TURQUOISE = \001\033[1;36m\002
+LIGHT_GREEN     = \001\033[1;32m\002
+LIGHT_RED       = \001\033[1;91m\002
 
 all: $(NAME)
 

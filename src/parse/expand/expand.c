@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/05 22:35:32 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/06 12:43:28 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ char	*exp_str_part(const char *s, t_mini *mini, int exp)
 {
 	char		*res;
 	int			i;
-	t_exp_ctx	ctx;
+	t_normi_ctx	ctx;
 
 	ctx.mini = mini;
 	ctx.exp = exp;

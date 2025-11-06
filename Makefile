@@ -17,7 +17,7 @@ APP_OBJ_DIR     = $(OBJ_ROOT)/minishell
 LIBFT_OBJ_DIR   = $(OBJ_ROOT)/aux_libft
 
 CC       = cc
-CFLAGS   = -Wall -Wextra -Werror -g3 -I$(INC_DIR) -I$(LIBFT_INC_D)
+CFLAGS   = -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIBFT_INC_D)
 LDFLAGS  = -lreadline
 
 SRCS = $(shell find $(SRC_DIR) -type f -name '*.c' -not -path '$(LIBFT_DIR)/*')

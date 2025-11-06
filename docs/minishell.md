@@ -1,3 +1,4 @@
+
 # Arquitectura de Minishell
 
 ---
@@ -206,7 +207,7 @@ Después del lexer:
 
 ## Sistema de Expansión
 
-### Filosofía de Expansión
+### Lógica de Expansión
 
 El sistema de expansión respeta las reglas de bash:
 - **Comillas simples (`'`):** Bloquean toda expansión
