@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 20:31:32 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 17:21:51 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/06 13:06:23 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,8 @@ void		ft_lstadd_front(t_list **lst, t_list *new);
 // =[ Aux ]================================================================= //
 
 int			ft_strcmp(const char *s1, const char *s2);
-void		print_dblptr(char **dblptr);
-char		**dbpt_push(char ***dst, const char *s);
+void		dblptr_print(char **dblptr);
+char		**dblptr_push(char ***dst, const char *s);
 int			ft_atoi_exit(const char *nptr, bool *max_ex);
 char		**ft_copy_dblptr(char **envp);
 char		*ft_strjoin3(char const *s1, char const *s2, char const *s3);

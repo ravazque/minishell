@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/05 15:46:40 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/06 13:05:46 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static int	process_line(char *line, t_heredoc *ctx)
 	free(line);
 	if (!expanded)
 		return (-1);
-	dbpt_push(ctx->lines, expanded);
+	dblptr_push(ctx->lines, expanded);
 	free(expanded);
 	return (0);
 }

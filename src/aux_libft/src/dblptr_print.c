@@ -6,13 +6,13 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 00:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 17:24:42 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/06 13:06:23 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/libft.h"
 
-void	print_dblptr(char **dblptr)
+void	dblptr_print(char **dblptr)
 {
 	int	i;
 

@@ -34,7 +34,7 @@ make
 
 - [Minishell](https://github.com/ravazque/minishell/blob/norminette/docs/minishell.md) - Información sobre el **funcionamiento de la Minishell**
 
----
+## Test 🧪
 
 ```bash
 
@@ -364,5 +364,3 @@ sleep 3 | exit
 exit | sleep 3
 echo hey > hola
 ```
-
----
