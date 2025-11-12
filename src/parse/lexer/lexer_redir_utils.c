@@ -1,40 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenizer_aux.c                                    :+:      :+:    :+:   */
+/*   lexer_redir_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/24 03:21:54 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/11 14:54:14 by ravazque         ###   ########.fr       */
+/*   Created: 2025/11/11 00:00:00 by ravazque          #+#    #+#             */
+/*   Updated: 2025/11/11 00:00:00 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
 
-int	is_space(int c)
+void	add_redir(t_cmd *cmd, t_redir *new)
 {
-	if (c == ' ' || c == '\t')
-		return (1);
-	return (0);
-}
+	t_redir	*curr;
 
-int	is_assignment(const char *str)
-{
-	int	i;
-
-	if (!str || !str[0])
-		return (0);
-	if (!ft_isalpha(str[0]) && str[0] != '_')
-		return (0);
-	i = 1;
-	while (str[i] && str[i] != '=')
+	if (!cmd->redirs)
 	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
-		i++;
+		cmd->redirs = new;
+		return ;
 	}
-	if (str[i] == '=')
-		return (1);
-	return (0);
+	curr = cmd->redirs;
+	while (curr->next)
+		curr = curr->next;
+	curr->next = new;
 }

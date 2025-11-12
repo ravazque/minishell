@@ -637,14 +637,3 @@ export VAR=value     # VAR se agrega a env permanentemente
                           ↓
 6. Resultado: "/home/ravazque" escrito en /tmp/test.txt
 ```
-
----
-
-## Conclusión
-
-La arquitectura de minishell separa claramente las responsabilidades:
-- **Parsing:** Entender la sintaxis
-- **Expansión:** Resolver variables y wildcards
-- **Ejecución:** Lanzar procesos y gestionar I/O
-
-Esta separación permite manejar casos complejos como pipelines con redirecciones y heredocs de forma modular y mantenible.

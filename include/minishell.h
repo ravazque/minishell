@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 19:08:10 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/06 12:43:28 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/11 14:54:55 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,11 +272,26 @@ char	*process_char_exp(char *res, const char *s, int *i, t_normi_ctx *ctx);
 // =[ Lexer ]======================================================== //
 
 int		lexer(t_mini *mini);
+int		tok_has_any_quotes(t_token *tok);
+int		is_pipe(const char *str, t_token *tok);
+int		is_redir(const char *str, t_token *tok);
+int		validate_redir_target(t_token *tgt_tok);
+t_redir	*mk_redir(const char *tgt, const char *op, t_token *tgt_tok);
+void	add_redir(t_cmd *cmd, t_redir *new);
+int		proc_redirs(t_cmd *cmd);
+t_token	*mk_tok_node(const char *raw, int sq, int dq);
+void	add_tok(t_cmd *cmd, t_token *new);
+char	**toks_to_arr(t_token *toks);
+void	add_cmd_to_lst(t_cmd **lst, t_cmd *new);
+int		count_tokens_until_pipe(t_token *start);
+t_token	*skip_to_next_pipe(t_token *start);
+int		validate_pipe_syntax(t_token *tokens);
+t_cmd	*create_cmd_from_tokens(t_token *start, int count);
+int		split_by_pipes(t_mini *mini);
 
 // =[ Tokenizer ]==================================================== //
 
 int		tokenizer(t_mini **minip);
-int		quotes_balanced(const char *s);
 int		is_space(int c);
 int		is_assignment(const char *str);
 int		process_assignments(t_mini *mini);

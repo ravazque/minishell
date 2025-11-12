@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 19:20:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/05 21:07:41 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/12 15:06:19 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,3 +70,6 @@ char	*prompt(t_mini *mini)
 		return (ft_strdup("$ "));
 	return (final_prompt);
 }
+
+// Return to switch to a simple prompt and test with a tester!
+// return(free(final_prrompt), ft_strdup("minishell $ "))

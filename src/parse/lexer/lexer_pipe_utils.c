@@ -1,66 +1,55 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
+/*   lexer_pipe_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/18 17:06:13 by ravazque          #+#    #+#             */
+/*   Created: 2025/11/11 00:00:00 by ravazque          #+#    #+#             */
 /*   Updated: 2025/11/11 00:00:00 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
 
-static int	finalize_cmd(t_cmd *curr)
-{
-	if (curr->tokn)
-	{
-		curr->tokens = toks_to_arr(curr->tokn);
-		if (!curr->tokens)
-			return (1);
-	}
-	return (0);
-}
-
-static int	finalize_cmds(t_mini *mini)
+void	add_cmd_to_lst(t_cmd **lst, t_cmd *new)
 {
 	t_cmd	*curr;
 
-	curr = mini->cmds;
-	while (curr)
+	if (!*lst)
+		*lst = new;
+	else
 	{
-		if (finalize_cmd(curr))
-			return (1);
-		curr = curr->next;
+		curr = *lst;
+		while (curr->next)
+			curr = curr->next;
+		curr->next = new;
 	}
-	return (0);
 }
 
-static int	process_cmds(t_mini *mini)
+int	count_tokens_until_pipe(t_token *start)
 {
-	t_cmd	*curr;
+	int		count;
+	t_token	*curr;
 
-	curr = mini->cmds;
-	while (curr)
+	count = 0;
+	curr = start;
+	while (curr && !is_pipe(curr->raw, curr))
 	{
-		mark_assignments(curr);
-		if (proc_redirs(curr))
-			return (1);
+		count++;
 		curr = curr->next;
 	}
-	return (0);
+	return (count);
 }
 
-int	lexer(t_mini *mini)
+t_token	*skip_to_next_pipe(t_token *start)
 {
-	if (!mini || !mini->cmds)
-		return (0);
-	if (split_by_pipes(mini))
-		return (1);
-	if (process_cmds(mini))
-		return (1);
-	if (finalize_cmds(mini))
-		return (1);
-	return (0);
+	t_token	*curr;
+
+	curr = start;
+	while (curr && !is_pipe(curr->raw, curr))
+		curr = curr->next;
+	if (curr && is_pipe(curr->raw, curr))
+		return (curr->next);
+	return (NULL);
 }
