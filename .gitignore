@@ -1,8 +1,6 @@
 minishell
 src/aux_libft/libft.a
-.claude
-.vscode
 minishellObjects
-docs/norma42.pdf
 test/
 docs/info
+.vscode

@@ -179,10 +179,110 @@ make re
 ```
 minishell/
 ├──┬ include/
-│  ├── colors.h                         # Header file with colors
-│  └── minishell.h                      # Header file with prototypes and structures
+│  ├── colors.h                         # Color definitions for terminal output
+│  └── minishell.h                      # Main header with prototypes and structures
 ├──┬ src/
-│  └── minishell.c                      # In the process of refactoring and delivery
+│  ├── minishell.c                      # Main entry point
+│  ├──┬ aux_libft/                      # Custom library functions
+│  │  ├── include/                      # Library headers
+│  │  └── src/                          # Library implementations
+│  ├──┬ aux_minishell/                  # Auxiliary minishell functions
+│  │  ├── error.c                       # Error handling
+│  │  ├── init.c                        # Initialization routines
+│  │  ├── loop.c                        # Main shell loop
+│  │  ├── mshlvl.c                      # Shell level management
+│  │  └── underscore.c                  # $_ variable handling
+│  ├──┬ built_ins/                      # Built-in commands
+│  │  ├── builtin_echo.c                # echo command
+│  │  ├── builtin_exit.c                # exit command
+│  │  ├── builtin_pwd.c                 # pwd command
+│  │  ├── builtin_unset.c               # unset command
+│  │  ├── builtins_core.c               # Core built-in dispatcher
+│  │  ├── builtins_utils.c              # Built-in utilities
+│  │  ├──┬ builtin_cd/                  # cd command implementation
+│  │  │  ├── builtin_cd.c               # Main cd logic
+│  │  │  ├── builtin_cd_path.c          # Path resolution
+│  │  │  └── builtin_cd_utils.c         # cd utilities
+│  │  ├──┬ builtin_env/                 # env command implementation
+│  │  │  ├── builtin_env.c              # Main env logic
+│  │  │  ├── builtin_env_cmd.c          # env command parsing
+│  │  │  ├── builtin_env_exec.c         # env execution
+│  │  │  ├── builtin_env_fork.c         # env fork handling
+│  │  │  └── builtins_setenv.c          # Environment variable setter
+│  │  └──┬ builtin_export/              # export command implementation
+│  │     ├── builtin_export.c           # Main export logic
+│  │     ├── builtin_export_print.c     # Print exported variables
+│  │     ├── builtin_export_set.c       # Set exported variables
+│  │     ├── builtin_export_utils.c     # Export utilities
+│  │     └── builtin_export_validate.c  # Export validation
+│  ├──┬ cleaner/                        # Memory cleanup functions
+│  │  ├── cleanup_exec.c                # Execution cleanup
+│  │  ├── cleanup.c                     # General cleanup
+│  │  └── free_structs.c                # Structure deallocation
+│  ├──┬ execution/                      # Command execution
+│  │  ├──┬ executor/                    # Main executor
+│  │  │  ├── exec_child.c               # Child process execution
+│  │  │  ├── exec_env.c                 # Environment for execution
+│  │  │  ├── exec_path.c                # Path resolution
+│  │  │  ├── exec_pipes.c               # Pipe management
+│  │  │  ├── exec_single.c              # Single command execution
+│  │  │  ├── exec_utils.c               # Execution utilities
+│  │  │  ├── exec_wait.c                # Process wait handling
+│  │  │  └── executor.c                 # Main executor logic
+│  │  ├──┬ heredocs/                    # Heredoc implementation
+│  │  │  ├── heredocs_collect.c         # Line collection
+│  │  │  ├── heredocs.c                 # Main heredoc logic
+│  │  │  └── heredocs_handler.c         # Heredoc handlers
+│  │  └──┬ redirs/                      # Redirection handling
+│  │     └── redirections.c             # Redirection setup
+│  ├──┬ fork_bomb/                      # Fork bomb detection
+│  │  ├── fork_bomb.c                   # Fork bomb handler
+│  │  └── fork_bomb_utils.c             # Detection utilities
+│  ├──┬ parse/                          # Input parsing
+│  │  ├── parse.c                       # Main parser
+│  │  ├── parse_assign.c                # Assignment parsing
+│  │  ├── parse_utils.c                 # Parser utilities
+│  │  ├──┬ expand/                      # Variable expansion
+│  │  │  ├── expand.c                   # Main expander
+│  │  │  ├── expand_extract.c           # Variable extraction
+│  │  │  ├── expand_redirs.c            # Redirection expansion
+│  │  │  ├── expand_str.c               # String expansion
+│  │  │  ├── expand_tilde.c             # Tilde expansion
+│  │  │  ├── expand_utils.c             # Expansion utilities
+│  │  │  ├── expand_vars.c              # Variable expansion
+│  │  │  └──┬ expand_split/             # Word splitting
+│  │  │     ├── expand_split.c          # Main word splitter
+│  │  │     ├── expand_split_add.c      # Add split tokens
+│  │  │     ├── expand_split_count.c    # Count split words
+│  │  │     ├── expand_split_helpers.c  # Split helpers
+│  │  │     ├── expand_split_utils.c    # Split utilities
+│  │  │     └── expand_split_word.c     # Word extraction
+│  │  ├──┬ lexer/                       # Lexical analysis
+│  │  │  ├── lexer.c                    # Main lexer
+│  │  │  ├── lexer_classify.c           # Token classification
+│  │  │  ├── lexer_cmd_create.c         # Command creation
+│  │  │  ├── lexer_pipe_split.c         # Pipe splitting
+│  │  │  ├── lexer_pipe_valid.c         # Pipe validation
+│  │  │  ├── lexer_quotes.c             # Quote handling
+│  │  │  ├── lexer_redir.c              # Redirection tokens
+│  │  │  ├── lexer_redir_proc.c         # Redirection processing
+│  │  │  ├── lexer_token.c              # Token creation
+│  │  │  ├── lexer_token_arr.c          # Token array conversion
+│  │  │  └── lexer_utils.c              # Lexer utilities
+│  │  └──┬ tokenizer/                   # Tokenization
+│  │     ├── tokenizer.c                # Main tokenizer
+│  │     ├── tokenizer_handlers.c       # Character handlers
+│  │     ├── tokenizer_helpers.c        # Helper functions
+│  │     ├── tokenizer_parts.c          # Token parts handling
+│  │     └── tokenizer_utils.c          # Tokenizer utilities
+│  ├──┬ prompt/                         # Prompt generation
+│  │  ├── prompt.c                      # Main prompt builder
+│  │  ├── prompt_git.c                  # Git branch detection
+│  │  ├── prompt_path.c                 # Path formatting
+│  │  └── prompt_utils.c                # Prompt utilities
+│  └──┬ signals/                        # Signal handling
+│     ├── signals.c                     # Main signal setup
+│     └── signal_handlers.c             # Signal handlers
 ├── Makefile                            # Compilation rules
 └── README.md                           # Project documentation
 ```

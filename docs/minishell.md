@@ -121,7 +121,14 @@ typedef struct s_heredoc_data
 
 ## Pipeline de Ejecución
 
-### 1. Loop Principal
+### 1. Loop Principal (src/aux_minishell/)
+
+**Archivos principales:**
+- `loop.c` - Bucle principal del shell
+- `init.c` - Inicialización de estructuras
+- `mshlvl.c` - Gestión de SHLVL
+- `underscore.c` - Gestión de variable $_
+- `error.c` - Manejo de errores
 
 ```
 loop (aux_minishell/loop.c)
@@ -129,7 +136,12 @@ loop (aux_minishell/loop.c)
 readline → ft_signal → parse → heredocs → executor
 ```
 
-### 2. Fases de Procesamiento
+### 2. Fases de Procesamiento (src/parse/)
+
+**Archivos de control:**
+- `parse.c` - Orquestador de las fases de parsing
+- `parse_assign.c` - Procesamiento de assignments (VAR=value)
+- `parse_utils.c` - Utilidades de parsing
 
 ```
 input → tokenizer → lexer → assignments → expander → heredocs → executor
@@ -140,9 +152,16 @@ input → tokenizer → lexer → assignments → expander → heredocs → exec
 
 ## Sistema de Parsing
 
-### Tokenizer (parse/tokenizer/tokenizer.c)
+### Tokenizer (parse/tokenizer/)
 
 **Función:** Convierte el input en una lista de tokens preservando la información de comillas.
+
+**Archivos principales:**
+- `tokenizer.c` - Lógica principal del tokenizador
+- `tokenizer_handlers.c` - Manejadores para diferentes tipos de caracteres
+- `tokenizer_helpers.c` - Funciones auxiliares
+- `tokenizer_parts.c` - Creación y gestión de `t_token_part`
+- `tokenizer_utils.c` - Utilidades varias
 
 **Algoritmo:**
 1. Recorre el input carácter por carácter
@@ -174,9 +193,22 @@ Tokens:
 - Las comillas se eliminan pero su presencia se registra en `is_squote`/`is_dquote`
 - Los espacios dentro de comillas se preservan
 
-### Lexer (parse/lexer/lexer.c)
+### Lexer (parse/lexer/)
 
 **Función:** Agrupa tokens en comandos y extrae redirecciones.
+
+**Archivos principales:**
+- `lexer.c` - Lógica principal del lexer
+- `lexer_classify.c` - Clasificación de tokens (pipes, redirecciones)
+- `lexer_cmd_create.c` - Creación de estructuras `t_cmd`
+- `lexer_pipe_split.c` - División de comandos por pipes
+- `lexer_pipe_valid.c` - Validación de sintaxis de pipes
+- `lexer_quotes.c` - Manejo de comillas
+- `lexer_redir.c` - Creación de redirecciones
+- `lexer_redir_proc.c` - Procesamiento de redirecciones
+- `lexer_token.c` - Creación y manipulación de tokens
+- `lexer_token_arr.c` - Conversión de tokens a arrays
+- `lexer_utils.c` - Utilidades del lexer
 
 **Proceso:**
 1. **Validación de sintaxis de pipes:** Detecta pipes al inicio/final o consecutivos
@@ -214,7 +246,17 @@ El sistema de expansión respeta las reglas de bash:
 - **Comillas dobles (`"`):** Permiten expansión de variables pero bloquean word splitting
 - **Sin comillas:** Permiten expansión de variables y word splitting
 
-### expand_str_part (expand_process.c)
+### Sistema de Expansión (parse/expand/)
+
+**Archivos principales:**
+- `expand.c` - Orquestador principal de expansiones
+- `expand_str.c` - Expansión de strings con contexto de comillas
+- `expand_vars.c` - Expansión de variables ($VAR, $?, $$, etc.)
+- `expand_extract.c` - Extracción de nombres de variables
+- `expand_tilde.c` - Expansión de tilde (~)
+- `expand_redirs.c` - Expansión en redirecciones
+- `expand_utils.c` - Utilidades de expansión
+- `expand_split/` - Word splitting después de expansión
 
 **Función:** Expande un fragmento de string respetando el contexto de comillas.
 
@@ -269,19 +311,28 @@ Token: parts = [
 Result: "/home/usuario"
 ```
 
-### expand_var (expand_vars.c)
+### expand_var (parse/expand/expand_vars.c)
 
 **Variables especiales:**
 - `$?` → Exit status del último comando
-- `$$` → PID del shell (hardcoded a `80085` por subject)
+- `$$` → PID del shell (`80085`)
 - `$0` → Nombre del shell
+- `$_` → Último argumento del comando anterior
 
 **Orden de búsqueda:**
 1. Variables especiales
 2. Variables de entorno (`env`)
 3. Variables locales (`local_vars`)
 
-### Word Splitting (expand_split/)
+### Word Splitting (parse/expand/expand_split/)
+
+**Archivos:**
+- `expand_split.c` - Lógica principal de word splitting
+- `expand_split_add.c` - Añade tokens split a la lista
+- `expand_split_count.c` - Cuenta palabras para splitting
+- `expand_split_helpers.c` - Funciones helper
+- `expand_split_utils.c` - Utilidades
+- `expand_split_word.c` - Extracción de palabras individuales
 
 **Cuándo ocurre:**
 - Solo en tokens sin comillas
@@ -306,10 +357,20 @@ Con word splitting (sin comillas):
 
 ## Ejecutor
 
-### Arquitectura del Ejecutor
+### Arquitectura del Ejecutor (execution/executor/)
+
+**Archivos principales:**
+- `executor.c` - Orquestador principal de ejecución
+- `exec_single.c` - Ejecución de comando único
+- `exec_child.c` - Proceso hijo en pipelines
+- `exec_pipes.c` - Gestión de pipes
+- `exec_wait.c` - Espera de procesos
+- `exec_path.c` - Resolución de rutas de comandos
+- `exec_env.c` - Construcción del entorno para execve
+- `exec_utils.c` - Utilidades de ejecución
 
 ```
-executor (execution/executor/executor_pipes.c)
+executor (execution/executor/executor.c)
   │
   ├─ Comando único → execute_single_command
   │   ├─ Builtin → Ejecuta directamente
@@ -353,7 +414,7 @@ echo a | cd /   # cd ejecuta en hijo → no afecta al shell
 pwd             # Sigue en el directorio original
 ```
 
-### Construcción del Entorno
+### Construcción del Entorno (execution/executor/exec_env.c)
 
 ```c
 char **build_exec_env(t_mini *mini)
@@ -362,6 +423,119 @@ char **build_exec_env(t_mini *mini)
     // Las variables locales se heredan a comandos externos
 }
 ```
+
+---
+
+## Built-in Commands (src/built_ins/)
+
+### Estructura de Built-ins
+
+**Archivos principales:**
+- `builtins_core.c` - Dispatcher y verificación de built-ins
+- `builtins_utils.c` - Funciones compartidas (getenv, setenv, etc.)
+- `builtin_echo.c` - Implementación de echo
+- `builtin_pwd.c` - Implementación de pwd
+- `builtin_exit.c` - Implementación de exit
+- `builtin_unset.c` - Implementación de unset
+
+### Built-in: cd (src/built_ins/builtin_cd/)
+
+**Archivos:**
+- `builtin_cd.c` - Lógica principal de cd
+- `builtin_cd_path.c` - Resolución de rutas (relativos, absolutos, ..)
+- `builtin_cd_utils.c` - Actualización de PWD/OLDPWD, caché de HOME
+
+**Características especiales:**
+- Cache del directorio HOME para optimización
+- Validación de directorios inexistentes
+- Actualización automática de PWD y OLDPWD
+- Soporte para `cd -` (OLDPWD)
+
+### Built-in: env (src/built_ins/builtin_env/)
+
+**Archivos:**
+- `builtin_env.c` - Lógica principal
+- `builtin_env_cmd.c` - Parsing de argumentos
+- `builtin_env_exec.c` - Ejecución de comandos con env modificado
+- `builtin_env_fork.c` - Fork para env con comando
+- `builtins_setenv.c` - Seteo de variables de entorno
+
+**Comportamiento:**
+- Sin argumentos: imprime todas las variables de entorno
+- Con comando: ejecuta comando con entorno modificado
+- Soporta assignments temporales (`env VAR=val cmd`)
+
+### Built-in: export (src/built_ins/builtin_export/)
+
+**Archivos:**
+- `builtin_export.c` - Lógica principal
+- `builtin_export_print.c` - Impresión de variables exportadas
+- `builtin_export_set.c` - Seteo de variables
+- `builtin_export_validate.c` - Validación de nombres de variables
+- `builtin_export_utils.c` - Utilidades (sorting, búsqueda)
+
+**Características:**
+- Sin argumentos: imprime variables exportadas ordenadas
+- Validación de sintaxis (`VAR=value`)
+- Distinción entre variables de entorno y locales
+
+---
+
+## Sistema de Prompt (src/prompt/)
+
+### Generación de Prompt
+
+**Archivos:**
+- `prompt.c` - Constructor principal del prompt
+- `prompt_git.c` - Detección de branch de git
+- `prompt_path.c` - Formateo de ruta (home → ~)
+- `prompt_utils.c` - Utilidades (hostname, username, etc.)
+
+### Formato del Prompt
+
+```
+user@hostname:path (git_branch) $
+```
+
+**Componentes:**
+1. **Usuario y Hostname:** Extraídos de variables de entorno
+2. **Path:** Directorio actual (con ~ para HOME)
+3. **Git Branch:** Detectado automáticamente si estás en un repo
+4. **Símbolo:** `$` para usuarios normales
+
+**Ejemplo:**
+```
+ravazque@laptop:~/minishell (main) $
+```
+
+### Detección de Git
+
+El prompt detecta automáticamente si estás en un repositorio git:
+- Lee `.git/HEAD` para obtener el branch actual
+- Formatea el branch entre paréntesis
+- Solo se muestra si existe un repositorio válido
+
+---
+
+## Sistema de Limpieza (src/cleaner/)
+
+**Archivos:**
+- `cleanup.c` - Limpieza general del shell
+- `cleanup_exec.c` - Limpieza de estructuras de ejecución
+- `free_structs.c` - Liberación de estructuras individuales
+
+**Funciones principales:**
+- `cleanup_mini()` - Libera toda la estructura `t_mini`
+- `free_cmds()` - Libera lista de comandos
+- `free_redirs()` - Libera redirecciones
+- `free_token_list()` - Libera tokens
+- `free_token_parts()` - Libera partes de tokens
+- `cleanup_exec()` - Libera contexto de ejecución
+
+**Gestión de memoria:**
+- Todas las estructuras tienen su función de limpieza específica
+- Limpieza en cascada (liberar `t_cmd` libera sus tokens y redirecciones)
+- Cierre automático de file descriptors
 
 ---
 
@@ -445,7 +619,13 @@ volatile sig_atomic_t g_signal_received = 0;
 - `volatile`: Asegura que el compilador siempre lea de memoria (visibilidad)
 - `sig_atomic_t`: Asegura que las operaciones sean atómicas (integridad)
 
-### setup_interactive_signals (signals/signals.c)
+### Sistema de Señales (src/signals/)
+
+**Archivos:**
+- `signals.c` - Configuración de señales para diferentes contextos
+- `signal_handlers.c` - Manejadores de señales (SIGINT, SIGQUIT, etc.)
+
+**setup_interactive_signals:**
 
 ```c
 void setup_interactive_signals(void)
@@ -495,7 +675,12 @@ Esto permite que `Ctrl+C` termine comandos externos normalmente.
 
 ## Heredocs y Redirecciones
 
-### Heredocs (execution/heredocs/heredoc.c)
+### Heredocs (execution/heredocs/)
+
+**Archivos:**
+- `heredocs.c` - Procesamiento principal de heredocs
+- `heredocs_collect.c` - Recolección de líneas del heredoc
+- `heredocs_handler.c` - Manejo de señales y errores en heredocs
 
 **Procesamiento de heredocs:**
 
@@ -554,7 +739,10 @@ EOF
 - `collect_lines` NO expande variables
 - Resultado: `$USER will not expand` (literal)
 
-### Redirecciones (execution/redirs/redirs.c)
+### Redirecciones (execution/redirs/)
+
+**Archivos:**
+- `redirections.c` - Aplicación de redirecciones (dup2, open, etc.)
 
 **Orden de aplicación:**
 1. Redirecciones de entrada (`<`, `<<`)
@@ -588,8 +776,8 @@ export VAR=value     # VAR se agrega a env permanentemente
 
 **Implementación:**
 - Assignments detectadas en lexer (`is_assignment=1`)
-- En `process_assignments`: se agregan a `local_vars`
-- En `build_exec_env`: se combinan `env` + `local_vars`
+- En `parse/parse_assign.c`: se procesan y agregan a `local_vars`
+- En `execution/executor/exec_env.c`: se combinan `env` + `local_vars`
 - `local_vars` se limpian al salir del comando
 
 ### 3. Exit Status
@@ -600,7 +788,11 @@ export VAR=value     # VAR se agrega a env permanentemente
 - Señal: `exit_sts = 128 + señal` (ej: Ctrl+C → 130)
 - Pipeline: `exit_sts = exit del último comando`
 
-### 4. Fork Bomb Detection
+### 4. Fork Bomb Detection (src/fork_bomb/)
+
+**Archivos:**
+- `fork_bomb.c` - Lógica de detección y manejo de fork bombs
+- `fork_bomb_utils.c` - Utilidades y validación de patrones
 
 **Implementación:**
 - Detecta patterns como `:() { : | : & }; :`
@@ -612,6 +804,29 @@ export VAR=value     # VAR se agrega a env permanentemente
 **Implementación:**
 - Invalida movimientos como `cd ..`
 - Permite moverse a una ruta valida, absoluta o relativa
+
+---
+
+## Librería Auxiliar (src/aux_libft/)
+
+### Estructura
+
+**Directorios:**
+- `include/libft.h` - Headers de la librería
+- `src/` - Implementaciones de funciones
+
+**Propósito:**
+Librería personalizada que proporciona funciones auxiliares para el proyecto:
+- Manipulación de strings
+- Conversión de tipos
+- Gestión de memoria
+- Funciones de escritura
+- Y otras utilidades estilo libc
+
+**Integración:**
+- Compilada como parte del proyecto
+- Incluida en el header principal de minishell
+- Proporciona funcionalidades base para todo el shell
 
 ---
 
