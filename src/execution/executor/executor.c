@@ -60,6 +60,17 @@ static int	check_heredocs(t_mini *mini)
 	return (0);
 }
 
+static int	is_exit_builtin(t_mini *mini, int n_cmds)
+{
+	if (n_cmds != 1)
+		return (0);
+	if (!mini->cmds->tokens || !mini->cmds->tokens[0])
+		return (0);
+	if (ft_strcmp(mini->cmds->tokens[0], "exit") == 0)
+		return (1);
+	return (0);
+}
+
 void	executor(t_mini *mini)
 {
 	t_exec	exec;
@@ -70,6 +81,11 @@ void	executor(t_mini *mini)
 	n_cmds = ft_lstsize(mini->cmds);
 	if (check_heredocs(mini) || check_empty_command(mini))
 		return ;
+	if (is_exit_builtin(mini, n_cmds))
+	{
+		execute_single_command(mini, mini->cmds);
+		return ;
+	}
 	if (init_exec(&exec, n_cmds))
 	{
 		ft_putstr_fd("minishell: error: executor init failed\n",

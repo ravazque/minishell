@@ -14,7 +14,7 @@
 
 static int	check_multiple_args(t_mini *mini)
 {
-	if (mini->cmds->tokens[2] && mini->cmds->tokens[1])
+	if (mini->cmds->tokens[1] && mini->cmds->tokens[2])
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 		mini->exit_sts = 2;

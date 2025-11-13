@@ -18,17 +18,25 @@ static void	execute_single_child(t_mini *mini, t_cmd *cmd)
 
 	setup_execution_signals();
 	if (redirections(cmd))
+	{
+		cleanup_child_fds();
 		exit(1);
+	}
 	if (is_builtin_cmd(cmd->tokens[0]))
 	{
 		built_ins(mini, cmd);
+		cleanup_child_fds();
 		exit(mini->exit_sts);
 	}
 	exec_env = build_exec_env(mini);
 	if (!exec_env)
+	{
+		cleanup_child_fds();
 		exit(1);
+	}
 	ft_execve(cmd->tokens, exec_env, &exec_env, mini->cd_home);
 	free_dblptr(exec_env);
+	cleanup_child_fds();
 }
 
 static void	wait_single_child(pid_t pid, t_mini *mini)

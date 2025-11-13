@@ -222,6 +222,7 @@ int						ft_lstsize(t_cmd *lst);
 int						has_redirs(t_cmd *cmd);
 int						count_args(char **tokens);
 int						is_empty_cmd(t_cmd *cmd);
+void					cleanup_child_fds(void);
 
 // =[ Redirections ]======================================================== //
 

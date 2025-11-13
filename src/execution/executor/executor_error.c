@@ -59,14 +59,17 @@ static void	handle_path_error(char *cmd)
 		if (is_directory(cmd))
 		{
 			print_exec_error(cmd, 126, 1);
+			cleanup_child_fds();
 			exit(126);
 		}
 		print_exec_error(cmd, 126, 1);
+		cleanup_child_fds();
 		exit(126);
 	}
 	else
 	{
 		print_exec_error(cmd, 127, 1);
+		cleanup_child_fds();
 		exit(127);
 	}
 }
@@ -95,6 +98,7 @@ void	handle_no_path(char **argv, char *cd_home)
 	else
 	{
 		print_exec_error(argv[0], 127, 0);
+		cleanup_child_fds();
 		exit(127);
 	}
 }

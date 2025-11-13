@@ -17,11 +17,13 @@ static void	check_empty_cmd(char **argv)
 	if (!argv || !argv[0])
 	{
 		ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
+		cleanup_child_fds();
 		exit(127);
 	}
 	if (argv[0][0] == '\0')
 	{
 		ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
+		cleanup_child_fds();
 		exit(127);
 	}
 }
@@ -43,6 +45,7 @@ void	ft_execve(char **argv, char **envp, char ***env_ptr, char *cd_home)
 			error_code = 126;
 		print_exec_error(path, error_code, 1);
 		free(path);
+		cleanup_child_fds();
 		exit(error_code);
 	}
 }
@@ -56,9 +59,15 @@ void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 	setup_execution_signals();
 	setup_pipe_fds(exec, idx);
 	if (redirections(cmd))
+	{
+		cleanup_child_fds();
 		exit(1);
+	}
 	if (!cmd->tokens || !cmd->tokens[0])
+	{
+		cleanup_child_fds();
 		exit(0);
+	}
 	builtin_type = is_builtin_cmd(cmd->tokens[0]);
 	if (builtin_type)
 	{
@@ -66,11 +75,16 @@ void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 		mini->cmds = cmd;
 		built_ins(mini, cmd);
 		mini->cmds = original_cmds;
+		cleanup_child_fds();
 		exit(mini->exit_sts);
 	}
 	exec_env = build_exec_env(mini);
 	if (!exec_env)
+	{
+		cleanup_child_fds();
 		exit(1);
+	}
 	ft_execve(cmd->tokens, exec_env, &exec_env, mini->cd_home);
 	free_dblptr(exec_env);
+	cleanup_child_fds();
 }

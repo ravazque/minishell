@@ -6,11 +6,17 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/03 21:01:53 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/13 02:24:46 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
+
+void	cleanup_child_fds(void)
+{
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+}
 
 int	has_redirs(t_cmd *cmd)
 {
@@ -42,28 +48,67 @@ int	is_empty_cmd(t_cmd *cmd)
 	return (0);
 }
 
+static void puterr(char *target)
+{
+	
+}
+
+static int	validate_redir_files(t_redir *redirs)
+{
+	t_redir	*redir;
+	int		fd;
+
+	redir = redirs;
+	while (redir)
+	{
+		if (redir->in_redir == 1)
+		{
+			fd = open(redir->target, O_RDONLY);
+			if (fd == -1)
+			{
+				ft_putstr_fd("minishell: ", STDERR_FILENO);
+				ft_putstr_fd(redir->target, STDERR_FILENO);
+				ft_putstr_fd(": ", STDERR_FILENO);
+				ft_putstr_fd(strerror(errno), STDERR_FILENO);
+				ft_putstr_fd("\n", STDERR_FILENO);
+				return (1);
+			}
+			close(fd);
+		}
+		else if (redir->out_redir == 1)
+		{
+			fd = open(redir->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (fd == -1)
+				return (ft_putstr_fd("minishell: ", STDERR_FILENO),
+					ft_putstr_fd(redir->target, STDERR_FILENO),
+					ft_putstr_fd(": ", STDERR_FILENO),
+					ft_putstr_fd(strerror(errno), STDERR_FILENO),
+					ft_putstr_fd("\n", STDERR_FILENO), 1);
+			close(fd);
+		}
+		else if (redir->out_redir == 2)
+		{
+			fd = open(redir->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			if (fd == -1)
+				return (ft_putstr_fd("minishell: ", STDERR_FILENO),
+					ft_putstr_fd(redir->target, STDERR_FILENO),
+					ft_putstr_fd(": ", STDERR_FILENO),
+					ft_putstr_fd(strerror(errno), STDERR_FILENO),
+					ft_putstr_fd("\n", STDERR_FILENO), 1);
+			close(fd);
+		}
+		redir = redir->next;
+	}
+	return (0);
+}
+
 static int	handle_only_redirections(t_mini *mini)
 {
-	int	saved_stdin;
-	int	saved_stdout;
-
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
-	if (saved_stdin == -1 || saved_stdout == -1)
-		return (1);
-	if (redirections(mini->cmds))
+	if (validate_redir_files(mini->cmds->redirs))
 	{
 		mini->exit_sts = 1;
-		dup2(saved_stdin, STDIN_FILENO);
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdin);
-		close(saved_stdout);
 		return (1);
 	}
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
 	mini->exit_sts = 0;
 	return (0);
 }

@@ -41,6 +41,9 @@ static int	handle_heredoc_redir(t_redir *redir)
 		return (1);
 	if (dup2(redir->fd, STDIN_FILENO) == -1)
 		return (1);
+	close(redir->fd);
+	redir->fd = -1;
+	redir->hd_data->pipe_fd[0] = -1;
 	return (0);
 }
 
