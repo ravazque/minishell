@@ -97,7 +97,8 @@ SRCS = $(SRC_DIR)/minishell.c \
 	   $(SRC_DIR)/signals/signals.c \
 	   $(SRC_DIR)/signals/signals_utils.c
 
-OBJS = $(SRCS:.c=.o)
+OBJ_DIR = minishellObjects
+OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIBFT_INC)
@@ -113,37 +114,28 @@ TOTAL_SRCS = $(words $(SRCS))
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
+	@echo -e "$(CYAN)Compilando minishell$(RESET)"
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $@
-	@echo "$(CYAN)Minishell ready!$(RESET)"
+	@echo -e "$(GREEN)Minishell ready!$(RESET)"
 
 $(LIBFT):
 	@$(MAKE) -C $(LIBFT_DIR)
 
-%.o: %.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
-	@current=$$(ls $(SRC_DIR)/**/*.o 2>/dev/null | wc -l); \
-	total=$(TOTAL_SRCS); \
-	width=60; \
-	filled=$$((current * width / total)); \
-	empty=$$((width - filled)); \
-	printf "\rCompiling: [$(GREEN)"; \
-	printf "%*s" $$filled | tr ' ' '#'; \
-	printf "$(RESET)"; \
-	printf "%*s" $$empty | tr ' ' '.'; \
-	printf "] $$current/$$total"; \
-	if [ $$current -ge $$total ]; then printf " ✓\n"; fi
 
 clean:
-	@echo "$(RED)Running object cleanup...$(RESET)"
-	@rm -f $(OBJS)
+	@echo -e "$(RED)Running object cleanup...$(RESET)"
+	@rm -rf $(OBJ_DIR)
 	@$(MAKE) -C $(LIBFT_DIR) clean
-	@echo "$(CYAN)Cleaning of objects completed!$(RESET)"
+	@echo -e "$(CYAN)Cleaning of objects completed!$(RESET)"
 
 fclean: clean
-	@echo "$(RED)Running a full cleanup...$(RESET)"
+	@echo -e "$(RED)Running a full cleanup...$(RESET)"
 	@rm -f $(NAME)
 	@$(MAKE) -C $(LIBFT_DIR) fclean
-	@echo "$(CYAN)Full cleaning finished!$(RESET)"
+	@echo -e "$(CYAN)Full cleaning finished!$(RESET)"
 
 re: fclean all
 
