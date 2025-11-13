@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:02:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/04 13:48:07 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/13 14:06:29 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,18 @@ void	ft_execve(char **argv, char **envp, char ***env_ptr, char *cd_home)
 	}
 }
 
+static void	child_fail(int out)
+{
+	cleanup_child_fds();
+	exit(out);
+}
+
+static void	check_exec_env(char **exec_env)
+{
+	if (!exec_env)
+		child_fail(1);
+}
+
 void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 {
 	int		builtin_type;
@@ -59,15 +71,9 @@ void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 	setup_execution_signals();
 	setup_pipe_fds(exec, idx);
 	if (redirections(cmd))
-	{
-		cleanup_child_fds();
-		exit(1);
-	}
+		child_fail(1);
 	if (!cmd->tokens || !cmd->tokens[0])
-	{
-		cleanup_child_fds();
-		exit(0);
-	}
+		child_fail(0);
 	builtin_type = is_builtin_cmd(cmd->tokens[0]);
 	if (builtin_type)
 	{
@@ -79,11 +85,7 @@ void	execute_child_process(t_mini *mini, t_cmd *cmd, t_exec *exec, int idx)
 		exit(mini->exit_sts);
 	}
 	exec_env = build_exec_env(mini);
-	if (!exec_env)
-	{
-		cleanup_child_fds();
-		exit(1);
-	}
+	check_exec_env(exec_env);
 	ft_execve(cmd->tokens, exec_env, &exec_env, mini->cd_home);
 	free_dblptr(exec_env);
 	cleanup_child_fds();

@@ -1,5 +1,7 @@
 minishell
 src/aux_libft/libft.a
 minishellObjects
+test/
+docs/info
 .vscode
 supp.supp
