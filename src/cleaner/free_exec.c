@@ -1,16 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_exc.c                                         :+:      :+:    :+:   */
+/*   free_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 15:22:09 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/23 15:22:24 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/05 15:32:26 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/minishell.h"
+
+int	needs_free(char *arg)
+{
+	if (!arg)
+		return (0);
+	if (!ft_strcmp(arg, ".."))
+		return (1);
+	return (0);
+}
 
 void	cleanup_exec(t_exec *exec)
 {

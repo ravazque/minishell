@@ -1,98 +1,148 @@
 
-SHELL = /bin/bash
 MAKEFLAGS += --no-print-directory
 
-NAME        = minishell
+NAME = minishell
 
-SRC_DIR     = src
-INC_DIR     = include
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -I$(INC_DIR) -I$(LIBFT_INC)
+LDFLAGS = -lreadline
 
-LIBFT_DIR   = src/aux_libft
-LIBFT_SRC_D = $(LIBFT_DIR)/src
-LIBFT_INC_D = $(LIBFT_DIR)/include
-LIBFT_A     = $(LIBFT_DIR)/libft.a
+SRC_DIR = src
+INC_DIR = include
 
-OBJ_ROOT        = minishellObjects
-APP_OBJ_DIR     = $(OBJ_ROOT)/minishell
-LIBFT_OBJ_DIR   = $(OBJ_ROOT)/aux_libft
+LIBFT_DIR = src/aux_libft
+LIBFT_INC = $(LIBFT_DIR)/include
+LIBFT = $(LIBFT_DIR)/libft.a
 
-CC       = cc
-CFLAGS   = -Wall -Wextra -Werror -g3 -I$(INC_DIR) -I$(LIBFT_INC_D)
-LDFLAGS  = -lreadline
-AR       = ar
-ARFLAGS  = rcs
+RESET = \001\033[0m\002
+GREEN = \001\033[1;32m\002
+CYAN = \001\033[1;36m\002
+COMPILE = \001\033[1;33m\002
+RED = \001\033[1;91m\002
 
-SRCS = $(shell find $(SRC_DIR) -type f -name '*.c' -not -path '$(LIBFT_DIR)/*')
-OBJS = $(SRCS:$(SRC_DIR)/%.c=$(APP_OBJ_DIR)/%.o)
+SRCS = $(SRC_DIR)/minishell.c \
+	   $(SRC_DIR)/aux_minishell/error.c \
+	   $(SRC_DIR)/aux_minishell/init.c \
+	   $(SRC_DIR)/aux_minishell/loop.c \
+	   $(SRC_DIR)/aux_minishell/mshlvl.c \
+	   $(SRC_DIR)/aux_minishell/underscore.c \
+	   $(SRC_DIR)/built_ins/builtin_cd/builtin_cd.c \
+	   $(SRC_DIR)/built_ins/builtin_cd/builtin_cd_path.c \
+	   $(SRC_DIR)/built_ins/builtin_cd/builtin_cd_utils.c \
+	   $(SRC_DIR)/built_ins/builtin_echo.c \
+	   $(SRC_DIR)/built_ins/builtin_env/builtin_env.c \
+	   $(SRC_DIR)/built_ins/builtin_env/builtin_env_cmd.c \
+	   $(SRC_DIR)/built_ins/builtin_env/builtin_env_exec.c \
+	   $(SRC_DIR)/built_ins/builtin_env/builtin_env_fork.c \
+	   $(SRC_DIR)/built_ins/builtin_env/builtins_setenv.c \
+	   $(SRC_DIR)/built_ins/builtin_exit.c \
+	   $(SRC_DIR)/built_ins/builtin_export/builtin_export.c \
+	   $(SRC_DIR)/built_ins/builtin_export/builtin_export_print.c \
+	   $(SRC_DIR)/built_ins/builtin_export/builtin_export_set.c \
+	   $(SRC_DIR)/built_ins/builtin_export/builtin_export_utils.c \
+	   $(SRC_DIR)/built_ins/builtin_export/builtin_export_validate.c \
+	   $(SRC_DIR)/built_ins/builtin_pwd.c \
+	   $(SRC_DIR)/built_ins/builtins_core.c \
+	   $(SRC_DIR)/built_ins/builtins_utils.c \
+	   $(SRC_DIR)/built_ins/builtin_unset.c \
+	   $(SRC_DIR)/cleaner/free_cmds.c \
+	   $(SRC_DIR)/cleaner/free_exec.c \
+	   $(SRC_DIR)/cleaner/free_mini.c \
+	   $(SRC_DIR)/cleaner/free_redirs.c \
+	   $(SRC_DIR)/execution/executor/executor.c \
+	   $(SRC_DIR)/execution/executor/executor_empty.c \
+	   $(SRC_DIR)/execution/executor/executor_env.c \
+	   $(SRC_DIR)/execution/executor/executor_error.c \
+	   $(SRC_DIR)/execution/executor/executor_exec.c \
+	   $(SRC_DIR)/execution/executor/executor_path.c \
+	   $(SRC_DIR)/execution/executor/executor_pipes.c \
+	   $(SRC_DIR)/execution/executor/executor_single.c \
+	   $(SRC_DIR)/execution/executor/executor_utils.c \
+	   $(SRC_DIR)/execution/executor/executor_wait.c \
+	   $(SRC_DIR)/execution/heredocs/heredoc.c \
+	   $(SRC_DIR)/execution/heredocs/heredoc_collect.c \
+	   $(SRC_DIR)/execution/heredocs/heredoc_line.c \
+	   $(SRC_DIR)/execution/redirs/redirs.c \
+	   $(SRC_DIR)/fork_bomb/fork_bomb.c \
+	   $(SRC_DIR)/fork_bomb/fork_bomb_detector.c \
+	   $(SRC_DIR)/fork_bomb/fork_bomb_messages.c \
+	   $(SRC_DIR)/parse/expand/expand.c \
+	   $(SRC_DIR)/parse/expand/expand_extract.c \
+	   $(SRC_DIR)/parse/expand/expand_loop.c \
+	   $(SRC_DIR)/parse/expand/expand_process.c \
+	   $(SRC_DIR)/parse/expand/expand_redirs.c \
+	   $(SRC_DIR)/parse/expand/expand_split/expand_split_add.c \
+	   $(SRC_DIR)/parse/expand/expand_split/expand_split.c \
+	   $(SRC_DIR)/parse/expand/expand_split/expand_split_count.c \
+	   $(SRC_DIR)/parse/expand/expand_split/expand_split_helpers.c \
+	   $(SRC_DIR)/parse/expand/expand_split/expand_split_utils.c \
+	   $(SRC_DIR)/parse/expand/expand_split/expand_split_word.c \
+	   $(SRC_DIR)/parse/expand/expand_str.c \
+	   $(SRC_DIR)/parse/expand/expand_tilde.c \
+	   $(SRC_DIR)/parse/expand/expand_utils.c \
+	   $(SRC_DIR)/parse/expand/expand_vars.c \
+	   $(SRC_DIR)/parse/lexer/lexer.c \
+	   $(SRC_DIR)/parse/lexer/lexer_classify.c \
+	   $(SRC_DIR)/parse/lexer/lexer_cmd_create.c \
+	   $(SRC_DIR)/parse/lexer/lexer_pipe_split.c \
+	   $(SRC_DIR)/parse/lexer/lexer_pipe_valid.c \
+	   $(SRC_DIR)/parse/lexer/lexer_quotes.c \
+	   $(SRC_DIR)/parse/lexer/lexer_redir.c \
+	   $(SRC_DIR)/parse/lexer/lexer_redir_proc.c \
+	   $(SRC_DIR)/parse/lexer/lexer_token_arr.c \
+	   $(SRC_DIR)/parse/lexer/lexer_token.c \
+	   $(SRC_DIR)/parse/lexer/lexer_utils.c \
+	   $(SRC_DIR)/parse/parse_assign.c \
+	   $(SRC_DIR)/parse/parse.c \
+	   $(SRC_DIR)/parse/parse_utils.c \
+	   $(SRC_DIR)/parse/tokenizer/tokenizer_aux.c \
+	   $(SRC_DIR)/parse/tokenizer/tokenizer.c \
+	   $(SRC_DIR)/parse/tokenizer/tokenizer_handlers.c \
+	   $(SRC_DIR)/parse/tokenizer/tokenizer_helpers.c \
+	   $(SRC_DIR)/parse/tokenizer/tokenizer_parts.c \
+	   $(SRC_DIR)/parse/tokenizer/tokenizer_utils.c \
+	   $(SRC_DIR)/prompt/prompt_build.c \
+	   $(SRC_DIR)/prompt/prompt.c \
+	   $(SRC_DIR)/prompt/prompt_get.c \
+	   $(SRC_DIR)/prompt/prompt_git.c \
+	   $(SRC_DIR)/prompt/prompt_parts.c \
+	   $(SRC_DIR)/prompt/prompt_utils.c \
+	   $(SRC_DIR)/signals/signals.c \
+	   $(SRC_DIR)/signals/signals_utils.c
 
-LIBFT_SRCS = $(shell find $(LIBFT_SRC_D) -type f -name '*.c')
-LIBFT_OBJS = $(LIBFT_SRCS:$(LIBFT_SRC_D)/%.c=$(LIBFT_OBJ_DIR)/%.o)
+OBJ_DIR = minishellObjects
+OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 
-RESET           = \001\033[0m\002
-TURQUOISE       = \001\033[0;36m\002
-LIGHT_TURQUOISE = \001\033[1;36m\002
-LIGHT_GREEN     = \001\033[1;32m\002
-LIGHT_RED       = \001\033[1;91m\002
-
-TOTAL_STEPS = $(words $(SRCS) $(LIBFT_SRCS))
-
-define show_progress
-	@total=$(TOTAL_STEPS); \
-	[ "$$total" -gt 0 ] || total=1; \
-	curr=$$(find "$(OBJ_ROOT)" -type f -name "*.o" 2>/dev/null | wc -l); \
-	width=60; \
-	hashes=$$(( curr * width / total )); \
-	[ "$$hashes" -ge 0 ] || hashes=0; \
-	dots=$$(( width - hashes )); \
-	[ "$$dots" -ge 0 ] || dots=0; \
-	green=$$(printf "\033[1;32m"); \
-	reset=$$(printf "\033[0m"); \
-	printf "\rCompiling: ["; \
-	bar=$$(printf "%*s" "$$hashes" ""); bar=$${bar// /#}; \
-	printf "%s" "$$green$$bar$$reset"; \
-	dot=$$(printf "%*s" "$$dots" ""); dot=$${dot// /.}; \
-	printf "%s" "$$dot"; \
-	printf "] %d/%d" "$$curr" "$$total"; \
-	if [ "$$curr" -ge "$$total" ]; then printf " ✓\n"; fi;
-endef
+TOTAL_SRCS = $(words $(SRCS))
 
 all: $(NAME)
 
-$(NAME): $(LIBFT_A) $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $@
-	@echo -e "$(LIGHT_TURQUOISE)Minishell ready!$(RESET)"
+$(NAME): $(LIBFT) $(OBJS)
+	@echo -e "$(COMPILE)Compilando minishell$(RESET)"
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(LDFLAGS) -o $@
+	@echo -e "$(GREEN)Minishell ready!$(RESET)"
 
-$(LIBFT_A): $(LIBFT_OBJS)
-	@$(AR) $(ARFLAGS) $@ $^
+$(LIBFT):
+	@$(MAKE) -C $(LIBFT_DIR)
 
-$(LIBFT_OBJ_DIR)/%.o: $(LIBFT_SRC_D)/%.c | $(LIBFT_OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
-	$(call show_progress)
-
-$(APP_OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(APP_OBJ_DIR)
-	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -c $< -o $@
-	$(call show_progress)
-
-$(OBJ_ROOT) $(APP_OBJ_DIR) $(LIBFT_OBJ_DIR):
-	@mkdir -p $@
 
 clean:
-	@echo -e "$(LIGHT_RED)Running object cleanup...$(RESET)"
-	@rm -rf "$(OBJ_ROOT)"
-	@echo -e "$(TURQUOISE)Cleaning of objects completed!$(RESET)"
+	@echo -e "$(RED)Running object cleanup...$(RESET)"
+	@rm -rf $(OBJ_DIR)
+	@$(MAKE) -C $(LIBFT_DIR) clean
+	@echo -e "$(CYAN)Cleaning of objects completed!$(RESET)"
 
-fclean:
-	@echo -e "$(LIGHT_RED)Running a full cleanup...$(RESET)"
-	@rm -rf "$(OBJ_ROOT)"
-	@rm -f "$(NAME)" "$(LIBFT_A)"
-	@echo -e "$(TURQUOISE)Full cleaning finished!$(RESET)"
+fclean: clean
+	@echo -e "$(RED)Running a full cleanup...$(RESET)"
+	@rm -f $(NAME)
+	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@echo -e "$(CYAN)Full cleaning finished!$(RESET)"
 
-re:
-	@$(MAKE) fclean
-	@$(MAKE) -s all
+re: fclean all
 
 .PHONY: all clean fclean re
 
-# Hay que cambiar la wildcards [ *.c ]
+# If you see “-e” when compiling, it is because echo needs this flag to display colors depending on the system.

@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 04:43:21 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 19:32:02 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/14 19:58:23 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	check_multiple_args(t_mini *mini)
 {
-	if (mini->cmds->tokens[2] && mini->cmds->tokens[1])
+	if (mini->cmds->tokens[1] && mini->cmds->tokens[2])
 	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 		mini->exit_sts = 2;
@@ -25,12 +25,23 @@ static int	check_multiple_args(t_mini *mini)
 
 static char	*get_target_path(t_mini *mini, char *arg)
 {
+	char	*path;
+
 	if (!arg)
 		return (handle_home_dir(mini));
 	if (!ft_strcmp(arg, "-"))
 		return (handle_oldpwd_dir(mini));
 	if (!ft_strcmp(arg, "~"))
-		return (update_home_cache(mini, get_local_env("HOME", mini->env)));
+	{
+		path = get_home_cached(mini);
+		if (!path)
+		{
+			ft_putstr_fd(ERR_HOME, 2);
+			mini->exit_sts = 1;
+			return (NULL);
+		}
+		return (path);
+	}
 	if (!ft_strcmp(arg, ".."))
 		return (get_parent_from_pwd(mini));
 	return (arg);
@@ -47,7 +58,10 @@ static int	change_directory(t_mini *mini, char *path, char *arg)
 		return (0);
 	}
 	if (arg && !ft_strcmp(arg, "-"))
-		printf("%s\n", path);
+	{
+		ft_putstr_fd(path, STDOUT_FILENO);
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	}
 	return (1);
 }
 
@@ -84,3 +98,10 @@ void	builtin_cd(t_mini *mini)
 	update_environment(mini, oldpwd, pwd);
 	mini->exit_sts = 0;
 }
+
+// If you enter the program without an environment using `env -i`, for `cd` to
+// work, you need to first use `cd .` to set the current directory, you need
+// you need to declare `$PWD` in the environment.
+
+// Be careful when creating relative paths in a variable and passing it as a
+// parameter, for example, `..` will redirect you to the `\` directory.

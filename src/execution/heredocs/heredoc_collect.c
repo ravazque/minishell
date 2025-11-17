@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/23 14:00:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/31 17:02:10 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/06 13:05:46 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,14 @@ static int	process_line(char *line, t_heredoc *ctx)
 		free(line);
 		return (1);
 	}
-	if (ctx->expand)
+	if (ctx->expand && ft_strcmp(line, "~") != 0)
 		expanded = exp_str_part(line, ctx->mini, 1);
 	else
 		expanded = ft_strdup(line);
 	free(line);
 	if (!expanded)
 		return (-1);
-	dbpt_push(ctx->lines, expanded);
+	dblptr_push(ctx->lines, expanded);
 	free(expanded);
 	return (0);
 }

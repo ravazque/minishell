@@ -1,40 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tokenizer_aux.c                                    :+:      :+:    :+:   */
+/*   expand_tilde.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/24 03:21:54 by ravazque          #+#    #+#             */
-/*   Updated: 2025/11/11 14:54:14 by ravazque         ###   ########.fr       */
+/*   Created: 2025/11/05 15:53:10 by ravazque          #+#    #+#             */
+/*   Updated: 2025/11/05 16:05:42 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
 
-int	is_space(int c)
+char	*process_tilde_expansion(int *i, t_mini *mini)
 {
-	if (c == ' ' || c == '\t')
-		return (1);
-	return (0);
+	char	*cached;
+
+	(*i)++;
+	cached = get_home_cached(mini);
+	if (!cached)
+		return (ft_strdup("~"));
+	return (ft_strdup(cached));
 }
 
-int	is_assignment(const char *str)
+int	should_expand_tilde(const char *s, int i, int exp)
 {
-	int	i;
-
-	if (!str || !str[0])
+	if (s[i] != '~')
 		return (0);
-	if (!ft_isalpha(str[0]) && str[0] != '_')
+	if (!exp)
 		return (0);
-	i = 1;
-	while (str[i] && str[i] != '=')
-	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
-		i++;
-	}
-	if (str[i] == '=')
-		return (1);
-	return (0);
+	if (i != 0)
+		return (0);
+	if (s[i + 1] && s[i + 1] != '/' && s[i + 1] != ' ')
+		return (0);
+	return (1);
 }

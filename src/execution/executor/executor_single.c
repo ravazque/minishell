@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 18:03:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:37:04 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/04 13:51:32 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,25 @@ static void	execute_single_child(t_mini *mini, t_cmd *cmd)
 
 	setup_execution_signals();
 	if (redirections(cmd))
+	{
+		cleanup_child_fds();
 		exit(1);
+	}
 	if (is_builtin_cmd(cmd->tokens[0]))
 	{
 		built_ins(mini, cmd);
+		cleanup_child_fds();
 		exit(mini->exit_sts);
 	}
 	exec_env = build_exec_env(mini);
 	if (!exec_env)
+	{
+		cleanup_child_fds();
 		exit(1);
-	ft_execve(cmd->tokens, exec_env, &exec_env);
+	}
+	ft_execve(cmd->tokens, exec_env, &exec_env, mini->cd_home);
 	free_dblptr(exec_env);
+	cleanup_child_fds();
 }
 
 static void	wait_single_child(pid_t pid, t_mini *mini)
@@ -45,6 +53,8 @@ static void	wait_single_child(pid_t pid, t_mini *mini)
 		mini->exit_sts = 128 + WTERMSIG(status);
 		if (WTERMSIG(status) == SIGINT)
 			write(STDOUT_FILENO, "\n", 1);
+		else if (WTERMSIG(status) == SIGQUIT)
+			write(STDOUT_FILENO, "Quit\n", 5);
 	}
 }
 

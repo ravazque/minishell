@@ -6,7 +6,7 @@
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 23:16:26 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/30 18:37:10 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/03 21:01:49 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,14 @@ static int	check_heredocs(t_mini *mini)
 	return (0);
 }
 
-static int	check_empty_command(t_mini *mini)
+static int	is_exit_builtin(t_mini *mini, int n_cmds)
 {
+	if (n_cmds != 1)
+		return (0);
 	if (!mini->cmds->tokens || !mini->cmds->tokens[0])
+		return (0);
+	if (ft_strcmp(mini->cmds->tokens[0], "exit") == 0)
 		return (1);
-	if (mini->cmds->tokens[0][0] == '\0')
-	{
-		ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
-		mini->exit_sts = 127;
-		return (1);
-	}
 	return (0);
 }
 
@@ -83,6 +81,11 @@ void	executor(t_mini *mini)
 	n_cmds = ft_lstsize(mini->cmds);
 	if (check_heredocs(mini) || check_empty_command(mini))
 		return ;
+	if (is_exit_builtin(mini, n_cmds))
+	{
+		execute_single_command(mini, mini->cmds);
+		return ;
+	}
 	if (init_exec(&exec, n_cmds))
 	{
 		ft_putstr_fd("minishell: error: executor init failed\n",

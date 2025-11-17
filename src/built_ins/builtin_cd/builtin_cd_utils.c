@@ -3,29 +3,46 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_cd_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ptrapero <ptrapero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/22 19:30:00 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 20:38:41 by ptrapero         ###   ########.fr       */
+/*   Updated: 2025/11/05 15:32:52 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../include/minishell.h"
 
+char	*get_home_cached(t_mini *mini)
+{
+	char	*home;
+
+	home = get_var_value("HOME", mini);
+	if (home && home[0] != '\0')
+	{
+		if (!mini->cd_home || ft_strcmp(home, mini->cd_home) != 0)
+		{
+			if (mini->cd_home)
+				free(mini->cd_home);
+			mini->cd_home = ft_strdup(home);
+			if (!mini->cd_home)
+			{
+				malloc_error();
+				return (NULL);
+			}
+		}
+		return (mini->cd_home);
+	}
+	if (mini->cd_home)
+		return (mini->cd_home);
+	return (NULL);
+}
+
 char	*handle_home_dir(t_mini *mini)
 {
 	char	*home;
 
-	home = get_local_env("HOME", mini->env);
-	if (!home)
-	{
-		if (mini->cd_home)
-			return (mini->cd_home);
-		ft_putstr_fd(ERR_HOME, 2);
-		mini->exit_sts = 1;
-		return (NULL);
-	}
-	return (home);
+	home = get_var_value("HOME", mini);
+	return (update_home_cache(mini, home));
 }
 
 char	*handle_oldpwd_dir(t_mini *mini)
@@ -44,26 +61,26 @@ char	*handle_oldpwd_dir(t_mini *mini)
 
 char	*update_home_cache(t_mini *mini, char *current)
 {
-	if (!current)
+	if (current && current[0] != '\0')
 	{
-		if (mini->cd_home)
-			return (mini->cd_home);
-		ft_putstr_fd(ERR_HOME, 2);
-		mini->exit_sts = 1;
-		return (NULL);
-	}
-	if (!mini->cd_home || ft_strcmp(current, mini->cd_home) != 0)
-	{
-		if (mini->cd_home)
-			free(mini->cd_home);
-		mini->cd_home = ft_strdup(current);
-		if (!mini->cd_home)
+		if (!mini->cd_home || ft_strcmp(current, mini->cd_home) != 0)
 		{
-			malloc_error();
-			return (NULL);
+			if (mini->cd_home)
+				free(mini->cd_home);
+			mini->cd_home = ft_strdup(current);
+			if (!mini->cd_home)
+			{
+				malloc_error();
+				return (NULL);
+			}
 		}
+		return (mini->cd_home);
 	}
-	return (mini->cd_home);
+	if (mini->cd_home)
+		return (mini->cd_home);
+	ft_putstr_fd(ERR_HOME, 2);
+	mini->exit_sts = 1;
+	return (NULL);
 }
 
 void	print_chdir_error(char *path, char *arg)
@@ -83,13 +100,4 @@ void	print_chdir_error(char *path, char *arg)
 		ft_putstr_fd(": Not a directory\n", 2);
 	else
 		ft_putstr_fd(": No such file or directory\n", 2);
-}
-
-int	needs_free(char *arg)
-{
-	if (!arg)
-		return (0);
-	if (!ft_strcmp(arg, ".."))
-		return (1);
-	return (0);
 }

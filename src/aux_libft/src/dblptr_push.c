@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dbptr_push.c                                       :+:      :+:    :+:   */
+/*   dblptr_push.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ravazque <ravazque@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 17:27:43 by ravazque          #+#    #+#             */
-/*   Updated: 2025/10/22 17:25:32 by ravazque         ###   ########.fr       */
+/*   Updated: 2025/11/06 13:05:46 by ravazque         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static size_t	dblptr_len(char **p)
 	return (n);
 }
 
-char	**dbpt_push(char ***dst, const char *s)
+char	**dblptr_push(char ***dst, const char *s)
 {
 	size_t	n;
 	size_t	i;
